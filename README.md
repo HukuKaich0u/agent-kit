@@ -66,4 +66,3 @@ apm install
 
 - `instructions/core`: Claude / Codex で共通利用する instructions
 - `skills/`: 必要なものだけ選んで導入する local skills
-- `agents/`, `claude/`, `codex/`: git で管理する harness 別 assets
