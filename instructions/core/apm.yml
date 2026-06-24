@@ -1,0 +1,9 @@
+name: agent-kit-core
+version: 0.1.0
+description: Shared core instructions for Claude and Codex
+author: HukuKaich0u
+dependencies:
+  apm: []
+  mcp: []
+includes: auto
+scripts: {}
