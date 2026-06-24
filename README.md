@@ -1,16 +1,48 @@
 # agent-kit
 
-Reusable agent assets for KokiAoyagi.
+再利用可能な agent assets 集です。
 
-## Install with APM
+## APM で追加する
 
-Install the shared core instructions globally:
+### グローバル assets
+
+共有の core instructions をユーザースコープの APM manifest に追加する場合:
 
 ```sh
 apm install -g HukuKaich0u/agent-kit/instructions/core
 ```
 
-Or add them to a project manifest:
+これで `~/.apm/apm.yml` が更新され、解決結果の pin は
+`~/.apm/apm.lock.yaml` に書かれます。
+
+`~/.apm/apm.yml` を自分で管理する場合は、依存を書いたうえで次を実行します。
+
+```sh
+apm install -g
+```
+
+例:
+
+```yaml
+name: koki-global
+version: 0.1.0
+targets:
+  - claude
+  - codex
+dependencies:
+  apm:
+    - HukuKaich0u/agent-kit/instructions/core
+```
+
+### プロジェクト assets
+
+現在のリポジトリに依存を追加する場合:
+
+```sh
+apm install HukuKaich0u/agent-kit/instructions/core
+```
+
+または、プロジェクトの `apm.yml` に直接書きます。
 
 ```yaml
 dependencies:
@@ -18,8 +50,20 @@ dependencies:
     - HukuKaich0u/agent-kit/instructions/core
 ```
 
-## Paths
+その後に次を実行します。
 
-- `instructions/core`: shared instruction files for Claude and Codex
-- `skills/`: local skills to install selectively
-- `agents/`, `claude/`, `codex/`: harness-specific assets kept in git
+```sh
+apm install
+```
+
+### 更新
+
+- `apm install`: 現在の manifest と lockfile に従って install する
+- `apm update`: プロジェクトの依存を更新する
+- `apm update -g`: `~/.apm/` 配下のグローバル依存を更新する
+
+## パス
+
+- `instructions/core`: Claude / Codex で共通利用する instructions
+- `skills/`: 必要なものだけ選んで導入する local skills
+- `agents/`, `claude/`, `codex/`: git で管理する harness 別 assets
