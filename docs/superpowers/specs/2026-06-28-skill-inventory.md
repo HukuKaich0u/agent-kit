@@ -6,12 +6,12 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 - **使う技術**: Cloudflare Workers / AWS・ECS / Frontend レビュー一式 → 原則 **残**
 - **使わない技術**: MoonBit / Gleam → 原則 **消**
-- **mizchi 個人ツール依存**(waxa, flaker, vlmkit, pkfire, chezmoi, upstream-fix-and-pin 等): 一括では決めず skill ごとに **保留** で個別判断
+- **mizchi 個人ツール依存**(waxa, flaker, vlmkit, utels 等): 調べた結果いずれも公開 OSS/npm/SaaS で自分も使えると判明。「使えるものは積極的に使う」方針で **全て残す**(2026-06-28 確定)。utels だけは SaaS 依存でハードル高めだが Cloudflare Workers のエラー追跡の選択肢として保持。
 - 動作確認用サンプル: **消**
 
 ## ステータス凡例
 
-- 推奨: `残` / `消` / `保留`(要相談)
+- 推奨: `残` / `消`(`保留` は 2026-06-28 に全て `残` へ確定済み)
 - 正規化: `未`(apm 定型ブロック残存) / `済`(R1〜R5 適用済み) / `-`(削除予定)
 
 ## meta
@@ -22,16 +22,16 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 | extract-glossary | 残 | 済 | 正規化実例 |
 | optimizing-descriptions | 残 | 未 | description 改善 meta。自分の正規化作業と相性良 |
 | retrospective-codify | 残 | 未 | 学びの codify。汎用 |
-| skill-finder | 保留 | 未 | catalog 外 skill 探索。waxa-eval gate 前提あり→要確認 |
-| skill-selector | 保留 | 未 | apm catalog 前提。自分の catalog 運用次第 |
-| waxa-eval | 保留 | 未 | mizchi waxa CLI 依存。使うか要判断 |
+| skill-finder | 残 | 未 | catalog 外 skill 探索。waxa-eval gate 前提あり→要確認 |
+| skill-selector | 残 | 未 | apm catalog 前提。自分の catalog 運用次第 |
+| waxa-eval | 残 | 未 | mizchi waxa CLI 依存。使うか要判断 |
 
 ## ai
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| review-image | 保留 | 未 | OpenRouter VLM。Deno script 同梱。汎用性あり |
-| vlmkit | 保留 | 未 | @mizchi/vlmkit 依存。個人ツール |
+| review-image | 残 | 未 | OpenRouter VLM。Deno script 同梱。汎用性あり |
+| vlmkit | 残 | 未 | @mizchi/vlmkit 依存。個人ツール |
 
 ## aws (使う → 残)
 
@@ -49,14 +49,14 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 | access-app-setup | 残 | 未 | |
 | deploy | 残 | 未 | |
 | ~~mbt-worker-bundle~~ | 削除済 | - | MoonBit 依存(2026-06-28 削除) |
-| workers-otel-utels | 保留 | 未 | utels(mizchi)依存。OTel 部分は汎用 |
+| workers-otel-utels | 残 | 未 | utels(mizchi)依存。OTel 部分は汎用 |
 
 ## devops
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
 | actions-ci-tuning | 残 | 未 | 汎用 GHA |
-| flaker-storage-cache-on-ci | 保留 | 未 | @mizchi/flaker 依存 |
+| flaker-storage-cache-on-ci | 残 | 未 | @mizchi/flaker 依存 |
 | gh-fix-ci | 残 | 未 | 汎用 |
 | opentelemetry | 残 | 未 | platform 非依存 |
 | otel-node | 残 | 未 | |
@@ -85,7 +85,7 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| crd-from-typed-schema | 保留 | 未 | k8s 使うか次第 |
+| crd-from-typed-schema | 残 | 未 | k8s 使うか次第 |
 
 ## lang (MoonBit/Gleam → 消)
 
@@ -94,15 +94,15 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 | ~~gleam-practice~~ | 削除済 | - | Gleam(2026-06-28 削除) |
 | ~~moonbit-js-binding~~ | 削除済 | - | MoonBit(2026-06-28 削除) |
 | ~~moonbit-practice~~ | 削除済 | - | MoonBit(2026-06-28 削除) |
-| rust | 保留 | 未 | Rust 使うか次第。中身が薄い("guideline" のみ) |
-| translate-programming-language | 保留 | 未 | 言語間移行。汎用だが重い |
+| rust | 残 | 未 | Rust 使うか次第。中身が薄い("guideline" のみ) |
+| translate-programming-language | 残 | 未 | 言語間移行。汎用だが重い |
 | ~~ts2moonbit-migration~~ | 削除済 | - | MoonBit(2026-06-28 削除) |
 
 ## node
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| pi-coding-agent | 保留 | 未 | @mariozechner/pi 依存 |
+| pi-coding-agent | 残 | 未 | @mariozechner/pi 依存 |
 | sqlite-vec | 残 | 未 | Node 標準 sqlite。汎用 |
 
 ## sql
@@ -133,27 +133,34 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 | dep-lib-review | 残 | 未 | 汎用 |
 | dotenvx | 残 | 未 | 汎用 |
 | drawio | 残 | 未 | 汎用 |
-| justfile | 保留 | 未 | mizchi は pkfire 推奨と明記。自分は just 使う?→要確認 |
-| nix-setup | 保留 | 未 | devbox/Nix 使うか次第。MoonBit template 含む |
+| justfile | 残 | 未 | mizchi は pkfire 推奨と明記。自分は just 使う?→要確認 |
+| nix-setup | 残 | 未 | devbox/Nix 使うか次第。MoonBit template 含む |
 | tech-trend-watch | 残 | 未 | 汎用 |
-| upstream-fix-and-pin | 保留 | 未 | mizchi 運用色だが内容は汎用的 |
-| utels-project-bootstrap | 保留 | 未 | utels(mizchi)依存 |
+| upstream-fix-and-pin | 残 | 未 | mizchi 運用色だが内容は汎用的 |
+| utels-project-bootstrap | 残 | 未 | utels(mizchi)依存 |
 
 ## tools
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| waxa | 保留 | 未 | waxa CLI 本体。waxa-eval とセット |
+| waxa | 残 | 未 | waxa CLI 本体。waxa-eval とセット |
 | waxa/examples/echo-skill/... | 消 | - | 動作確認用サンプル。catalog に出す必要なし |
 
 ## 集計(推奨ベース)
 
-- 残: Frontend 14 + AWS 4 + cloudflare 2 + devops 5 + sql 4 + testing 2 + tooling 7 + meta 4 + node 1 = **約 43**
-- 消: MoonBit/Gleam 系 7 + chezmoi 1 + echo-skill 1 = **約 9**
-- 保留(個別判断): **約 18**
+- 残: 保留 18 件を全て残に確定したため **約 61**(全カテゴリの大半)
+- 消(完了): MoonBit/Gleam 系 6 + chezmoi 1 = **7**(c1fc7e8)
+- 消(前セッション分・未 commit): mizchi-blog-style + tech-article-reproducibility = 2
 
 ## 次アクション
 
-1. `消` を一括削除して MoonBit/Gleam 等を整理(別 commit)
-2. `保留` を上から個別に相談して残/消を確定
-3. `残` を正規化ルールに沿って 1 つずつ精査(優先度: meta → 使用頻度高いカテゴリ)
+1. ~~`消` を一括削除して MoonBit/Gleam 等を整理~~ (完了: c1fc7e8)
+2. ~~`保留` を個別判断~~ (完了: 全て公開 OSS で使えると判明し全て残に確定 2026-06-28)
+3. `残` を正規化ルールに沿って 1 つずつ精査(優先度: meta → 使用頻度高いカテゴリ)← **次はここ**
+
+## アイデア置き場(後回し)
+
+- **lang/typescript を新規作成** + **lang/rust を加筆充実**。消した moonbit-practice の構造
+  (Guidelines / Common Pitfalls / AI がよく間違う構文 / Tests / pre-release checklist /
+  CI&publishing / Quick Reference)を雛形に。構造は `git show c1fc7e8^:skills/lang/moonbit-practice/SKILL.md` で参照可能。
+  着手時に「どの runtime/用途を主軸にするか」を先に確定すること(空想で書くと薄くなる)。

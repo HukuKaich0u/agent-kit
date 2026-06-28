@@ -1,6 +1,6 @@
 ---
 name: extract-glossary
-description: 指定されたリポジトリ、複数リポジトリ、または GitHub organization から、ドメイン固有の専門用語、業界用語、社内・プロダクト用語、リポジトリ実装マップ、技術構成、オンボーディング向け Mermaid 構成図を抽出・生成するときに使う。ユーザーが「用語集を作る」「ドメイン辞書を作る」「オンボーディング資料にする」「repo/org を見て専門用語をまとめる」「AI が再確認しなくてよい知識ベースを作る」と依頼したら起動する。
+description: Use when you need onboarding or reusable knowledge docs from one or more repositories, and must extract domain terms, repository maps, architecture notes, or small Mermaid diagrams grounded in code and documentation.
 ---
 
 # extract-glossary
@@ -22,7 +22,7 @@ description: 指定されたリポジトリ、複数リポジトリ、または 
 - GitHub URL: `https://github.com/org/repo`
 - 複数リポジトリのリスト
 - GitHub organization 名と絞り込み条件
-- 出力先: 既存 repo の docs、`.claude/skills/<domain>-glossary/`、任意の Markdown ファイル群
+- 出力先: 既存 repo の docs、agent 用 skill directory (`~/.claude/skills/<domain>-glossary/` や `~/.agents/skills/<domain>-glossary/`)、任意の Markdown ファイル群
 
 入力が曖昧な場合は、まず候補 repo と出力先を確認する。ただしローカルや GitHub から合理的に特定できる場合は探索を始める。
 
@@ -198,3 +198,9 @@ command -v mmdc && mmdc -i <diagram-file> -o /tmp/diagrams.svg
 - 成果物の用途が onboarding なら、読む順番と調査入口を必ず入れる。
 - AI 用 skill にする場合、`SKILL.md` は薄く保ち、詳細は `references/` に逃がす。
 - ユーザーが commit/push/PR を求めた場合だけ git publish flow に進む。
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使えるよう、成果物の保存先は agent 固有 path に固定しない。
+- skill として出力する場合は、`SKILL.md` の trigger と usage だけを薄く保ち、詳細は `references/` に分離する。
+- local path を調査に使ってもよいが、最終成果物では共有可能な URL と repo 相対の説明に寄せる。
