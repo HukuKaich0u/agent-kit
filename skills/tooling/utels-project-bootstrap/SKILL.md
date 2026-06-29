@@ -67,8 +67,12 @@ Repo-side secrets you DO commit: only the bootstrap token via dotenvx encryption
 
 ## Source
 
-[`mizchi/mnemo/blob/main/mnemo-server/scripts/setup-utels.mjs`](https://github.com/mizchi/mnemo/blob/main/mnemo-server/scripts/setup-utels.mjs). The version shipped here is the same with mnemo-specific defaults parameterized.
+The script ships with this skill under [`assets/scripts/setup-utels.ts`](assets/scripts/setup-utels.ts), with the project-ID defaults parameterized. An upstream variant with mnemo-specific defaults lives at [`mizchi/mnemo`](https://github.com/mizchi/mnemo/blob/main/mnemo-server/scripts/setup-utels.mjs).
 
 ## Related skills
 
 - [`cloudflare-workers-otel-utels`](../cloudflare-workers-otel-utels/SKILL.md) — the `withUtelsErrorTracking` boundary wrapper that uses the ingest token this script provisions.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。同梱スクリプト + utels.dev API + `wrangler secret put` で動くので harness 非依存。`UTELS_BOOTSTRAP_TOKEN`(通常 dotenvx 復号)と `wrangler` が前提。utels は実在 SaaS。

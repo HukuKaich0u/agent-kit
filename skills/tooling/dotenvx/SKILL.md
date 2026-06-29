@@ -149,3 +149,7 @@ steps:
 
 - https://github.com/dotenvx/dotenvx
 - https://dotenvx.com/docs
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。`dotenvx` CLI による env 暗号化・多環境管理の知識で harness 非依存。

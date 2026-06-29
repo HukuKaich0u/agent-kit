@@ -19,7 +19,7 @@ my-awesome-skill/
 └── LICENSE
 ```
 
-利用者のインストールコマンド: `apm install mizchi/my-awesome-skill/skills/my-awesome-skill`
+利用者のインストールコマンド: `apm install HukuKaich0u/my-awesome-skill/skills/my-awesome-skill`
 
 ### 複数 skill（monorepo）
 
@@ -32,7 +32,7 @@ my-skill-pack/
 └── LICENSE
 ```
 
-利用者は `apm install mizchi/my-skill-pack/skills/skill-a` のようにパス指定。
+利用者は `apm install HukuKaich0u/my-skill-pack/skills/skill-a` のようにパス指定。
 
 ## SKILL.md 必須 frontmatter
 
@@ -70,7 +70,7 @@ gh release create v1.0.0 --notes-file CHANGELOG.md
 ```yaml
 dependencies:
   apm:
-    - mizchi/my-awesome-skill/skills/my-awesome-skill#v1.0.0
+    - HukuKaich0u/my-awesome-skill/skills/my-awesome-skill#v1.0.0
 ```
 
 ピンなし (`#main` / なし) だと install 時に HEAD を取る → breaking change で壊れやすい。公開 skill は tag を切る運用推奨。
@@ -123,7 +123,7 @@ name: test
 version: 1.0.0
 dependencies:
   apm:
-    - mizchi/my-awesome-skill/skills/my-awesome-skill#HEAD
+    - HukuKaich0u/my-awesome-skill/skills/my-awesome-skill#HEAD
 EOF
 apm install
 ls -1 .claude/skills/
@@ -134,7 +134,7 @@ ls -1 .claude/skills/
 APM では `skill name` はディレクトリ名と一致し、install 時にそれが target の `skills/<name>/` に展開される。他の skill と名前衝突すると install 時に後勝ちで上書きされる。
 
 - 汎用名（`test`, `utils`, `helper`）は避ける
-- scope prefix を付ける（`mizchi-empirical-tuning` 等）か、リッチな説明的名前にする
+- scope prefix を付ける（`koki-empirical-tuning` 等）か、リッチな説明的名前にする
 - 既存の有名 skill 名（`moonbit-practice`, `ast-grep` 等）を避ける
 
 ## 公開チェックリスト

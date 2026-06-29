@@ -165,4 +165,8 @@ Write a review doc with:
 ## Related
 
 - `dep-lib-review` — executes the actual update (patch/minor/major batching)
-- `frontend-review-deps` — operational dependency audit with CVE triage and trend-watch scripts
+- `frontend-review-deps` — operational dependency audit with CVE triage and trend-watch (agent runs the tooling directly)
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。State of JS/CSS + Tech Radar を使った年次スタックレビューの手法で harness 非依存(WebFetch / ブラウザでデータを参照)。

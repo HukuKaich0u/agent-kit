@@ -128,18 +128,18 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| apm-usage | 残 | 未 | apm 運用の参照。自分が apm 使う |
-| ast-grep-practice | 残 | 未 | 汎用 lint |
+| apm-usage | 残 | 済 | デプロイ先 path を harness 一般化。chezmoi-management 参照除去。publishing.md の例示 owner を自分に。R5 |
+| ast-grep-practice | 残 | 済 | 出典色なし。R5 のみ |
 | ~~chezmoi-management~~ | 削除済 | - | mizchi dotfiles 専用(2026-06-28 削除) |
-| conventional-changelog | 残 | 未 | 汎用 |
-| dep-lib-review | 残 | 未 | 汎用 |
-| dotenvx | 残 | 未 | 汎用 |
-| drawio | 残 | 未 | 汎用 |
-| justfile | 残 | 未 | mizchi は pkfire 推奨と明記。自分は just 使う?→要確認 |
-| nix-setup | 残 | 未 | devbox/Nix 使うか次第。MoonBit template 含む |
-| tech-trend-watch | 残 | 未 | 汎用 |
-| upstream-fix-and-pin | 残 | 未 | mizchi 運用色だが内容は汎用的 |
-| utels-project-bootstrap | 残 | 未 | utels(mizchi)依存 |
+| conventional-changelog | 残 | 済 | pkfire/chezmoi 参照を汎用 task-runner 記述に置換。R5 |
+| dep-lib-review | 残 | 済 | 出典色なし。R5 のみ |
+| dotenvx | 残 | 済 | 出典色なし。R5 のみ |
+| drawio | 残 | 済 | sandbox 配慮は harness 横断で保持。R5 |
+| justfile | 残 | 済 | description の pkfire 推奨を除去。R5 |
+| nix-setup | 残 | 済 | mizchi/<repo> デフォルト + 固定 path を一般化。MoonBit overlay は一例で保持。R5 |
+| tech-trend-watch | 残 | 済 | 出典色なし。R5 のみ |
+| upstream-fix-and-pin | 残 | 済 | 出典色なし。R5 のみ |
+| utels-project-bootstrap | 残 | 済 | 同梱 setup-utels.ts を正と明示、mnemo は上流クレジット化。R5 |
 
 ## tools
 
@@ -158,7 +158,9 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 1. ~~`消` を一括削除して MoonBit/Gleam 等を整理~~ (完了: c1fc7e8)
 2. ~~`保留` を個別判断~~ (完了: 全て公開 OSS で使えると判明し全て残に確定 2026-06-28)
-3. `残` を正規化ルールに沿って 1 つずつ精査(優先度: meta → 使用頻度高いカテゴリ)← **次はここ**
+3. ~~`残` を正規化ルールに沿って 1 つずつ精査~~ (完了: 全カテゴリ正規化済み 2026-06-29)
+   - meta / cloudflare / aws / devops / frontend / k8s / lang / node / testing / sql / ai / tooling = 全 58 skill 済
+   - README 生成スクリプト移植 + catalog 再構築済み
 
 ## アイデア置き場(後回し)
 

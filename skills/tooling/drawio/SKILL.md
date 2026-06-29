@@ -484,3 +484,8 @@ When the user requests a specific diagram type, read `references/diagram-types.m
 | "flowchart", "decision tree", "process flow" | Flowchart |
 
 The diagram-type preset sets **structural** style keywords. If a user style preset is also active (see `## Style Presets`), keep the structural keywords and layer color/font/edge/extras on top — read `references/style-presets.md` → "Interaction with diagram-type presets" for the merge rules.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。同梱の Python スクリプト + draw.io desktop CLI で動く。
+- sandbox 分離環境(Claude Code / codex.app 等)で CLI export がクラッシュする件は本文に harness 横断で対処法を記載済み(非 sandbox host での実行 / browser fallback / XML-only)。`python` と draw.io desktop が前提。
