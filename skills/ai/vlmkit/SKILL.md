@@ -47,9 +47,9 @@ Playwright Chromium, optional API keys, and installed sub-skills in
 one pass. Two invocation forms by setup phase:
 
 - **Pre-install (no apm yet)**: one-shot via curl —
-  `bash <(curl -sSL https://raw.githubusercontent.com/mizchi/skills/main/vlmkit/scripts/doctor.sh)`
-- **Post-install (`apm install -g mizchi/skills/vlmkit/vlmkit` done)**: local
-  copy — `bash ~/.claude/skills/vlmkit/scripts/doctor.sh`
+  `bash <(curl -sSL https://raw.githubusercontent.com/HukuKaich0u/agent-kit/main/skills/ai/vlmkit/scripts/doctor.sh)`
+- **Post-install (`apm install -g HukuKaich0u/agent-kit/skills/ai/vlmkit` done)**: local
+  copy — `bash <agent-skills-dir>/vlmkit/scripts/doctor.sh` (e.g. `~/.claude/skills/vlmkit/scripts/doctor.sh` on Claude)
 
 Severity rules: only **Node 24+** and **Playwright Chromium** are
 FAIL-class (block exit 0). Everything else — including `vrt` CLI not
@@ -126,11 +126,10 @@ one-line hint and forward.
 
 ## Sub-skill routing
 
-**Two repos, by design**: this orient skill lives in
-[`mizchi/skills`](https://github.com/mizchi/skills) (general-purpose
-skills); the five vrt-specific sub-skills live in
-[`mizchi/vlmkit/vlmkit`](https://github.com/mizchi/vrt) under
-`.claude/skills/`. The two `apm install` paths below look different
+**Two repos, by design**: this orient skill lives in this repo
+(`HukuKaich0u/agent-kit`, general-purpose skills); the five vrt-specific
+sub-skills live upstream in [`mizchi/vlmkit`](https://github.com/mizchi/vrt)
+under `.claude/skills/`. The two `apm install` paths below look different
 because they target different repos — that is intentional, not a typo.
 
 **The CLI is fully functional without any sub-skill installed** —
@@ -251,7 +250,14 @@ Playwright transitively.
 
 ## Reporting issues / contributing
 
+vlmkit / vrt は外部 OSS。バグや要望は upstream へ:
+
 - Issues / feature requests: <https://github.com/mizchi/vlmkit/issues>
 - Source: <https://github.com/mizchi/vlmkit>
-- Smoke gate before PRs: `bash scripts/smoke-dist.sh` (strict, 11
-  probes against the bundled `dist/vlmkit.mjs`).
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。この skill は `@mizchi/vlmkit`(実在 OSS)CLI へのルーティング案内で、案内する agent の harness には依存しない。
+- **Node 24+ と Playwright Chromium が前提**(`scripts/doctor.sh` で確認)。`pnpm`/`npx` で CLI とブラウザを入れる。
+- 5つの vrt サブスキルは upstream の `mizchi/vlmkit` 別 repo にある(この orient skill とは別物)。CLI は サブスキル無しでも動く。
+- skill 配置先 path(`~/.claude/skills/...`)は harness 固有。固定でなく install 先として読む。

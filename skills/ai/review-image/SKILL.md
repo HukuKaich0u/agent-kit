@@ -23,7 +23,7 @@ Use this skill when you want a cheap vision-model opinion on an image before doi
 
 Both scripts are executable Deno files with shebang `#!/usr/bin/env -S deno run --allow-env --allow-net --allow-read`. Run them directly — no `deno run` wrapper needed.
 
-When the skill is APM-installed, the scripts live under `~/.claude/skills/review-image/scripts/`. Examples below use the `~/...` form, which is shell-expanded. In non-shell exec contexts (e.g. `child_process.spawn` without `shell: true`) both `~` and `$HOME` stay literal — substitute the resolved absolute path (`/Users/<you>/.claude/skills/review-image/scripts/...`).
+When the skill is APM-installed, the scripts live under the agent's skills directory — `~/.claude/skills/review-image/scripts/` for Claude, the equivalent path for another harness. The examples below use the Claude path in `~/...` form (shell-expanded); read it as "wherever this skill is installed." In non-shell exec contexts (e.g. `child_process.spawn` without `shell: true`) both `~` and `$HOME` stay literal — substitute the resolved absolute path (`/Users/<you>/.claude/skills/review-image/scripts/...`).
 
 Flags can appear before, between, or after the positional args. `--model` accepts both `--model X` and `--model=X`. Both scripts write program output to **stdout** and logs/errors to **stderr** — but only the JSON-emitting modes (CI gate always; freeform with `--json`) are safe to pipe straight into `jq` / `JSON.parse`. Freeform default mode is prose, not JSON.
 
@@ -106,3 +106,9 @@ The `<prompt>` argument is plain English describing what to check. Use these as 
 `google/gemini-2.5-flash-lite`
 
 Override per call with `--model` or globally with `OPENROUTER_MODEL`.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。OpenRouter の VLM を叩く Deno スクリプトを実行する形で、skill を呼ぶ agent の harness には依存しない。
+- **Deno が前提**(スクリプトの shebang が `deno run`)。`deno` が無い環境では `deno install` で入れるか、スクリプトを `node`/`bun` 実行用に書き換える必要がある。`OPENROUTER_API_KEY` も必須。
+- skill 配置先 path(`~/.claude/skills/...`)は harness 固有。固定でなく「この skill の install 先」として読む。

@@ -30,8 +30,8 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| review-image | 残 | 未 | OpenRouter VLM。Deno script 同梱。汎用性あり |
-| vlmkit | 残 | 未 | @mizchi/vlmkit 依存。個人ツール |
+| review-image | 残 | 済 | 同梱 Deno script。固定 ~/.claude path 一般化 + R5(Deno/API key 前提を明記) |
+| vlmkit | 残 | 済 | orient skill。install/doctor 参照を自 repo に、サブスキル(upstream mizchi/vlmkit)とnpm名は保持。欠損 smoke-dist.sh 行を除去 + R5 |
 
 ## aws (使う → 残)
 
