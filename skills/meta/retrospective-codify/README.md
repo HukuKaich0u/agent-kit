@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install mizchi/skills/meta/retrospective-codify
+apm install HukuKaich0u/agent-kit/skills/meta/retrospective-codify
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - mizchi/skills/meta/retrospective-codify
+    - HukuKaich0u/agent-kit/skills/meta/retrospective-codify
 ```
 
 then run `apm install`.
@@ -31,14 +31,20 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add mizchi/skills --skill retrospective-codify
+npx skills add HukuKaich0u/agent-kit --skill retrospective-codify
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit mizchi/skills/meta/retrospective-codify ~/.claude/skills/retrospective-codify
+npx degit HukuKaich0u/agent-kit/skills/meta/retrospective-codify ~/.claude/skills/retrospective-codify
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.
 <!-- apm:readme:end -->
+
+# retrospective-codify
+
+「最初に何で失敗したか」と「最終的に何で解決したか」を対にして、その学びを ast-grep rule / skill / CLAUDE.md rule のどれかに固定する meta skill です。試行錯誤の末の解決を、未来の自分や別 agent が同じ罠にはまらないよう再現可能な形で残します。
+
+Claude / Codex の両方で使う前提で整えています。分類フローと出力テンプレートは [SKILL.md](./SKILL.md) を参照してください(日本語版は [SKILL-ja.md](./SKILL-ja.md))。

@@ -76,7 +76,7 @@ Priority tiers. Always start at the top and only escalate when the tier above ha
    - **Catalog-promote** — passes eval AND used in 2+ projects without issue → propose addition to `skill-selector/references/catalog.md` with the project signal that should trigger it.
    - **Project-pin** — fits one project; add to that project's `apm.yml` with a **tag or SHA** resolved via `apm view <repo>` (or the upstream release page). Pin to the exact ref the waxa eval passed against — adopt after eval, pin the ref that was eval'd. Floating refs (`main`, `master`, `HEAD`) are forbidden for production projects.
    - **Reject** — record the reason in `references/rejection-log.md` (this skill) and / or the project's own `docs/skills-rejected.md` so the same candidate is not re-evaluated quarterly. Common reject reasons: license absent, body quality below floor, **non-redundancy axis fails (already covered by installed stack)**, or maintenance signal too weak.
-7. **Fork-and-fix path.** If a candidate is close-but-not-quite, prefer forking it into `mizchi/skills/<name>` (or the project's local skills dir) and reshaping it, over working around its shortcomings at call sites. Document the divergence so an upstream PR can converge.
+7. **Fork-and-fix path.** If a candidate is close-but-not-quite, prefer forking it into this repo's `skills/<name>` (or the project's local skills dir) and reshaping it, over working around its shortcomings at call sites. Document the divergence so an upstream PR can converge.
 
 ## Source-specific resolution notes
 
@@ -152,3 +152,9 @@ Working references in this repo: `skill-selector/evals/eval.yaml`, `nix-setup/ev
 - `apm-usage` — `apm.yml` syntax for the install / pinning step
 - `empirical-prompt-tuning` — convergence/divergence semantics underlying the waxa eval gate
 - `superpowers:writing-skills` — when no candidate passes the rubric, write the skill yourself instead of forcing a poor match
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。source tier / rubric / eval-gate のロジックは harness 非依存。
+- `npx @mizchi/waxa` と `apm` が使えない環境では、eval gate を「fresh subagent に候補 skill を渡して representative task を実行させ、unclear-points を二面評価する」手動フロー(cf. `empirical-prompt-tuning`)に落とす。
+- fork 先や install 先の path は agent / repo 固有。`HukuKaich0u/agent-kit/skills/<name>` は本 repo の例で、別 repo で使うならそこの skills dir に読み替える。

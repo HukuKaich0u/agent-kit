@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install mizchi/skills/tooling/dep-lib-review
+apm install HukuKaich0u/agent-kit/skills/tooling/dep-lib-review
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - mizchi/skills/tooling/dep-lib-review
+    - HukuKaich0u/agent-kit/skills/tooling/dep-lib-review
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add mizchi/skills --skill dep-lib-review
+npx skills add HukuKaich0u/agent-kit --skill dep-lib-review
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit mizchi/skills/tooling/dep-lib-review ~/.claude/skills/dep-lib-review
+npx degit HukuKaich0u/agent-kit/skills/tooling/dep-lib-review ~/.claude/skills/dep-lib-review
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

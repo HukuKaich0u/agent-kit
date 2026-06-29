@@ -29,15 +29,15 @@ When not to use:
 
    Extract 2-3 search keys from the insight (tool names, API names, symptom words, antonyms). Example: if the insight is "use pnpm v10," use `pnpm`, `packageManager`, `lockfile`.
 
-   Match targets and minimum searches:
+   Match targets and minimum searches (substitute the agent's own skills / instruction paths — `~/.claude/` for Claude, the equivalent for Codex):
    ```
    # skill duplicates (global)
-   ls ~/.claude/skills/
-   Grep "<key>" ~/.claude/skills/*/SKILL.md
+   ls <agent-skills-dir>/              # e.g. ~/.claude/skills/
+   Grep "<key>" <agent-skills-dir>/*/SKILL.md
 
-   # CLAUDE.md duplicates
-   Grep "<key>" ~/.claude/CLAUDE.md
-   Grep "<key>" <project-root>/CLAUDE.md   # if there is a matching project
+   # global / project instruction-file duplicates
+   Grep "<key>" <agent-global-instructions>   # e.g. ~/.claude/CLAUDE.md
+   Grep "<key>" <project-root>/CLAUDE.md       # if there is a matching project
 
    # lint rule duplicates
    ls <project-root>/rules/
@@ -83,8 +83,8 @@ digraph classify {
 
 **Principle: prefer ast-grep**: For things that are statically detectable, do not write them in prompts or docs; always make them an `ast-grep` rule (as the user's global rule).
 
-**CLAUDE.md write destinations**:
-- Cross-language / cross-tool general rules -> `~/.claude/CLAUDE.md`
+**Instruction-file write destinations** (CLAUDE.md for Claude, the equivalent global instruction file for Codex):
+- Cross-language / cross-tool general rules -> the agent's global instruction file (e.g. `~/.claude/CLAUDE.md`)
 - Limited to a specific repository -> that repository's `CLAUDE.md`
 
 ## Output templates
@@ -139,18 +139,18 @@ message: Set/Map のサイズは .size プロパティを使う。
 - Final solution: Aligned pnpm's version to the v10 line.
 - Insight: pnpm changes its lockfile across versions. Always use v10 or later.
 
--> Append to the "ツール" section of `~/.claude/CLAUDE.md`:
+-> Append to the "ツール" section of the agent's global instruction file (e.g. `~/.claude/CLAUDE.md`):
 ```markdown
 - pnpm は v10 以上を使う（理由: lockfile 形式が v9 以前と非互換で CI 差分が出る）
 ```
 
 ### Example 3: Codify as a new skill (procedure + judgment involved)
 
-- First attempt: To call a C library from MoonBit, tried several approaches and got stuck on the placement of FFI declarations and stubs.
-- Final solution: The combination of an `extern "c"` declaration + a stub using `moonbit.h` + `native-stub` / `link.native` settings in `moon.pkg.json`.
-- Insight: It does not fit in a single step; you need to understand the three layers — declaration, stub, and build config — together.
+- First attempt: Wiring GitHub Actions to AWS via OIDC, tried several trust-policy shapes and got stuck — the role assumed but every `iam:*` / cross-region Bedrock call was denied.
+- Final solution: The combination of a `job_workflow_ref`-scoped trust condition + the right `aws-marketplace` / Bedrock cross-region ARN grants + a ReadOnlyAccess + explicit-Deny boundary.
+- Insight: It does not fit in a single step; you need to understand three layers together — the OIDC trust condition, the scoped permission set, and the deny boundary.
 
--> Carve out the procedure and templates as a new skill `moonbit-c-binding` (since it already exists, this example is the case of choosing "append to existing" via the dedup check).
+-> Carve out the procedure and templates as a skill. If a matching skill already exists (the dedup check would surface `aws-github-oidc-scoped-role` here), this becomes an "append to existing" case rather than "add new."
 
 ## Red flags (watch out for rationalizations)
 
@@ -249,3 +249,9 @@ Duplicate detected (no proposal needed):
 - `superpowers:writing-skills` — template and TDD flow for writing a new skill
 - `ast-grep-practice` — how to write and test when codifying as a lint rule
 - `update-config` — when changes to settings.json / permissions are required
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。skill / instruction-file / lint という出力先の 3 分類は harness に依存しない。
+- dedup check や書き込み先の path は agent 固有(Claude は `~/.claude/`、Codex は相当ディレクトリ)。固定パスではなく「動いている agent の skills / 全体 instruction 配置先」として読む。
+- ast-grep が無い環境では「mechanically detectable」の出力先を instruction-file rule に落とす(prefer ast-grep の原則は維持しつつ degrade)。

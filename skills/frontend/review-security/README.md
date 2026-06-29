@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install mizchi/skills/frontend/review-security
+apm install HukuKaich0u/agent-kit/skills/frontend/review-security
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - mizchi/skills/frontend/review-security
+    - HukuKaich0u/agent-kit/skills/frontend/review-security
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add mizchi/skills --skill frontend-review-security
+npx skills add HukuKaich0u/agent-kit --skill frontend-review-security
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit mizchi/skills/frontend/review-security ~/.claude/skills/frontend-review-security
+npx degit HukuKaich0u/agent-kit/skills/frontend/review-security ~/.claude/skills/frontend-review-security
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

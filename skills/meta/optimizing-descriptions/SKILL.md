@@ -1,13 +1,13 @@
 ---
 name: optimizing-descriptions
-description: 'Meta-skill for auditing and rewriting SKILL.md `description` fields per the agentskills.io optimizing-descriptions framework, layered with mizchi''s two-track trigger policy (Meta = explicit-invoke-only, Project = pushy auto-trigger). Invoke ONLY when the user explicitly asks to "optimize a skill description," "audit descriptions," or "rewrite descriptions per agentskills." Do NOT auto-invoke after every SKILL.md edit; description tuning is a deliberate batch, not a per-edit reflex.'
+description: 'Meta-skill for auditing and rewriting SKILL.md `description` fields per the agentskills.io optimizing-descriptions framework, layered with a two-track trigger policy (Meta = explicit-invoke-only, Project = pushy auto-trigger). Invoke ONLY when the user explicitly asks to "optimize a skill description," "audit descriptions," or "rewrite descriptions per agentskills." Do NOT auto-invoke after every SKILL.md edit; description tuning is a deliberate batch, not a per-edit reflex.'
 ---
 
 # Optimizing Skill Descriptions
 
-Operational guide for auditing and rewriting SKILL.md `description` fields so they trigger the way mizchi wants them to.
+Operational guide for auditing and rewriting SKILL.md `description` fields so they trigger when they should and stay quiet when they shouldn't.
 
-The upstream reference is [agentskills.io/skill-creation/optimizing-descriptions](https://agentskills.io/skill-creation/optimizing-descriptions). This skill keeps the framework intact and adds the mizchi-specific two-track policy on top.
+The upstream reference is [agentskills.io/skill-creation/optimizing-descriptions](https://agentskills.io/skill-creation/optimizing-descriptions). This skill keeps the framework intact and adds the two-track trigger policy on top.
 
 ## Why this exists
 
@@ -25,7 +25,7 @@ Meta-skill, explicit invocation only. Triggers:
 - "optimize / audit / rewrite this skill's description"
 - "audit descriptions per agentskills"
 - "tune trigger accuracy"
-- "go through mizchi/skills and fix descriptions"
+- "go through the skills and fix descriptions"
 
 Do NOT use for:
 
@@ -34,7 +34,7 @@ Do NOT use for:
 
 ## Two-track policy
 
-mizchi's skills split into two categories and need **different** description shapes. Picking the wrong one is the most common audit miss.
+Skills split into two categories and need **different** description shapes. Picking the wrong one is the most common audit miss.
 
 | Track | Trigger policy | Description shape | Examples |
 |---|---|---|---|
@@ -69,7 +69,7 @@ How to classify a skill you're auditing:
 
 ## Common rewrite patterns
 
-Distilled from a single-pass audit of mizchi/skills (12 rewrites, 2026-05-12).
+Distilled from a single-pass audit of a skill catalog (12 rewrites).
 
 ### Project rewrites
 
@@ -124,13 +124,13 @@ auto-invoke at every task completion.
 
 ```
 # Before: "Consult when touching" auto-triggers on path matches
-mizchi's chezmoi dotfiles operations: source location, diff/apply flow,
+A chezmoi dotfiles skill: source location, diff/apply flow,
 skill addition, the APM vs chezmoi boundary, pre-commit. Consult when
 touching ~/.claude/, ~/.config/, or ~/.zshrc, or initializing a new
 machine.
 
 # After: explicit-intent + Do NOT auto-invoke clause
-Meta-skill for mizchi's chezmoi dotfiles. Invoke ONLY when the user
+Meta-skill for a chezmoi dotfiles repo. Invoke ONLY when the user
 explicitly asks to manage / diff / apply chezmoi sources, add a skill
 to dotfiles, audit the APM vs chezmoi boundary, or initialize a new
 machine. Do NOT auto-invoke when the task only happens to touch a path
@@ -163,7 +163,7 @@ dotfile-management intent.
 
 5. **Verify with `waxa audit <skill>`** — picks up surface frontmatter issues (length, name shape, trigger-condition shape). Errors must be zero; warnings about body / LICENSE are out of scope here.
 
-6. **Mirror** to `~/.claude/skills/<name>/SKILL.md` (mizchi propagation convention — running session needs the update without waiting for `apm install -g --update`).
+6. **Mirror** the edit to the deployed copy under the agent's skills directory (e.g. `~/.claude/skills/<name>/SKILL.md` for Claude, the equivalent path for Codex) so the running session picks it up without waiting for an `apm install -g --update`. Skip if the repo is the live install.
 
 7. **Commit as one** with a per-skill summary in the message. One audit pass = one commit, even when it touches 10+ skills.
 
@@ -197,3 +197,9 @@ If you do run the empirical step by hand, follow agentskills.io's specifics:
 - `waxa-eval` — for measuring trigger accuracy empirically (when `waxa trigger` lands).
 - `waxa audit <skill>` — picks up the surface frontmatter issues (length, name shape, basic trigger-condition phrasing) that this audit also flags; useful as a fast pre-check.
 - `skill-finder` — the rubric there includes "frontmatter-health" which overlaps with this skill's universal checklist; skill-finder uses `optimizing-descriptions` patterns implicitly when evaluating an external skill candidate.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。`description` は progressive disclosure のある agent なら同じ意味を持つので、特定 harness 名に依存しない。
+- `waxa audit` が使えない環境では、frontmatter チェック(length / name shape / trigger-condition 形)を手動で確認に落とす。
+- 監査結果の Mirror 先は agent 固有の skills directory。固定パスではなく「動いている agent の skills 配置先」として読む。

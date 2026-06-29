@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install mizchi/skills/meta/skill-selector
+apm install HukuKaich0u/agent-kit/skills/meta/skill-selector
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - mizchi/skills/meta/skill-selector
+    - HukuKaich0u/agent-kit/skills/meta/skill-selector
 ```
 
 then run `apm install`.
@@ -31,14 +31,20 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add mizchi/skills --skill skill-selector
+npx skills add HukuKaich0u/agent-kit --skill skill-selector
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit mizchi/skills/meta/skill-selector ~/.claude/skills/skill-selector
+npx degit HukuKaich0u/agent-kit/skills/meta/skill-selector ~/.claude/skills/skill-selector
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.
 <!-- apm:readme:end -->
+
+# skill-selector
+
+プロジェクトの signal(package.json / wrangler.toml など)を見て、curated catalog から入れるべき skill を選んで APM で install するための meta skill です。まず catalog から選び、合うものが無いときだけ `skill-finder` の探索に escalate します。
+
+Claude / Codex の両方で使う前提で整えています。catalog は [references/catalog.md](references/catalog.md)、選定フローは [SKILL.md](./SKILL.md) を参照してください。

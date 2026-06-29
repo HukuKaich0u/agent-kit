@@ -20,11 +20,11 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 |---|---|---|---|
 | empirical-prompt-tuning | 残 | 済 | 正規化実例 |
 | extract-glossary | 残 | 済 | 正規化実例 |
-| optimizing-descriptions | 残 | 未 | description 改善 meta。自分の正規化作業と相性良 |
-| retrospective-codify | 残 | 未 | 学びの codify。汎用 |
-| skill-finder | 残 | 未 | catalog 外 skill 探索。waxa-eval gate 前提あり→要確認 |
-| skill-selector | 残 | 未 | apm catalog 前提。自分の catalog 運用次第 |
-| waxa-eval | 残 | 未 | mizchi waxa CLI 依存。使うか要判断 |
+| optimizing-descriptions | 残 | 済 | description 改善 meta。R1〜R5 適用済み |
+| retrospective-codify | 残 | 済 | 学びの codify。R1〜R5 適用。MoonBit 例→aws-oidc 例に差替 |
+| skill-finder | 残 | 済 | catalog 外 skill 探索。R1〜R5 + rejection-log の mizchi 表現一般化 |
+| skill-selector | 残 | 済 | apm catalog 選定。R1〜R5 + catalog.md を agent-kit 実在 skill だけに全面再構築 |
+| waxa-eval | 残 | 済 | waxa CLI 操作。R1〜R5(@mizchi/waxa は npm 名なので保持) |
 
 ## ai
 

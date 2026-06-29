@@ -277,3 +277,9 @@ A real flow often uses both: `empirical` for the in-session Iter 0 + first dispa
 - `skill-finder` — uses waxa-eval as the adoption gate for cross-source candidates
 - `tools/waxa/README.md` — CLI argument reference
 - `tools/waxa/RFC-waza.md` — upstream waza compatibility notes
+
+## Agent compatibility
+
+- `waxa` は外部 CLI プロセス(`claude -p` を executor に使う)。Claude CLI が前提のため、Codex など別 harness で回す場合は executor 設定をその harness の headless 実行コマンドに読み替える。
+- CLI を回せない環境では、in-session の `empirical-prompt-tuning`(fresh subagent dispatch)に切り替える。スコープ表のとおり methodology は共通で、dispatch 機構だけが違う。
+- CLI 本体は本 repo の `tools/waxa/` に同梱。npm 公開名は `@mizchi/waxa`(`npx @mizchi/waxa ...` はそのまま使える正しいコマンド)。

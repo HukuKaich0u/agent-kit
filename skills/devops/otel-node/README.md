@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install mizchi/skills/devops/otel-node
+apm install HukuKaich0u/agent-kit/skills/devops/otel-node
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - mizchi/skills/devops/otel-node
+    - HukuKaich0u/agent-kit/skills/devops/otel-node
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add mizchi/skills --skill otel-node
+npx skills add HukuKaich0u/agent-kit --skill otel-node
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit mizchi/skills/devops/otel-node ~/.claude/skills/otel-node
+npx degit HukuKaich0u/agent-kit/skills/devops/otel-node ~/.claude/skills/otel-node
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

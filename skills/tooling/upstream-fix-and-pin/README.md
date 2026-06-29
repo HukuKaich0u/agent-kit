@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install mizchi/skills/tooling/upstream-fix-and-pin
+apm install HukuKaich0u/agent-kit/skills/tooling/upstream-fix-and-pin
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - mizchi/skills/tooling/upstream-fix-and-pin
+    - HukuKaich0u/agent-kit/skills/tooling/upstream-fix-and-pin
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add mizchi/skills --skill upstream-fix-and-pin
+npx skills add HukuKaich0u/agent-kit --skill upstream-fix-and-pin
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit mizchi/skills/tooling/upstream-fix-and-pin ~/.claude/skills/upstream-fix-and-pin
+npx degit HukuKaich0u/agent-kit/skills/tooling/upstream-fix-and-pin ~/.claude/skills/upstream-fix-and-pin
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.
