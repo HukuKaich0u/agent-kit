@@ -27,6 +27,7 @@ The "Install" column may also be a row whose description names a specific platfo
 
 | T | Skill | Install | Use when |
 |---|---|---|---|
+| T1 | typescript-best-practices | `HukuKaich0u/agent-kit/skills/lang/typescript` | Writing or reviewing TypeScript — strict type design, naming, error handling + runtime notes (Node lib/CLI, Workers, React). Read for any `.ts`/`.tsx`/`tsconfig` work |
 | T1 | node-sqlite-vec | `HukuKaich0u/agent-kit/skills/node/sqlite-vec` | Project uses Node 24+ `node:sqlite` with `sqlite-vec` extension for vectors / RAG |
 | T1 | pi-coding-agent | `HukuKaich0u/agent-kit/skills/node/pi-coding-agent` | Embedding `@mariozechner/pi-coding-agent` as a coding-agent runtime in Node scripts |
 | T1 | dotenvx | `HukuKaich0u/agent-kit/skills/tooling/dotenvx` | Repo uses or considers `dotenvx` for env-var encryption / multi-env |

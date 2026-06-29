@@ -96,7 +96,8 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 | ~~gleam-practice~~ | 削除済 | - | Gleam(2026-06-28 削除) |
 | ~~moonbit-js-binding~~ | 削除済 | - | MoonBit(2026-06-28 削除) |
 | ~~moonbit-practice~~ | 削除済 | - | MoonBit(2026-06-28 削除) |
-| rust | 残 | 済 | 出典色なし。R5 のみ。中身が薄い("guideline" のみ)→加筆は後回し案あり |
+| rust | 残 | 済 | 出典色なし。R5 のみ。十分充実と判断し加筆見送り(2026-06-29) |
+| typescript | 新規 | 済 | 新規作成(2026-06-29)。土台 + Node lib/CLI / Workers / React の4面。frontend-review-* に構造レビューは委譲 |
 | translate-programming-language | 残 | 済 | 出典色なし。R5 のみ(subagent 分担の degrade も明記) |
 | ~~ts2moonbit-migration~~ | 削除済 | - | MoonBit(2026-06-28 削除) |
 
@@ -171,9 +172,9 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
   壊れず、`<repo>/.frontend-review/report/latest/raw/<name>.json` に出力。
   各 SKILL.md の Procedure を「スクリプト実行」に戻し description も調整。agent-kit 自身で動作確認済み。
 
-## アイデア置き場(後回し)
+## 完了したアイデア(続き)
 
-- **lang/typescript を新規作成** + **lang/rust を加筆充実**。消した moonbit-practice の構造
-  (Guidelines / Common Pitfalls / AI がよく間違う構文 / Tests / pre-release checklist /
-  CI&publishing / Quick Reference)を雛形に。構造は `git show c1fc7e8^:skills/lang/moonbit-practice/SKILL.md` で参照可能。
-  着手時に「どの runtime/用途を主軸にするか」を先に確定すること(空想で書くと薄くなる)。
+- ~~**lang/typescript を新規作成**~~ (完了 2026-06-29)。主軸: 汎用 TS 土台 + Node lib/CLI +
+  Cloudflare Workers + React/TS の4面。AI がよく間違う表 / Quick Reference 込み。
+  フロントエンドの構造レビューは `frontend-review-*` に委譲する設計。
+- ~~**lang/rust を加筆充実**~~ → 既に十分充実(API設計/型/品質/serde 網羅)と判断し加筆見送り(2026-06-29)。
