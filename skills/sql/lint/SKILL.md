@@ -88,3 +88,7 @@ For full sqlfluff in CI, run a separate `sql-lint-style` step so the cheap catal
 
 - `scripts/catalog-lint.mjs` — zero-dep catalog linter.
 - `.sqlfluff` — opt-in sqlfluff config (SQLite dialect; change `dialect = ...` for other engines).
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。同梱の zero-dep Node スクリプトを実行するだけで harness 非依存。MoonBit への言及は「ast-grep の tree-sitter 非対応 host 言語」の一例で、内容として保持。

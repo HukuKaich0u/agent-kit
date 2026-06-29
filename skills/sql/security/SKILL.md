@@ -83,7 +83,7 @@ Then run on pre-push:
 pnpm exec secretlint --secretlintignore .gitignore "**/*"
 ```
 
-This is per-repo and complements any user-global secretlint configuration. The `mizchi/skills/pkfire` skill has a ready-made recipe at `assets/recipes/14-secretlint-pre-push.pkl` for projects using pkfire hooks.
+This is per-repo and complements any user-global secretlint configuration. Wiring it into a **pre-push git hook** (via your task runner / hook manager of choice — husky, lefthook, simple-git-hooks, justfile, etc.) is the cheapest place to run it.
 
 ## When to invoke
 
@@ -108,3 +108,7 @@ The scanner regex is engine-agnostic. The SQL-keyword set works for SQLite / Pos
 ## Files
 
 - `scripts/sql-injection-scan.mjs` — zero-dep text scanner.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。同梱の zero-dep Node スクリプトを `node scripts/sql-injection-scan.mjs` で回すだけなので harness 非依存。host 言語の例に MoonBit が含まれるが、TS/Rust/Go など任意の host 言語に同じく適用できる。

@@ -111,10 +111,10 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| lint | 残 | 未 | sqlc 前提だが汎用寄り |
-| plan-audit | 残 | 未 | SQLite/D1 |
-| schema-audit | 残 | 未 | SQLite/D1 |
-| security | 残 | 未 | SQL injection screening |
+| lint | 残 | 済 | 同梱 mjs。R5。MoonBit 言及は host 言語の例として保持 |
+| plan-audit | 残 | 済 | 同梱 mjs(node:sqlite)。出典色なし、R5 のみ |
+| schema-audit | 残 | 済 | 同梱 mjs(node:sqlite)。出典色なし、R5 のみ |
+| security | 残 | 済 | 同梱 mjs。pkfire 参照→汎用 pre-push hook 記述に置換。R5 |
 | ~~sqlc-gen-moonbit-safety~~ | 削除済 | - | MoonBit(2026-06-28 削除) |
 
 ## testing (→ 残)

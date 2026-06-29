@@ -118,3 +118,7 @@ The runner is SQLite-specific. To support Postgres / MySQL: swap the `node:sqlit
 ## Files
 
 - `scripts/explain-runner.mjs` — CLI entrypoint, no dependencies.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。同梱の Node スクリプト(`node:sqlite` 利用)を実行するだけで harness 非依存。Node 22+ が前提。
