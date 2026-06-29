@@ -94,4 +94,9 @@ Disable individually with `OTEL_SDK_DISABLED=true` or `UTELS_DISABLED=true`.
 
 ## Source
 
-The runtime is identical to [`mizchi/cloudflare-starterkit-mbt`](https://github.com/mizchi/cloudflare-starterkit-mbt/blob/main/src/telemetry-runtime.ts) and [`mizchi/mnemo`](https://github.com/mizchi/mnemo/blob/main/mnemo-server/src/telemetry-runtime.ts).
+The runtime ships with this skill under [`assets/scripts/telemetry-runtime.ts`](assets/scripts/telemetry-runtime.ts) and [`assets/scripts/d1-wrap.ts`](assets/scripts/d1-wrap.ts) — copy those in directly. The same implementation is published upstream at [`mizchi/cloudflare-starterkit-mbt`](https://github.com/mizchi/cloudflare-starterkit-mbt/blob/main/src/telemetry-runtime.ts) and [`mizchi/mnemo`](https://github.com/mizchi/mnemo/blob/main/mnemo-server/src/telemetry-runtime.ts) if you want to track its evolution.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。同梱の runtime / D1-wrap を Worker にコピーして使う型なので harness 非依存。
+- `utels` は実在の SaaS(utels.dev)。エラー追跡を使わないなら `UTELS_*` env を未設定にすれば OTLP 部分だけ動く。

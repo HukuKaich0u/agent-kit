@@ -9,7 +9,7 @@ Consolidated skill for building on the Cloudflare platform. Use decision trees b
 
 ## Prerequisites
 
-- When sandboxing blocks the deployment network calls, rerun with `sandbox_permissions=require_escalated`.
+- When the agent's sandbox blocks the deployment's outbound network calls, rerun with escalated network permissions. On Claude Code that is `sandbox_permissions=require_escalated`; on another harness, use its equivalent escalation (or run the deploy outside the sandbox).
 - The deployment might take a few minutes. Use appropriate timeout values.
 
 ## Authentication (Required Before Deploy)
@@ -272,10 +272,15 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 
 ### Escalated Network Access
 
-If deployment fails due to network issues (timeouts, DNS errors, connection resets), rerun the deploy with escalated permissions (use `sandbox_permissions=require_escalated`). The deploy requires escalated network access when sandbox networking blocks outbound requests.
+If deployment fails due to network issues (timeouts, DNS errors, connection resets), the agent's sandbox is likely blocking outbound requests — rerun the deploy with escalated network permissions. On Claude Code that is `sandbox_permissions=require_escalated`; on another harness, use its equivalent escalation (or run the deploy outside the sandbox).
 
 Example guidance to the user:
 
 ```
 The deploy needs escalated network access to deploy to Cloudflare. I can rerun the command with escalated permissions—want me to proceed?
 ```
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。中身は Cloudflare プラットフォーム知識 + `wrangler` コマンドなので harness 非依存。
+- 唯一の harness 依存は network sandbox の escalation 表現(`sandbox_permissions=require_escalated` は Claude Code 固有)。他 harness では相当の escalation か、sandbox 外実行に読み替える。

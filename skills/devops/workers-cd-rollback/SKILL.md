@@ -76,4 +76,8 @@ Keys this skill expects:
 
 ## Source
 
-[`mizchi/cloudflare-starterkit-mbt`](https://github.com/mizchi/cloudflare-starterkit-mbt) has the runnable starter; [`mizchi/mnemo`](https://github.com/mizchi/mnemo) has a more elaborated version with multi-D1-shard migrations + utels-sourcemap upload integrated.
+Runnable upstream references: [`mizchi/cloudflare-starterkit-mbt`](https://github.com/mizchi/cloudflare-starterkit-mbt) has a minimal runnable starter; [`mizchi/mnemo`](https://github.com/mizchi/mnemo) has a more elaborated version with multi-D1-shard migrations + utels-sourcemap upload integrated.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。中身は GitHub Actions の CD パイプライン + `wrangler` なので harness 非依存。`gh` / `wrangler` が PATH にあればどの agent からでも組める。

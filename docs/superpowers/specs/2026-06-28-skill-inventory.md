@@ -46,10 +46,10 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| access-app-setup | 残 | 未 | |
-| deploy | 残 | 未 | |
+| access-app-setup | 残 | 済 | R4/R5。同梱 script 明示 + 上流クレジット化 |
+| deploy | 残 | 済 | 公式系で出典色なし。sandbox 表現を harness 一般化 + R5 |
 | ~~mbt-worker-bundle~~ | 削除済 | - | MoonBit 依存(2026-06-28 削除) |
-| workers-otel-utels | 残 | 未 | utels(mizchi)依存。OTel 部分は汎用 |
+| workers-otel-utels | 残 | 済 | R4/R5。同梱 runtime 明示。utels は実在 SaaS で保持 |
 
 ## devops
 
@@ -60,7 +60,7 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 | gh-fix-ci | 残 | 未 | 汎用 |
 | opentelemetry | 残 | 未 | platform 非依存 |
 | otel-node | 残 | 未 | |
-| workers-cd-rollback | 残 | 未 | Cloudflare Workers CD |
+| workers-cd-rollback | 残 | 済 | Cloudflare Workers CD。R5 + 上流クレジット化(cloudflare commit に同梱) |
 
 ## frontend (レビュー一式 → 残)
 

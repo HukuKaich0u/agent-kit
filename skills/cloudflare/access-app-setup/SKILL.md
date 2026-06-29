@@ -45,4 +45,8 @@ Inputs (env or CLI):
 
 ## Source
 
-The mnemo version (with hard-coded mnemo domain defaults) is at [`mizchi/mnemo/blob/main/mnemo-server/scripts/setup-access-app.mjs`](https://github.com/mizchi/mnemo/blob/main/mnemo-server/scripts/setup-access-app.mjs). The version shipped here is the same script with the domain defaults parameterized.
+The script ships with this skill under [`assets/scripts/setup-access-app.ts`](assets/scripts/setup-access-app.ts), with the domain defaults parameterized. An upstream variant with hard-coded domain defaults lives at [`mizchi/mnemo`](https://github.com/mizchi/mnemo/blob/main/mnemo-server/scripts/setup-access-app.mjs).
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。中身は同梱スクリプト + Cloudflare API 呼び出しなので harness 非依存。`CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` を env で渡せばどの agent からでも実行できる。
