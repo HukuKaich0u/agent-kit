@@ -135,3 +135,7 @@ Use `BatchSpanProcessor` in production — it is async and low-overhead. `Simple
 - **Cloudflare Workers**: no Node.js runtime, fetch-boundary instrumentation needed. See `cloudflare/workers-otel-utels`.
 - **Span name includes dynamic data**: explodes trace index cardinality. Move to attributes.
 - **No W3C propagation on outbound calls**: distributed trace breaks — downstream spans appear as orphaned roots.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。platform 非依存の OpenTelemetry リファレンスで harness にも依存しない。

@@ -151,3 +151,7 @@ Collector logs show `Trace ID: ... Name: GET /api/users` when spans arrive. No o
 - `cloudflare/workers-otel-utels` — Cloudflare Workers telemetry (no Node runtime, fetch-boundary approach)
 - esbuild + Vite + SWC all share the same `require-in-the-middle` failure mode
 - `instrumentation-*` packages do not support static import patching as of 2026-05
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。Node.js OTel SDK のセットアップ知識で harness 非依存(bundler 依存の gotcha は別問題で内容として保持)。

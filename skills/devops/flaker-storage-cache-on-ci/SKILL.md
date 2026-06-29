@@ -114,3 +114,8 @@ If history "vanishes":
 
 - `flaker` itself (`docs/contributing.md`) for the storage path convention.
 - The `--adapter` system docs for writing a custom report importer.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。GitHub Actions の cache 設定知識で harness 非依存。
+- `@mizchi/flaker` は実在の npm OSS(flaky-test 検出ツール)。これを CI に組み込む repo 向けの skill なので、flaker を使わないなら不要。

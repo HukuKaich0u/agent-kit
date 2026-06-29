@@ -55,11 +55,11 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| actions-ci-tuning | 残 | 未 | 汎用 GHA |
-| flaker-storage-cache-on-ci | 残 | 未 | @mizchi/flaker 依存 |
-| gh-fix-ci | 残 | 未 | 汎用 |
-| opentelemetry | 残 | 未 | platform 非依存 |
-| otel-node | 残 | 未 | |
+| actions-ci-tuning | 残 | 済 | 汎用 GHA。出典色なし、R5 のみ |
+| flaker-storage-cache-on-ci | 残 | 済 | @mizchi/flaker は実在 npm OSS で保持。R5 のみ |
+| gh-fix-ci | 残 | 済 | 汎用。同梱 python script、R5 のみ |
+| opentelemetry | 残 | 済 | platform 非依存。R5 のみ |
+| otel-node | 残 | 済 | 出典色なし。R5 のみ |
 | workers-cd-rollback | 残 | 済 | Cloudflare Workers CD。R5 + 上流クレジット化(cloudflare commit に同梱) |
 
 ## frontend (レビュー一式 → 残)

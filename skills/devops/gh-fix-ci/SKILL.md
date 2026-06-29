@@ -67,3 +67,7 @@ Usage examples:
 - `python "<path-to-skill>/scripts/inspect_pr_checks.py" --repo "." --pr "123"`
 - `python "<path-to-skill>/scripts/inspect_pr_checks.py" --repo "." --pr "https://github.com/org/repo/pull/123" --json`
 - `python "<path-to-skill>/scripts/inspect_pr_checks.py" --repo "." --max-lines 200 --context 40`
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。同梱の Python スクリプト + `gh` CLI で動くので harness 非依存(`python` と `gh` が PATH にあればよい)。
