@@ -1,6 +1,6 @@
 ---
 name: frontend-review-triage
-description: Use when starting a frontend review engagement or when the user asks for an initial assessment ("triage", "day 0", "what's the state of this repo"). Reads package.json, README, gh issues, and produces a scorecard covering lockfiles, TypeScript strictness, testing, CI, and known issues. Runs `scripts/audit-triage.sh`.
+description: Use when starting a frontend review engagement or when the user asks for an initial assessment ("triage", "day 0", "what's the state of this repo"). Reads package.json, README, gh issues, and produces a scorecard covering lockfiles, TypeScript strictness, testing, CI, and known issues.
 ---
 
 # Frontend Review — Triage
@@ -9,20 +9,24 @@ You are performing Day 0 triage for a frontend consulting engagement. Your job i
 
 ## Procedure
 
-0. **Classify the app** before running any script.
+0. **Classify the app** first — it sets which checks are P0 vs P1.
    - Ask the user (or infer from README / package.json) which app type applies:
-     `admin` / `toc` / `btob-saas` / `ec` / `fintech` / `healthcare` / `iot-ops` / `media`
+     `admin` / `toc` (to-consumer) / `btob-saas` / `ec` / `fintech` / `healthcare` / `iot-ops` / `media`
    - Note any regulatory context (GDPR, PCI DSS, HIPAA, …) and authentication requirements.
-   - Read `checklist/00-app-classification.md` Step 3 to determine which security, performance, TypeScript strictness, lint, coverage targets, and dependency freshness checks are P0 vs P1 vs skip for this app type.
-   - Save the result to `<client-repo>/.frontend-review/kpi/app-classification.json`.
-1. Run `scripts/audit-triage.sh --repo <client-repo>` where `<client-repo>` is the absolute path to the user's repository.
-2. Read the resulting JSON at `<client-repo>/.frontend-review/report/latest/raw/triage.json`.
-3. Also quickly skim:
-   - `package.json` — dependencies, scripts, engines
-   - `README.md` — is it up-to-date, does it describe how to run things
-   - `.github/workflows/` — which workflows exist
+   - Derive the priority profile from the type. Rule of thumb:
+     - **fintech / healthcare / ec** → security (auth, token storage, env exposure) and dependency-CVE checks are P0; accessibility and perf P1.
+     - **toc / media** → performance (LCP/CLS/INP, bundle size) is P0; SEO/a11y P0–P1; auth surface usually smaller.
+     - **admin / btob-saas / iot-ops** → TypeScript strictness, state-management correctness, and authz boundaries are P0; raw perf often P1.
+   - Save the classification + per-area P0/P1 to `<client-repo>/.frontend-review/kpi/app-classification.json` (create the dir if needed).
+1. **Collect the scorecard data directly** (no external script needed). Read / run:
+   - `package.json` — dependencies, scripts, engines, `packageManager`
+   - lockfile presence + kind (`pnpm-lock.yaml` / `package-lock.json` / `yarn.lock`) — flag if missing or mixed
+   - `tsconfig*.json` — is `strict` on? `noUncheckedIndexedAccess`? any `// @ts-nocheck` escape hatches?
+   - test setup — `vitest.config.*` / `playwright.config.*` / `__tests__` presence
+   - `.github/workflows/` — which workflows exist (lint / test / build / deploy)
+   - `README.md` — is it current, does it describe how to run things
    - `gh issue list --state open --limit 20 --json number,title,labels` — what's already flagged
-4. Cross-reference against `checklist/12-known-issues.md` for the "known issues" collection routine.
+2. Summarize the collected facts into a scorecard table (see Output). Keep raw findings if you want under `<client-repo>/.frontend-review/report/latest/raw/triage.json`, but the markdown scorecard is the deliverable.
 
 ## Output
 
@@ -30,21 +34,26 @@ Write a Markdown report to `<client-repo>/.frontend-review/report/latest/md/tria
 
 - **App classification** — type ID and key domain notes (1–3 lines)
 - **Priority overrides** — which P0 security/perf checks apply to this app type
-- **Scorecard table** (copy from `raw/triage.json` and annotate)
-- **Top 3 risks** — what would you fix first? Flag whether each risk is P0 or P1 per the classification matrix.
+- **Scorecard table** (one row per area: package manager / TS strictness / testing / CI / deps / known issues — rate each)
+- **Top 3 risks** — what would you fix first? Flag whether each risk is P0 or P1 per the classification above.
 - **Open questions** for the client (things you can't tell from the code)
-- **Next phase** — which `checklist/` items the Week 1 plan should target, ordered by the classification priority
+- **Next phase** — which domain `frontend-review-*` skills the Week 1 plan should run first, ordered by the classification priority
 
 Keep the entire report under 400 lines. If you find yourself writing more, you're analyzing instead of triaging.
 
 ## Boundaries
 
 - Do NOT propose fixes beyond a short "top 3 risks" section. Each risk is one sentence.
-- Do NOT run any other `audit-*.sh` script — leave those for the domain-specific skills.
+- Do NOT dive into domain-specific analysis — leave that for the domain skills (`frontend-review-ci` / `-hygiene` / `-deps` / `-testing` / `-security` / `-state` / `-performance`).
 - Do NOT modify any files outside `<client-repo>/.frontend-review/`.
 - Do NOT push commits or create PRs in the client repo.
 
-## Reference
+## Related
 
-- Checklist: `checklist/00-app-classification.md`, `checklist/12-known-issues.md`, `checklist/01-package-manager.md`, `checklist/02-dependencies.md`
-- Phase: `phase/day-0-triage.md`
+- Domain skills to run after triage: `frontend-review-ci`, `frontend-review-hygiene`, `frontend-review-deps`, `frontend-review-testing`, `frontend-review-security`, `frontend-review-state`, `frontend-review-performance`
+- Orchestrator: `frontend-review-weekly`
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。データ収集は agent が `gh` / `cat package.json` / lockfile 確認を直接行う self-contained 構成(外部 audit script に依存しない)。
+- `gh` が無い環境では open issues の収集を省く。`<client-repo>/.frontend-review/` は出力規約で、固定でなく任意の作業ディレクトリに読み替えてよい。

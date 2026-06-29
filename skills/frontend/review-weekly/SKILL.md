@@ -117,7 +117,11 @@ Flag any AI-generated PRs in the weekly report that appear to cross into the hum
 
 ## Reference
 
-- Checklist: `11-ai-review.md`, `13-kpi-tracking.md`
-- Phase: `week-4-ai-review.md`, `ongoing.md`
 - Related skills: all `frontend-review-*` and sub-skills in `review-perspectives/`
 - External skill: `superpowers:dispatching-parallel-agents`
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。orchestration ロジック自体は harness 非依存。
+- Phase 2 は subagent の並列 dispatch を前提にしている。並列 dispatch ができない環境では、5 つの perspective を **逐次** 実行に落とす(結果は同じ、wall-clock が伸びるだけ)。`superpowers:dispatching-parallel-agents` が無ければ「各 perspective sub-skill を順に呼ぶ」で代替する。
+- `gh issue create` を使う Phase 5 は `gh` CLI 前提。無ければ issue 起票を省き、レポートに finding を列挙するに留める。

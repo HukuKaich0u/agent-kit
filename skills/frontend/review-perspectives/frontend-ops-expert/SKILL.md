@@ -37,7 +37,11 @@ Keep under 200 lines.
 - Do NOT rewrite workflows. Propose changes as PR drafts in the CI skill's scope.
 - Do NOT cover developer experience outside ops (that's frontend-expert).
 
-## Reference
+## Related
 
-- Checklist: `02-dependencies.md`, `09-ci-optimization.md`, `13-kpi-tracking.md`, `14-release-process.md`, `15-vrt.md`
-- Phase: `ongoing.md`
+- Invoked by `frontend-review-weekly` (Phase 2, parallel perspectives)
+- Domain inputs: `frontend-review-ci`, `frontend-review-deps`, `frontend-review-testing`
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。各 domain skill が出した結果を読んで Ops 視点のレポートを書く役割で harness 非依存。

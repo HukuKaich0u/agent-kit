@@ -34,6 +34,11 @@ Keep under 200 lines.
 - If the codebase isn't React, write "not applicable" and exit. Do NOT try to map to Vue/Svelte.
 - Do NOT cover performance metrics (that's performance-expert).
 
-## Reference
+## Related
 
-- Checklist: `03-typescript.md`, `07-unit-test.md`, `08-e2e-playwright.md`
+- Invoked by `frontend-review-weekly` (Phase 2, parallel perspectives)
+- Domain inputs: `frontend-review-hygiene`, `frontend-review-testing`, `frontend-review-state`
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。各 domain skill が出した結果を読んで React 視点のレポートを書く役割で harness 非依存。

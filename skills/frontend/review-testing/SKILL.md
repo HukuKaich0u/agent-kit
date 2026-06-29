@@ -1,6 +1,6 @@
 ---
 name: frontend-review-testing
-description: Use when auditing test infrastructure — vitest coverage, playwright configuration, VRT setup, coverage merging. Produces recommendations for Week 2 testing phase. Runs `scripts/audit-coverage.sh`.
+description: Use when auditing test infrastructure — vitest coverage, playwright configuration, VRT setup, coverage merging. Produces recommendations for the testing phase. Runs the project's coverage tooling (`vitest run --coverage`) directly.
 ---
 
 # Frontend Review — Testing
@@ -13,8 +13,8 @@ You are auditing the testing posture of a frontend project. The phase is Week 2:
 
 ## Procedure
 
-1. Run `scripts/audit-coverage.sh --repo <client-repo>`.
-2. Read `coverage/coverage-summary.json` if it exists.
+1. **Collect coverage directly** (no external script needed). If the project has a coverage script, run it — e.g. `npx vitest run --coverage` (v8 provider emits `coverage/coverage-summary.json`). If no coverage setup exists, that absence is itself the headline finding.
+2. Read `coverage/coverage-summary.json` if it was produced.
 3. Inspect:
    - `vitest.config.*` — is coverage configured? provider v8?
    - `playwright.config.*` — projects, webServer, sharding
@@ -101,7 +101,11 @@ This avoids tests that pass even when the integration contract breaks.
 - Do NOT write actual test code — propose structure and counts only.
 - Do NOT run `vitest` or `playwright` from this skill; the scripts don't execute tests, only read existing reports.
 
-## Reference
+## Related
 
-- Checklist: `07-unit-test.md`, `08-e2e-playwright.md`, `15-vrt.md`, `13-kpi-tracking.md`
-- Phase: `week-2-testing.md`, `week-3-security-vrt.md`
+- `testing/playwright-test`, `testing/playwright-cli` — E2E authoring + CLI usage
+- `frontend-review-weekly` — orchestrator
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。coverage 収集は agent が project の test/coverage script(`vitest run --coverage` 等)を直接実行する self-contained 構成。coverage 設定が無いこと自体が finding。

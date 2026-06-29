@@ -149,7 +149,12 @@ Keep under 200 lines. Recommendations without profiling evidence must be explici
 - Do NOT touch source files in the client repo.
 - State management architecture (store design, selector granularity) is covered by `frontend-review-state`.
 
-## Reference
+## Related
 
-- Checklist: `24-rendering-performance.md`, `23-state-management.md`, `C2-lighthouse.md`
+- `frontend-review-state` — state architecture (store design, selector granularity)
+- `frontend-review-weekly` — orchestrator
 - Tools: React DevTools Profiler, `@welldone-software/why-did-you-render`, `@tanstack/react-virtual`
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。profiler-first の診断とソース読解ベースで harness 非依存(計測ツールはブラウザ DevTools / ライブラリ側)。

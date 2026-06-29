@@ -1,6 +1,6 @@
 ---
 name: frontend-review-security
-description: Use when conducting a frontend security review — static analysis (risky HTML patterns, env var exposure), authentication/authorization audit (token storage, route guards, logout), and AI self-penetration testing. Runs `scripts/audit-security.sh`. For CVE triage and deprecated library detection, use `frontend-review-deps`.
+description: Use when conducting a frontend security review — static analysis (risky HTML patterns, env var exposure), authentication/authorization audit (token storage, route guards, logout), and AI self-penetration testing. Scans for risky sinks with grep / ast-grep directly. For CVE triage and deprecated library detection, use `frontend-review-deps`.
 ---
 
 # Frontend Review — Security
@@ -14,9 +14,11 @@ You are performing a frontend security review. The focus areas are:
 
 ## Procedure
 
-1. Run `scripts/audit-security.sh --repo <client-repo>`.
-2. Read `raw/security.json`.
-3. For each `dangerouslySetInnerHTML` / `v-html` / `.innerHTML =` hit, locate the file and judge whether the input is sanitized.
+1. **Scan for risky patterns directly** (no external script needed). Grep / ast-grep the client repo for the static sinks:
+   - HTML injection: `grep -rn "dangerouslySetInnerHTML\|v-html\|\.innerHTML\s*=\|insertAdjacentHTML" src`
+   - Env exposure in client bundles: `grep -rn "process\.env\.\|import\.meta\.env\." src` — flag any non-`PUBLIC_`/`VITE_`-prefixed secret reaching client code.
+   - Eval-family: `grep -rn "eval(\|new Function(\|setTimeout(\"" src`
+2. For each `dangerouslySetInnerHTML` / `v-html` / `.innerHTML =` hit, locate the file and judge whether the input is sanitized.
 4. Run the **Authentication & Authorization** review (see below).
 5. Run the **Env / Config** review (see below).
 6. For AI self-pentest, mentally walk through the attack scenarios below.
@@ -143,8 +145,13 @@ Do NOT execute the `gh issue create` commands yourself — print them for the hu
 - Do NOT touch the client source code.
 - CVE triage and trend-watch are handled by `frontend-review-deps`.
 
-## Reference
+## Related
 
-- Checklist: `10-security.md`, `25-auth-authorization.md`, `26-env-config.md`
-- Phase: `week-3-security-vrt.md`
+- `frontend-review-deps` — CVE triage and trend-watch (the dependency side of security)
+- `frontend-review-weekly` — orchestrator
+- OWASP: https://owasp.org/www-project-top-ten/
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。静的スキャンは agent が `grep` / ast-grep を直接叩く self-contained 構成。auth/env/AI-pentest の判断は本文の手順に従う。
 - OWASP: https://owasp.org/www-project-top-ten/

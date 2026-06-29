@@ -116,7 +116,11 @@ Keep under 200 lines. File-level details stay in the raw search output, not in t
 - Do NOT touch source files in the client repo.
 - Rendering performance (re-renders, memo usage) is covered by `frontend-review-performance`.
 
-## Reference
+## Related
 
-- Checklist: `23-state-management.md`, `17-pure-io-separation.md`, `21-api-layer.md`
-- Related: `frontend-review-performance` (re-render profiling)
+- `frontend-review-performance` (re-render profiling)
+- `frontend-review-weekly` — orchestrator
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。state 分類(server/URL/form/UI)と anti-pattern 判定はソース読解ベースで harness 非依存。

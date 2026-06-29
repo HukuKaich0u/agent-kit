@@ -37,7 +37,12 @@ Keep under 200 lines.
 - Do NOT attempt exploitation. Desk review only.
 - Do NOT cover operational concerns (WAF, rate limits) — those are outside frontend.
 
-## Reference
+## Related
 
-- Checklist: `10-security.md`, `02-dependencies.md`
+- Invoked by `frontend-review-weekly` (Phase 2, parallel perspectives)
+- Domain inputs: `frontend-review-security`, `frontend-review-deps`
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。各 domain skill が出した結果を読んで security 視点のレポートを書く役割で harness 非依存。
 - OWASP: https://owasp.org/www-project-top-ten/

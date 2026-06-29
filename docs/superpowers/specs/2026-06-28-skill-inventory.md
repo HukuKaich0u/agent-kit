@@ -66,20 +66,22 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| review-ci | 残 | 未 | |
-| review-deps | 残 | 未 | |
-| review-hygiene | 残 | 未 | |
-| review-performance | 残 | 未 | React 前提 |
-| review-perspectives/frontend-expert | 残 | 未 | |
-| review-perspectives/frontend-ops-expert | 残 | 未 | |
-| review-perspectives/performance-expert | 残 | 未 | |
-| review-perspectives/react-expert | 残 | 未 | |
-| review-perspectives/security-expert | 残 | 未 | |
-| review-security | 残 | 未 | |
-| review-state | 残 | 未 | |
-| review-testing | 残 | 未 | |
-| review-triage | 残 | 未 | |
-| review-weekly | 残 | 未 | 全 review-* を orchestrate。mizchi の運用色強め→要確認 |
+| review-ci | 残 | 済 | self-contained 化(gh 直叩き)。宙ぶらりん checklist/script 参照を除去 |
+| review-deps | 残 | 済 | self-contained 化(pnpm outdated/audit 直叩き) |
+| review-hygiene | 残 | 済 | self-contained 化(tsc/eslint/knip/similarity 直叩き) |
+| review-performance | 残 | 済 | script 無し。宙ぶらりん checklist 除去 + R5 |
+| review-perspectives/frontend-expert | 残 | 済 | 宙ぶらりん checklist→Related に置換 + R5 |
+| review-perspectives/frontend-ops-expert | 残 | 済 | 同上 |
+| review-perspectives/performance-expert | 残 | 済 | 同上 |
+| review-perspectives/react-expert | 残 | 済 | 同上 |
+| review-perspectives/security-expert | 残 | 済 | 同上 |
+| review-security | 残 | 済 | self-contained 化(grep/ast-grep 直叩き) |
+| review-state | 残 | 済 | script 無し。宙ぶらりん checklist 除去 + R5 |
+| review-testing | 残 | 済 | self-contained 化(vitest --coverage 直叩き) |
+| review-triage | 残 | 済 | self-contained 化。app-classification を本文 inline 化 |
+| review-weekly | 残 | 済 | orchestrator。subagent dispatch の degrade 方針を R5 に明記。宙ぶらりん engagement docs 参照を除去 |
+
+> **重要**: frontend-review-* は元々 `scripts/audit-*.sh` 実行前提だったが、そのスクリプトは mizchi の非公開コンサル業務 repo 専用で公開 skill には未同梱・入手不能と判明(2026-06-29 確認)。各 skill を「agent が gh/pnpm/tsc/grep 等を直接叩く」self-contained 構成に書き換えて対応。
 
 ## k8s
 

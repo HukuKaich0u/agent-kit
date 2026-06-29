@@ -1,6 +1,6 @@
 ---
 name: frontend-review-deps
-description: Use when auditing dependency health — outdated packages, CVE triage with attack-vector weighting, deprecated/declining library detection (trend-watch). Runs `audit-deps.sh` and `audit-trend-watch.sh`. Pairs with `frontend-review-security` for the full security picture.
+description: Use when auditing dependency health — outdated packages, CVE triage with attack-vector weighting, deprecated/declining library detection (trend-watch). Runs `pnpm outdated` / `pnpm audit` (or npm/yarn) directly. Pairs with `frontend-review-security` for the full security picture.
 ---
 
 # Frontend Review — Dependencies
@@ -13,10 +13,11 @@ You are auditing the dependency health of a frontend project. This covers three 
 
 ## Procedure
 
-1. In parallel, run:
-   - `scripts/audit-deps.sh --repo <client-repo>`
-   - `scripts/audit-trend-watch.sh --repo <client-repo>`
-2. Read `raw/deps.json` and `raw/trend-watch.json`.
+1. **Collect dependency data directly** (no external script needed). Run, in the client repo:
+   - **Freshness**: `pnpm outdated --format json` (or `npm outdated --json` / `yarn outdated`).
+   - **CVEs**: `pnpm audit --json` (or `npm audit --json`).
+   - **Trend watch**: read `package.json` deps and check each significant library against its repo activity / deprecation status (npm `deprecated` flag, last-publish date, successor libraries). This is the judgment step — the CVE matrix and Tier classification below drive it.
+2. Treat the collected freshness + CVE + trend findings as the raw inputs to the triage below.
 3. For each CVE finding, apply the attack-vector triage matrix below before assigning priority.
 4. For each trend-watch finding (Tier 1/2/3), confirm the installed version and assess migration cost.
 
@@ -111,9 +112,13 @@ Write `<client-repo>/.frontend-review/report/latest/md/deps-review.md` with:
 - Do NOT run the AI pentest or check HTML sinks — that's `frontend-review-security`.
 - Do NOT touch source files in the client repo.
 
-## Reference
+## Related
 
-- Checklist: `02-dependencies.md`, `27-dependency-audit.md`, `28-trend-watch.md`
-- Data: `data/trend-watch-config.json`, `data/trend-watch-history.json`
-- Scripts: `scripts/audit-deps.sh`, `scripts/audit-trend-watch.sh`, `scripts/fetch-trend-data.sh`
-- Phase: `week-1-ci-baseline.md`
+- `frontend-review-security` — auth / env / HTML-sink review (pairs with this for the full security picture)
+- `tooling/dep-lib-review` — the general (non-frontend) dependency review flow
+- `tooling/tech-trend-watch` — the annual State-of-JS / Tech-Radar trend review
+- `frontend-review-weekly` — orchestrator
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。データ収集は agent が `pnpm outdated` / `pnpm audit`(or npm/yarn) を直接叩く self-contained 構成。CVE 優先度づけと trend 判定は本文のマトリクスに従う。

@@ -64,6 +64,11 @@ Flag in-place mutation of state objects. Recommend spread / `toSpliced` / `struc
 - Do NOT mix concerns from other perspectives (performance, security). Stay in lane.
 - Do NOT quote more than 10 lines of any single file.
 
-## Reference
+## Related
 
-- Checklist: `03-typescript.md`, `04-lint-format.md`, `05-deadcode-knip.md`, `06-similarity.md`
+- Invoked by `frontend-review-weekly` (Phase 2, parallel perspectives)
+- Domain inputs: `frontend-review-hygiene`, `frontend-review-state`
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。各 domain skill が出した結果を読んで perspective 別レポートを書く役割で harness 非依存。`frontend-review-weekly` から逐次/並列どちらで呼ばれても動く。

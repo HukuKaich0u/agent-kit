@@ -1,6 +1,6 @@
 ---
 name: frontend-review-ci
-description: Use when CI is slow (>10 min), flaky, or the user asks to optimize GitHub Actions for a frontend project. Analyzes `gh run list` history, identifies bottleneck steps, proposes sharding / cache / concurrency improvements. Runs `scripts/audit-ci.sh`.
+description: Use when CI is slow (>10 min), flaky, or the user asks to optimize GitHub Actions for a frontend project. Analyzes `gh run list` history, identifies bottleneck steps, proposes sharding / cache / concurrency improvements.
 ---
 
 # Frontend Review — CI Optimization
@@ -9,9 +9,12 @@ You are optimizing GitHub Actions CI for a frontend project. The target is **med
 
 ## Procedure
 
-1. Run `scripts/audit-ci.sh --repo <client-repo>`.
-2. Read `<client-repo>/.frontend-review/report/latest/raw/ci.json`.
-3. For the slowest runs, dig into step-level timing:
+1. **Collect CI timing directly** (no external script needed). Pull recent run history and compute median / max duration:
+   ```bash
+   gh run list --limit 50 --json databaseId,name,conclusion,createdAt,updatedAt,workflowName
+   ```
+   Derive per-workflow median/max from `createdAt`→`updatedAt`. Focus on the PR-gating workflows.
+2. For the slowest runs, dig into step-level timing:
    ```bash
    gh run view <run-id> --log | grep -E '^\d{4}-' | head -200
    ```
@@ -81,8 +84,12 @@ The **PR CI total** target is the critical gate. CI slower than 5 minutes is rou
 - Do NOT actually create the PR or push the branch — just draft the description.
 - Do NOT modify workflow YAML in the client repo; the user does that after reviewing your proposal.
 
-## Reference
+## Related
 
-- Checklist: `checklist/09-ci-optimization.md`
-- Phase: `phase/week-1-ci-baseline.md`
-- Templates: `templates/github-actions/ci.yml`, `templates/github-actions/e2e.yml`
+- `frontend-review-weekly` — orchestrator that runs this as part of the weekly pass
+- `devops/actions-ci-tuning` — general GitHub Actions tuning (cache / parallelism / runner sizing) beyond the frontend angle
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。CI 履歴の収集は agent が `gh run list` / `gh run view` を直接叩く self-contained 構成。
+- `gh` が PATH にあること、対象 repo に Actions 履歴があることが前提。無ければ `.github/workflows/` の静的レビューに留める。

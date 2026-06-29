@@ -71,6 +71,11 @@ Flag these in the output:
 - If performance is NOT a client priority, say so up front and keep the report short. Don't manufacture urgency.
 - Do NOT recommend premature optimization. Flag only things that would save meaningful bytes or CPU.
 
-## Reference
+## Related
 
-- Checklist: `C1-bundle-size.md`, `C2-lighthouse.md`, `05-deadcode-knip.md`, `06-similarity.md`
+- Invoked by `frontend-review-weekly` (Phase 2, parallel perspectives)
+- Domain inputs: `frontend-review-performance`, `frontend-review-hygiene`
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。各 domain skill が出した結果を読んで performance 視点のレポートを書く役割で harness 非依存。
