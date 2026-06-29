@@ -1,0 +1,5 @@
+# frontend-review-* skills の実行生成物（テスト/監査の出力先）
+.frontend-review/
+
+# APM
+apm_modules/

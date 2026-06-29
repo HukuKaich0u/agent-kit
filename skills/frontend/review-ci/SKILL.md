@@ -9,12 +9,15 @@ You are optimizing GitHub Actions CI for a frontend project. The target is **med
 
 ## Procedure
 
-1. **Collect CI timing directly** (no external script needed). Pull recent run history and compute median / max duration:
+1. **Collect CI timing + workflow inventory** with the bundled script:
    ```bash
-   gh run list --limit 50 --json databaseId,name,conclusion,createdAt,updatedAt,workflowName
+   node scripts/audit-ci.mjs --repo <client-repo> [--limit 50]
    ```
-   Derive per-workflow median/max from `createdAt`→`updatedAt`. Focus on the PR-gating workflows.
-2. For the slowest runs, dig into step-level timing:
+   It reads `gh run list` history (per-workflow median/max duration) and inventories
+   `.github/workflows/` (cache / concurrency / shard / needs flags), writing
+   `<client-repo>/.frontend-review/report/latest/raw/ci.json`. If `gh` is unavailable
+   the timing section reports `available: false` — that absence is itself a finding.
+2. Read `ci.json`, then for the slowest runs dig into step-level timing:
    ```bash
    gh run view <run-id> --log | grep -E '^\d{4}-' | head -200
    ```
@@ -91,5 +94,5 @@ The **PR CI total** target is the critical gate. CI slower than 5 minutes is rou
 
 ## Agent compatibility
 
-- Claude と Codex のどちらでも使える。CI 履歴の収集は agent が `gh run list` / `gh run view` を直接叩く self-contained 構成。
-- `gh` が PATH にあること、対象 repo に Actions 履歴があることが前提。無ければ `.github/workflows/` の静的レビューに留める。
+- Claude と Codex のどちらでも使える。データ収集は同梱の `scripts/audit-ci.mjs`(zero-dep Node)で決定的に行う。
+- `node` が前提。`gh` が PATH にあり認証済みなら timing が取れる(無ければ `available: false` で workflow inventory のみ)。Node 18+ で動く。

@@ -162,14 +162,17 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
    - meta / cloudflare / aws / devops / frontend / k8s / lang / node / testing / sql / ai / tooling = 全 58 skill 済
    - README 生成スクリプト移植 + catalog 再構築済み
 
+## 完了したアイデア
+
+- ~~**frontend-review-* の audit スクリプトを自前実装**~~ (完了 2026-06-29)。
+  zero-dep Node `.mjs` 6本を実装(hygiene は ts/lint/dead-code を1本に統合):
+  audit-{ci,triage,hygiene,deps,coverage,security}.mjs。**パッケージマネージャ自動検出**
+  (lockfile→pnpm/npm/yarn/bun、linter→eslint/biome)。ツール欠如は `available:false` で
+  壊れず、`<repo>/.frontend-review/report/latest/raw/<name>.json` に出力。
+  各 SKILL.md の Procedure を「スクリプト実行」に戻し description も調整。agent-kit 自身で動作確認済み。
+
 ## アイデア置き場(後回し)
 
-- **frontend-review-* の audit-*.sh を自前実装**(2026-06-29 方針確定)。
-  現状は self-contained 化(agent が gh/pnpm/grep を直接叩く)で動くが、実行のばらつきが出る。
-  スクリプト化すれば実行が決定的になり出力 JSON も固定 → review-weekly の KPI diff/ratchet が機能する。
-  8本: audit-{triage,ci,typescript,lint,similarity,deps,coverage,security}.sh。
-  **前提構成はパッケージマネージャ自動検出**(lockfile を見て pnpm/npm/yarn 判定、linter も eslint/biome 自動検出)。
-  実装したら各 SKILL.md の Procedure を「スクリプト実行」に戻し、description も合わせる。
 - **lang/typescript を新規作成** + **lang/rust を加筆充実**。消した moonbit-practice の構造
   (Guidelines / Common Pitfalls / AI がよく間違う構文 / Tests / pre-release checklist /
   CI&publishing / Quick Reference)を雛形に。構造は `git show c1fc7e8^:skills/lang/moonbit-practice/SKILL.md` で参照可能。

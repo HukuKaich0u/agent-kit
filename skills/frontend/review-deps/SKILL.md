@@ -1,6 +1,6 @@
 ---
 name: frontend-review-deps
-description: Use when auditing dependency health — outdated packages, CVE triage with attack-vector weighting, deprecated/declining library detection (trend-watch). Runs `pnpm outdated` / `pnpm audit` (or npm/yarn) directly. Pairs with `frontend-review-security` for the full security picture.
+description: Use when auditing dependency health — outdated packages, CVE triage with attack-vector weighting, deprecated/declining library detection (trend-watch). Runs `pnpm outdated` / `pnpm audit` (or npm/yarn) via a bundled audit script. Pairs with `frontend-review-security` for the full security picture.
 ---
 
 # Frontend Review — Dependencies
@@ -13,11 +13,16 @@ You are auditing the dependency health of a frontend project. This covers three 
 
 ## Procedure
 
-1. **Collect dependency data directly** (no external script needed). Run, in the client repo:
-   - **Freshness**: `pnpm outdated --format json` (or `npm outdated --json` / `yarn outdated`).
-   - **CVEs**: `pnpm audit --json` (or `npm audit --json`).
-   - **Trend watch**: read `package.json` deps and check each significant library against its repo activity / deprecation status (npm `deprecated` flag, last-publish date, successor libraries). This is the judgment step — the CVE matrix and Tier classification below drive it.
-2. Treat the collected freshness + CVE + trend findings as the raw inputs to the triage below.
+1. **Collect freshness + CVE data** with the bundled script:
+   ```bash
+   node scripts/audit-deps.mjs --repo <client-repo>
+   ```
+   It auto-detects the package manager and runs its `outdated` + `audit` in JSON
+   mode, writing `<client-repo>/.frontend-review/report/latest/raw/deps.json`.
+2. Read `deps.json`. For **trend watch** (the judgment step the script can't do),
+   check each significant library against its repo activity / deprecation status
+   (npm `deprecated` flag, last-publish date, successor libraries). Then run the
+   CVE matrix and Tier classification below over the collected findings.
 3. For each CVE finding, apply the attack-vector triage matrix below before assigning priority.
 4. For each trend-watch finding (Tier 1/2/3), confirm the installed version and assess migration cost.
 
@@ -121,4 +126,4 @@ Write `<client-repo>/.frontend-review/report/latest/md/deps-review.md` with:
 
 ## Agent compatibility
 
-- Claude と Codex のどちらでも使える。データ収集は agent が `pnpm outdated` / `pnpm audit`(or npm/yarn) を直接叩く self-contained 構成。CVE 優先度づけと trend 判定は本文のマトリクスに従う。
+- Claude と Codex のどちらでも使える。データ収集は同梱の `scripts/audit-deps.mjs`(zero-dep Node、パッケージマネージャ自動検出)で行う。CVE 優先度づけと trend 判定は本文のマトリクスに従う(script が出した raw を入力にする)。

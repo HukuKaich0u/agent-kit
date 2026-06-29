@@ -18,15 +18,16 @@ You are performing Day 0 triage for a frontend consulting engagement. Your job i
      - **toc / media** → performance (LCP/CLS/INP, bundle size) is P0; SEO/a11y P0–P1; auth surface usually smaller.
      - **admin / btob-saas / iot-ops** → TypeScript strictness, state-management correctness, and authz boundaries are P0; raw perf often P1.
    - Save the classification + per-area P0/P1 to `<client-repo>/.frontend-review/kpi/app-classification.json` (create the dir if needed).
-1. **Collect the scorecard data directly** (no external script needed). Read / run:
-   - `package.json` — dependencies, scripts, engines, `packageManager`
-   - lockfile presence + kind (`pnpm-lock.yaml` / `package-lock.json` / `yarn.lock`) — flag if missing or mixed
-   - `tsconfig*.json` — is `strict` on? `noUncheckedIndexedAccess`? any `// @ts-nocheck` escape hatches?
-   - test setup — `vitest.config.*` / `playwright.config.*` / `__tests__` presence
-   - `.github/workflows/` — which workflows exist (lint / test / build / deploy)
-   - `README.md` — is it current, does it describe how to run things
-   - `gh issue list --state open --limit 20 --json number,title,labels` — what's already flagged
-2. Summarize the collected facts into a scorecard table (see Output). Keep raw findings if you want under `<client-repo>/.frontend-review/report/latest/raw/triage.json`, but the markdown scorecard is the deliverable.
+1. **Collect the scorecard data** with the bundled script:
+   ```bash
+   node scripts/audit-triage.mjs --repo <client-repo>
+   ```
+   It auto-detects the package manager (from the lockfile), reads `package.json`,
+   `tsconfig*.json` (strict flags), test config presence, `.github/workflows/`, and
+   open `gh` issues, writing `<client-repo>/.frontend-review/report/latest/raw/triage.json`.
+2. Read `triage.json`. Also skim `README.md` (is it current?) and `tsconfig` for
+   `@ts-nocheck` / `@ts-ignore` escape hatches the script does not count. Summarize
+   into the scorecard table (see Output) — the markdown scorecard is the deliverable.
 
 ## Output
 
@@ -55,5 +56,5 @@ Keep the entire report under 400 lines. If you find yourself writing more, you'r
 
 ## Agent compatibility
 
-- Claude と Codex のどちらでも使える。データ収集は agent が `gh` / `cat package.json` / lockfile 確認を直接行う self-contained 構成(外部 audit script に依存しない)。
-- `gh` が無い環境では open issues の収集を省く。`<client-repo>/.frontend-review/` は出力規約で、固定でなく任意の作業ディレクトリに読み替えてよい。
+- Claude と Codex のどちらでも使える。データ収集は同梱の `scripts/audit-triage.mjs`(zero-dep Node、パッケージマネージャ自動検出)で決定的に行う。
+- `node` が前提。`gh` が無ければ open issues の収集だけ `available: false` になる。`<client-repo>/.frontend-review/` は出力規約で任意の作業ディレクトリに読み替えてよい。

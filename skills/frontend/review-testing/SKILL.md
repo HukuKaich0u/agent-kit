@@ -1,6 +1,6 @@
 ---
 name: frontend-review-testing
-description: Use when auditing test infrastructure — vitest coverage, playwright configuration, VRT setup, coverage merging. Produces recommendations for the testing phase. Runs the project's coverage tooling (`vitest run --coverage`) directly.
+description: Use when auditing test infrastructure — vitest coverage, playwright configuration, VRT setup, coverage merging. Produces recommendations for the testing phase. Runs the project's coverage tooling (`vitest run --coverage`) via a bundled audit script.
 ---
 
 # Frontend Review — Testing
@@ -13,8 +13,15 @@ You are auditing the testing posture of a frontend project. The phase is Week 2:
 
 ## Procedure
 
-1. **Collect coverage directly** (no external script needed). If the project has a coverage script, run it — e.g. `npx vitest run --coverage` (v8 provider emits `coverage/coverage-summary.json`). If no coverage setup exists, that absence is itself the headline finding.
-2. Read `coverage/coverage-summary.json` if it was produced.
+1. **Collect coverage posture** with the bundled script:
+   ```bash
+   node scripts/audit-coverage.mjs --repo <client-repo>   # add --run to execute the suite
+   ```
+   It detects test-config presence and reads an existing `coverage-summary.json`,
+   writing `<client-repo>/.frontend-review/report/latest/raw/coverage.json`. By default
+   it does NOT run the suite (slow / side effects) — pass `--run` to opt in. No
+   coverage setup at all is itself the headline finding.
+2. Read `coverage.json`.
 3. Inspect:
    - `vitest.config.*` — is coverage configured? provider v8?
    - `playwright.config.*` — projects, webServer, sharding
@@ -108,4 +115,4 @@ This avoids tests that pass even when the integration contract breaks.
 
 ## Agent compatibility
 
-- Claude と Codex のどちらでも使える。coverage 収集は agent が project の test/coverage script(`vitest run --coverage` 等)を直接実行する self-contained 構成。coverage 設定が無いこと自体が finding。
+- Claude と Codex のどちらでも使える。収集は同梱の `scripts/audit-coverage.mjs`(zero-dep Node)で行う。デフォルトは config 検出 + 既存 summary 読み取りのみ、`--run` で suite 実行。coverage 設定が無いこと自体が finding。
