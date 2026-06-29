@@ -169,3 +169,7 @@ jobs:
 - **`job_workflow_ref` includes the full ref**: the value is `ORG/REPO/.github/workflows/FILE.yml@refs/heads/main` — not just the file path. Omitting the `@refs/heads/main` suffix means any branch can trigger the assume.
 
 - **ReadOnlyAccess includes sensitive read actions**: `secretsmanager:GetSecretValue`, `kms:Decrypt`, `s3:GetObject` are all included in ReadOnlyAccess. For agent roles that only need infrastructure inspection, add explicit Deny statements to prevent credential leakage.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。中身は OpenTofu/Terraform の OIDC trust パターンで harness 非依存。Bedrock 関連の記述(inference profile ARN / aws-marketplace 権限)は具体例として保持 — Bedrock を使わない場合は該当ブロックを省けばよい。

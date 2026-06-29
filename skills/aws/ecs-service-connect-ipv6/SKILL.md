@@ -87,3 +87,7 @@ IPv6 が返るなら本症状確定。
 
 - gRPC は HTTP/2 ベースだが、`grpc-go` の resolver は IP family の優先順を制御しにくい
 - `appProtocol = "grpc"` を Service Connect の portMappings に書くと Envoy が gRPC として handle するが、IPv6 issue は別問題
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。中身は ECS Service Connect / IPv6 dual-stack の接続障害トラブルシュートで harness 非依存。

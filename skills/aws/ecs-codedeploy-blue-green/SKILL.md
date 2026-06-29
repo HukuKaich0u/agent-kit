@@ -278,3 +278,7 @@ aws deploy create-deployment \
 - **Both blue and green target groups must have identical health check configuration.** Mismatched `healthy_threshold` / `unhealthy_threshold` values will cause one TG to always be considered unhealthy.
 - **`desired_count` on `aws_ecs_service` should not change during blue/green.** CodeDeploy manages task counts independently during deployment.
 - **CloudWatch alarm threshold for production**: use 5–10 for `threshold`, not 1. A single stray 5xx during the canary window will trigger a rollback on production load.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。中身は ECS / ALB / CodeDeploy のインフラ知識で harness 非依存(`aws` CLI と IaC ツールがあればよい)。

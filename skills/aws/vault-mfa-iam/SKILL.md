@@ -66,3 +66,7 @@ aws-vault exec <profile> -- aws iam list-roles
 
 - IAM ユーザは MFA device を **8 個まで**登録可能 → passkey (Console 用) と virtual MFA (CLI 用) を併存できる
 - 一度通れば session token が cache される (default 1h、`--duration=4h` で延長)
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。中身は aws-vault / IAM MFA のトラブルシュートで harness 非依存。`aws-vault` と `aws` CLI がローカルにあればよい。

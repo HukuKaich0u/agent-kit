@@ -37,10 +37,10 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| ecs-codedeploy-blue-green | 残 | 未 | |
-| ecs-service-connect-ipv6 | 残 | 未 | 実体験ベースの trouble shooting |
-| github-oidc-scoped-role | 残 | 未 | Bedrock 前提の記述あり→自分の用途に合わせ要調整 |
-| vault-mfa-iam | 残 | 未 | aws-vault 前提 |
+| ecs-codedeploy-blue-green | 残 | 済 | 出典色なし。R5(harness 非依存)のみ |
+| ecs-service-connect-ipv6 | 残 | 済 | 出典色なし。R5 のみ |
+| github-oidc-scoped-role | 残 | 済 | 出典色なし。Bedrock 記述は具体例として保持(R5 に省略可と明記) |
+| vault-mfa-iam | 残 | 済 | 出典色なし。R5 のみ |
 
 ## cloudflare (使う → 残)
 
