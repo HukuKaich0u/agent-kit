@@ -45,3 +45,7 @@ description: Rust best practices guideline
 ### 特定のクレートに関する規約
 
 - serdeクレートを用いる場合は、公開する型では `Serialize`, `Deserialize` の両方を実装した方がいい場合が多くある。また、 `#[serde(rename_all = "snake_case")]` や、 `#[serde(tag = "...")]` などを積極的に活用すること。
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。Rust のコーディング規約で harness 非依存(`cargo` / `clippy` があればよい)。

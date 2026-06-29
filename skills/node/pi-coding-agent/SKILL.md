@@ -494,3 +494,7 @@ Use the SDK when you want type safety, in-process control, and the ability to re
 - [`examples/sdk/`](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/examples/sdk) — 13 SDK examples, also installed under `node_modules/@mariozechner/pi-coding-agent/examples/sdk/`
 - [`examples/extensions/`](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent/examples/extensions) — extension cookbook: `permission-gate.ts`, `protected-paths.ts`, `git-checkpoint.ts`, custom providers, custom UI, etc.
 - [RPC mode](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/rpc.md) — JSON protocol when calling pi from non-Node hosts
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。`@mariozechner/pi-coding-agent`(実在 npm OSS)を Node スクリプトに組み込む方法の解説で、これを書く agent の harness には依存しない。

@@ -87,7 +87,7 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| crd-from-typed-schema | 残 | 未 | k8s 使うか次第 |
+| crd-from-typed-schema | 残 | 済 | 出典色なし。R5 のみ |
 
 ## lang (MoonBit/Gleam → 消)
 
@@ -96,16 +96,16 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 | ~~gleam-practice~~ | 削除済 | - | Gleam(2026-06-28 削除) |
 | ~~moonbit-js-binding~~ | 削除済 | - | MoonBit(2026-06-28 削除) |
 | ~~moonbit-practice~~ | 削除済 | - | MoonBit(2026-06-28 削除) |
-| rust | 残 | 未 | Rust 使うか次第。中身が薄い("guideline" のみ) |
-| translate-programming-language | 残 | 未 | 言語間移行。汎用だが重い |
+| rust | 残 | 済 | 出典色なし。R5 のみ。中身が薄い("guideline" のみ)→加筆は後回し案あり |
+| translate-programming-language | 残 | 済 | 出典色なし。R5 のみ(subagent 分担の degrade も明記) |
 | ~~ts2moonbit-migration~~ | 削除済 | - | MoonBit(2026-06-28 削除) |
 
 ## node
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| pi-coding-agent | 残 | 未 | @mariozechner/pi 依存 |
-| sqlite-vec | 残 | 未 | Node 標準 sqlite。汎用 |
+| pi-coding-agent | 残 | 済 | @mariozechner/pi(実在 OSS)。出典色なし、R5 のみ |
+| sqlite-vec | 残 | 済 | Node 標準 sqlite。出典色なし、R5 のみ |
 
 ## sql
 
@@ -121,8 +121,8 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 | skill | 推奨 | 正規化 | メモ |
 |---|---|---|---|
-| playwright-cli | 残 | 未 | |
-| playwright-test | 残 | 未 | |
+| playwright-cli | 残 | 済 | 出典色なし。R5 のみ |
+| playwright-test | 残 | 済 | 出典色なし。R5 のみ |
 
 ## tooling
 
@@ -162,6 +162,12 @@ mizchi import 由来 skill の精査用台帳。正規化ルールは [skill-nor
 
 ## アイデア置き場(後回し)
 
+- **frontend-review-* の audit-*.sh を自前実装**(2026-06-29 方針確定)。
+  現状は self-contained 化(agent が gh/pnpm/grep を直接叩く)で動くが、実行のばらつきが出る。
+  スクリプト化すれば実行が決定的になり出力 JSON も固定 → review-weekly の KPI diff/ratchet が機能する。
+  8本: audit-{triage,ci,typescript,lint,similarity,deps,coverage,security}.sh。
+  **前提構成はパッケージマネージャ自動検出**(lockfile を見て pnpm/npm/yarn 判定、linter も eslint/biome 自動検出)。
+  実装したら各 SKILL.md の Procedure を「スクリプト実行」に戻し、description も合わせる。
 - **lang/typescript を新規作成** + **lang/rust を加筆充実**。消した moonbit-practice の構造
   (Guidelines / Common Pitfalls / AI がよく間違う構文 / Tests / pre-release checklist /
   CI&publishing / Quick Reference)を雛形に。構造は `git show c1fc7e8^:skills/lang/moonbit-practice/SKILL.md` で参照可能。

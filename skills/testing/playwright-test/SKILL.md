@@ -604,3 +604,7 @@ npx playwright show-report           # Show report
 ```
 
 In code: `await page.pause()` opens the Inspector mid-test.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。Playwright Test(E2E)の書き方リファレンスで harness 非依存。

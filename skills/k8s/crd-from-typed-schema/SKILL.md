@@ -173,3 +173,7 @@ CRDs are a contract between humans, the apiserver, and your operator. The Struct
 
 - `cloudflare-deploy` — for Cloudflare-specific resource shapes if you're operating on CF (independent of CRD generation).
 - `apm-usage` — for shipping the generated CRD bundle as a skill artifact.
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。zod/TypeBox/Valibot → CRD 変換の知識で harness 非依存(`kubectl` と変換ツールがあればよい)。

@@ -100,3 +100,7 @@ Use this shape in PR bodies, design notes, or migration status reports:
 - Canary:
 - Rollback:
 ```
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。言語間移行の計画・実行手法で harness 非依存。並列作業を subagent に振れる環境では各モジュールの移行を分担でき、できない環境では逐次に落とす。

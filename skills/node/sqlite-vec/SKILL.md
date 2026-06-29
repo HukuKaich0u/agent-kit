@@ -236,3 +236,7 @@ This becomes annoying in scripts that capture stderr. Suppress it at the entry p
 - [`sqlite-vec`](https://github.com/asg017/sqlite-vec) — the loadable vector extension
 - [Node.js `node:sqlite` docs](https://nodejs.org/api/sqlite.html)
 - [Node.js test runner](https://nodejs.org/api/test.html)
+
+## Agent compatibility
+
+- Claude と Codex のどちらでも使える。Node 24+ の `node:sqlite` + `sqlite-vec` セットアップ知識で harness 非依存。
