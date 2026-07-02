@@ -835,6 +835,8 @@ report の `sourceIds` と `claimIds` は入力 catalog に存在しなければ
 
 初期値は実測前の仮説であり、live evaluation 後に調整する。
 
+> 2026-07-02 live evaluation (preset version 1.1): 実 adversarial-search worker は 3 分 timeout を超過し、quick の 10 分 run deadline では最初の claim 検証中に予算が尽きた。quick の per-worker timeout を 5 分、run deadline を 20 分に変更した。下表は初期仮説のまま残す。
+
 | Setting | quick | standard | deep |
 |---|---:|---:|---:|
 | Search angles | 3 | 5 | 8 |
