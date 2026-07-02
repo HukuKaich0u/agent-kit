@@ -3,3 +3,9 @@
 
 # APM
 apm_modules/
+
+# Node.js
+node_modules/
+
+# deep-research plugin の実行生成物
+.deep-research/
