@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/HukuKaich0u/agent-kit/plugins/deep-research/schemas/extraction.schema.json",
+  "title": "ExtractionResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sources"],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0" },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "requestedUrl",
+          "resolvedUrl",
+          "title",
+          "publisher",
+          "publisherGroup",
+          "originUrl",
+          "author",
+          "publishedAt",
+          "retrievedAt",
+          "sourceType",
+          "quality",
+          "qualityRationale",
+          "extractionStatus",
+          "excerpts",
+          "claims"
+        ],
+        "properties": {
+          "requestedUrl": { "type": "string", "pattern": "^https?://" },
+          "resolvedUrl": { "type": "string", "pattern": "^https?://" },
+          "title": { "type": "string", "minLength": 1 },
+          "publisher": { "type": ["string", "null"], "minLength": 1 },
+          "publisherGroup": { "type": ["string", "null"], "minLength": 1 },
+          "originUrl": { "type": ["string", "null"], "pattern": "^https?://" },
+          "author": { "type": ["string", "null"], "minLength": 1 },
+          "publishedAt": { "type": ["string", "null"], "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+          "retrievedAt": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+          "sourceType": { "$ref": "#/$defs/sourceType" },
+          "quality": { "type": "string", "enum": ["high", "medium", "low", "unknown"] },
+          "qualityRationale": { "type": "string", "minLength": 1 },
+          "extractionStatus": {
+            "type": "string",
+            "enum": ["extracted", "irrelevant", "inaccessible", "failed"]
+          },
+          "excerpts": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["localId", "text", "locator"],
+              "properties": {
+                "localId": { "type": "string", "minLength": 1 },
+                "text": { "type": "string", "minLength": 1 },
+                "locator": { "type": ["string", "null"], "minLength": 1 }
+              }
+            }
+          },
+          "claims": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text", "scope", "importance", "timeSensitivity", "evidenceExcerptLocalIds"],
+              "properties": {
+                "text": { "type": "string", "minLength": 1 },
+                "scope": { "type": "string", "minLength": 1 },
+                "importance": { "type": "string", "enum": ["central", "supporting", "contextual"] },
+                "timeSensitivity": { "type": "string", "enum": ["high", "medium", "low"] },
+                "evidenceExcerptLocalIds": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "type": "string", "minLength": 1 }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sourceType": {
+      "type": "string",
+      "enum": [
+        "primary_research",
+        "official_document",
+        "official_statistics",
+        "first_party_statement",
+        "secondary_reporting",
+        "systematic_review",
+        "expert_analysis",
+        "advocacy",
+        "commercial_content",
+        "community",
+        "unknown"
+      ]
+    }
+  }
+}

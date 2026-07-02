@@ -1,0 +1,24 @@
+{
+  "name": "deep-research",
+  "version": "0.1.0",
+  "description": "Run resumable, multi-source Web research with claim-level verification and cited reports.",
+  "author": {
+    "name": "HukuKaich0u",
+    "url": "https://github.com/HukuKaich0u"
+  },
+  "repository": "https://github.com/HukuKaich0u/agent-kit",
+  "keywords": ["research", "web-search", "citations", "fact-checking"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Deep Research",
+    "shortDescription": "Run structured, cited Web research.",
+    "longDescription": "Plans and runs multi-angle Web research, verifies claims against supporting and counter evidence, and produces resumable JSON and Markdown artifacts.",
+    "developerName": "HukuKaich0u",
+    "category": "Productivity",
+    "capabilities": ["Web search", "Cited reports", "Resumable workflows"],
+    "defaultPrompt": [
+      "Deep research this question and produce a cited report.",
+      "Investigate this topic from multiple angles and check counterevidence."
+    ]
+  }
+}

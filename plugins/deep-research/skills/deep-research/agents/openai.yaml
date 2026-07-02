@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deep Research"
+  short_description: "Run structured, cited Web research"
+  default_prompt: "Deep research this question and produce a cited report with counterevidence checks."

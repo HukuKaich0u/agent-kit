@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/HukuKaich0u/agent-kit/plugins/deep-research/schemas/adjudication.schema.json",
+  "title": "AdjudicationResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "claimId",
+    "verificationState",
+    "confidence",
+    "rationale",
+    "acceptedEvidence",
+    "rejectedEvidence",
+    "qualifications"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0" },
+    "claimId": { "type": "string", "pattern": "^C[0-9]{3,}$" },
+    "verificationState": {
+      "type": "string",
+      "enum": ["confirmed", "qualified", "contested", "refuted", "insufficient", "not_checked"]
+    },
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+    "rationale": { "type": "string", "minLength": 1 },
+    "acceptedEvidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceId", "excerptId", "role"],
+        "properties": {
+          "sourceId": { "type": "string", "pattern": "^S[0-9]{3,}$" },
+          "excerptId": { "type": "string", "pattern": "^E[0-9]{3,}$" },
+          "role": { "type": "string", "enum": ["support", "counter", "qualification"] }
+        }
+      }
+    },
+    "rejectedEvidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceId", "excerptId", "reason"],
+        "properties": {
+          "sourceId": { "type": "string", "pattern": "^S[0-9]{3,}$" },
+          "excerptId": { "type": "string", "pattern": "^E[0-9]{3,}$" },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "qualifications": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+  }
+}

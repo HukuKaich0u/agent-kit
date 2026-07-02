@@ -1,0 +1,194 @@
+{
+  "searchResults": {
+    "A01": [
+      {
+        "url": "https://www.energy-news.example.com/solar-growth?utm_source=newsletter&id=7",
+        "title": "Solar growth accelerates",
+        "publisher": "Energy News",
+        "publishedAt": "2025-11-02",
+        "relevance": "high"
+      },
+      {
+        "url": "https://stats.example.gov/solar/2024",
+        "title": "Official solar statistics 2024",
+        "publisher": "Example Statistics Bureau",
+        "publisherGroup": "Example Statistics Bureau",
+        "publishedAt": "2024-06-01",
+        "sourceType": "official_statistics",
+        "relevance": "high"
+      },
+      {
+        "url": "https://blog.example.net/solar-opinion",
+        "title": "My solar experience",
+        "sourceType": "community",
+        "relevance": "low"
+      }
+    ],
+    "A02": [
+      {
+        "url": "https://stats.example.gov/solar/2024/",
+        "title": "Official solar statistics 2024",
+        "publisher": "Example Statistics Bureau",
+        "publisherGroup": "Example Statistics Bureau",
+        "publishedAt": "2024-06-01",
+        "sourceType": "official_statistics",
+        "relevance": "high"
+      },
+      {
+        "url": "https://research.example.edu/solar-study",
+        "title": "Longitudinal residential solar study",
+        "publisher": "Example University",
+        "publisherGroup": "Example University",
+        "publishedAt": "2025-03-15",
+        "sourceType": "primary_research",
+        "relevance": "high"
+      },
+      {
+        "url": "https://bad host.example.com/dataset.zip",
+        "title": "Unparsable host dataset",
+        "hostname": "bad.example.com",
+        "relevance": "medium"
+      }
+    ],
+    "A03": [
+      {
+        "url": "https://skeptic.example.org/solar-tariff",
+        "title": "New tariff changes the math",
+        "publisher": "Skeptic Org",
+        "publishedAt": "2026-01-10",
+        "sourceType": "expert_analysis",
+        "relevance": "medium"
+      },
+      {
+        "url": "https://news-syndicate.example.com/solar-incentives",
+        "title": "State incentives drive installs",
+        "publisher": "News Syndicate",
+        "publishedAt": "2025-08-20",
+        "relevance": "medium"
+      }
+    ]
+  },
+  "extraction": {
+    "https://stats.example.gov/solar/2024": {
+      "publisher": "Example Statistics Bureau",
+      "publisherGroup": "Example Statistics Bureau",
+      "publishedAt": "2024-06-01",
+      "sourceType": "official_statistics",
+      "quality": "high",
+      "excerpts": [
+        { "localId": "x1", "text": "Installed residential capacity rose from 10 GW in 2020 to 20 GW in 2024.", "locator": "table 3" }
+      ],
+      "claims": [
+        {
+          "text": "Residential solar capacity doubled between 2020 and 2024",
+          "scope": "US residential installations, 2020-2024",
+          "importance": "central",
+          "timeSensitivity": "medium",
+          "evidenceExcerptLocalIds": ["x1"]
+        }
+      ]
+    },
+    "https://research.example.edu/solar-study": {
+      "publisher": "Example University",
+      "publisherGroup": "Example University",
+      "publishedAt": "2025-03-15",
+      "sourceType": "primary_research",
+      "quality": "high",
+      "excerpts": [
+        { "localId": "x1", "text": "Our panel data confirms a doubling of residential capacity over 2020-2024.", "locator": "section 4" },
+        { "localId": "x2", "text": "Module prices declined roughly 40 percent since 2020.", "locator": "section 5" }
+      ],
+      "claims": [
+        {
+          "text": "Residential solar capacity doubled between 2020 and 2024",
+          "scope": "US residential installations, 2020-2024",
+          "importance": "central",
+          "timeSensitivity": "medium",
+          "evidenceExcerptLocalIds": ["x1"]
+        },
+        {
+          "text": "Panel costs fell about 40% since 2020",
+          "scope": "US module prices, 2020-2025",
+          "importance": "supporting",
+          "timeSensitivity": "medium",
+          "evidenceExcerptLocalIds": ["x2"]
+        }
+      ]
+    },
+    "https://www.energy-news.example.com/solar-growth?utm_source=newsletter&id=7": {
+      "publisher": "Energy News",
+      "publishedAt": "2025-11-02",
+      "quality": "medium",
+      "excerpts": [
+        { "localId": "x1", "text": "Analysts say residential solar demand keeps setting records.", "locator": null }
+      ],
+      "claims": [
+        {
+          "text": "Residential solar demand set records in 2025",
+          "scope": "US market coverage in 2025",
+          "importance": "supporting",
+          "timeSensitivity": "high",
+          "evidenceExcerptLocalIds": ["x1"]
+        }
+      ]
+    },
+    "https://skeptic.example.org/solar-tariff": {
+      "publisher": "Skeptic Org",
+      "publishedAt": "2026-01-10",
+      "sourceType": "expert_analysis",
+      "quality": "medium",
+      "excerpts": [
+        { "localId": "x1", "text": "Under the new contested tariff, payback periods extend beyond 15 years.", "locator": null }
+      ],
+      "claims": [
+        {
+          "text": "The contested tariff eliminates rooftop solar payback",
+          "scope": "States adopting the 2026 tariff",
+          "importance": "central",
+          "timeSensitivity": "high",
+          "evidenceExcerptLocalIds": ["x1"]
+        }
+      ]
+    },
+    "https://news-syndicate.example.com/solar-incentives": {
+      "publisher": "News Syndicate",
+      "publishedAt": "2025-08-20",
+      "quality": "medium",
+      "excerpts": [
+        { "localId": "x1", "text": "New state incentives correlate with a jump in 2025 installations.", "locator": null }
+      ],
+      "claims": [
+        {
+          "text": "State incentives boosted 2025 installations",
+          "scope": "US states with new incentives",
+          "importance": "supporting",
+          "timeSensitivity": "medium",
+          "evidenceExcerptLocalIds": ["x1"]
+        }
+      ]
+    },
+    "https://blog.example.net/solar-opinion": {
+      "publisher": null,
+      "sourceType": "community",
+      "quality": "low",
+      "excerpts": [
+        { "localId": "x1", "text": "Every installer I called was booked for months.", "locator": null }
+      ],
+      "claims": [
+        {
+          "text": "Solar installers are booked out for months",
+          "scope": "Anecdotal, one region",
+          "importance": "contextual",
+          "timeSensitivity": "high",
+          "evidenceExcerptLocalIds": ["x1"]
+        }
+      ]
+    }
+  },
+  "claimBehavior": {
+    "default": { "support": "supported", "challenge": "no_counterevidence_found" },
+    "byText": {
+      "contested tariff": { "support": "supported", "challenge": "contradicted" }
+    }
+  }
+}

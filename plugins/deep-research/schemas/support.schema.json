@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/HukuKaich0u/agent-kit/plugins/deep-research/schemas/support.schema.json",
+  "title": "SupportResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "claimId", "verdict", "rationale", "checkedEvidence", "scopeCorrections"],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0" },
+    "claimId": { "type": "string", "pattern": "^C[0-9]{3,}$" },
+    "verdict": {
+      "type": "string",
+      "enum": ["supported", "partially_supported", "unsupported", "inaccessible"]
+    },
+    "rationale": { "type": "string", "minLength": 1 },
+    "checkedEvidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceId", "excerptId", "supportsClaim", "issue"],
+        "properties": {
+          "sourceId": { "type": "string", "pattern": "^S[0-9]{3,}$" },
+          "excerptId": { "type": "string", "pattern": "^E[0-9]{3,}$" },
+          "supportsClaim": { "type": "boolean" },
+          "issue": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "scopeCorrections": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+  }
+}
