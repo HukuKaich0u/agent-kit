@@ -20,7 +20,7 @@ import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = path.resolve(HERE, "..", "..", "..", "..");
+const REPO_ROOT = path.resolve(HERE, "..", "..", "..", "..", "..", "..");
 const CODEX_BIN = process.env.CODEX_BIN ?? "codex";
 
 const SPIKE_SCHEMA = {

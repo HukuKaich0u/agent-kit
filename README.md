@@ -66,4 +66,9 @@ apm install
 
 - `instructions/core`: Claude / Codex で共通利用する instructions
 - `skills/`: 必要なものだけ選んで導入する local skills
-- `plugins/deep-research`: Codex 用 deep research plugin(引用付きレポートを生成する CLI orchestrator + Skill)
+- `plugins/deep-research`: deep research plugin(引用付きレポートを生成する CLI orchestrator + Skill)。skill は自己完結で、Claude Code / Codex のどちらでも使える
+
+```sh
+# deep-research skill をユーザースコープに導入する場合
+apm install -g HukuKaich0u/agent-kit/plugins/deep-research/skills/deep-research
+```

@@ -18,24 +18,20 @@ request, launch the orchestrator, then read the artifacts back to the user.
 This works the same whether the calling agent is Codex or Claude Code; the
 workers are always codex CLI processes.
 
-## Locate the plugin
+## Locate the orchestrator
 
-The orchestrator lives in the agent-kit repository at
-`plugins/deep-research/`. Resolve `PLUGIN_DIR` in this order:
-
-1. This skill file itself lives inside the plugin
-   (`<plugin>/skills/deep-research/SKILL.md`) — if you know this file's real
-   path (resolve symlinks: `realpath`), the plugin root is two directories up.
-2. `$AGENT_KIT_DIR/plugins/deep-research` if the env var is set.
-3. `~/Documents/repos/personal/agent-kit/plugins/deep-research` (primary clone).
-4. Otherwise ask the user where the agent-kit clone is.
+This skill is self-contained: the orchestrator lives NEXT TO this SKILL.md
+(`scripts/deep-research.mjs`, with `prompts/` and `schemas/` as siblings).
+`SKILL_DIR` is this file's directory (resolve symlinks with `realpath` if
+needed). No separate plugin checkout is required.
 
 ## Prerequisites
 
 - Node.js >= 22
 - Authenticated `codex` CLI >= 0.142.5 with web search available
   (required even when invoked from Claude Code — workers run on codex)
-- Run `npm install` once inside `PLUGIN_DIR` if `node_modules` is missing
+- Run `npm install` once inside `SKILL_DIR` if `node_modules` is missing
+  (single runtime dependency: ajv)
 
 ## Clarification boundary
 
@@ -57,7 +53,7 @@ confirm with the user before it goes into search queries.
 ## Launch
 
 Choose a preset: `quick` (fast survey), `standard` (default), `deep`
-(thorough). From `PLUGIN_DIR`:
+(thorough). From `SKILL_DIR`:
 
 ```bash
 node scripts/deep-research.mjs \
