@@ -221,7 +221,7 @@ npx @mizchi/waxa iterate <skill>/evals/eval.yaml --max 4
 npx @mizchi/waxa audit <skill>/ [--no-apm] [--json]
 ```
 
-The npm package bundles `references/empirical-prompt-tuning.md` so the methodology is on disk wherever waxa is installed. After `npx @mizchi/waxa` first runs, the file lives at `<node_modules>/@mizchi/waxa/references/empirical-prompt-tuning.md`.
+The methodology is detailed in the `empirical-prompt-tuning` skill, available wherever the skill catalog is sourced from.
 
 ### `--baseline` — is the skill earning its keep?
 
@@ -276,7 +276,6 @@ A real flow often uses both: `empirical` for the in-session Iter 0 + first dispa
 - `superpowers:writing-skills` — TDD framing for skills; pairs with this skill (write skill → eval → iterate)
 - `skill-finder` — uses waxa-eval as the adoption gate for cross-source candidates
 - `tools/waxa/README.md` — CLI argument reference
-- `tools/waxa/RFC-waza.md` — upstream waza compatibility notes
 
 ## Agent compatibility
 

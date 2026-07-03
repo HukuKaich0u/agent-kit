@@ -87,11 +87,6 @@ Disable individually with `OTEL_SDK_DISABLED=true` or `UTELS_DISABLED=true`.
 
 `withTelemetry` ALWAYS wraps D1 bindings with the Proxy. Even when OTLP is unconfigured, every query whose duration crosses `APP_D1_SLOW_THRESHOLD_MS` (default 250ms) gets logged as a structured `console.warn` that `wrangler tail` picks up. This is the cheapest possible "is my query slow?" loop — works on day-one of a new deploy.
 
-## References
-
-- [`references/otlp-payload-shapes.md`](references/otlp-payload-shapes.md) — the exact shape of the traces/metrics/logs JSON the runtime emits, with notes on what each OTLP backend cares about.
-- [`references/utels-event-shape.md`](references/utels-event-shape.md) — the `exception` event schema utels expects.
-
 ## Source
 
 The runtime ships with this skill under [`assets/scripts/telemetry-runtime.ts`](assets/scripts/telemetry-runtime.ts) and [`assets/scripts/d1-wrap.ts`](assets/scripts/d1-wrap.ts) — copy those in directly. The same implementation is published upstream at [`mizchi/cloudflare-starterkit-mbt`](https://github.com/mizchi/cloudflare-starterkit-mbt/blob/main/src/telemetry-runtime.ts) and [`mizchi/mnemo`](https://github.com/mizchi/mnemo/blob/main/mnemo-server/src/telemetry-runtime.ts) if you want to track its evolution.

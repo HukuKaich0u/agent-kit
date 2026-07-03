@@ -71,7 +71,7 @@ The script ships with this skill under [`assets/scripts/setup-utels.ts`](assets/
 
 ## Related skills
 
-- [`cloudflare-workers-otel-utels`](../cloudflare-workers-otel-utels/SKILL.md) — the `withUtelsErrorTracking` boundary wrapper that uses the ingest token this script provisions.
+- [`cloudflare-workers-otel-utels`](../../cloudflare/workers-otel-utels/SKILL.md) — the `withUtelsErrorTracking` boundary wrapper that uses the ingest token this script provisions.
 
 ## Agent compatibility
 

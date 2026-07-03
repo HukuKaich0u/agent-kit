@@ -48,7 +48,7 @@ The Structural Schema dialect rejects several JSON Schema features. Strip / rewr
 | `additionalProperties: false` co-located with `properties` | drop the `additionalProperties` key | structural schema forbids both at once; declared `properties` already implies closed |
 | empty leaf `{}` (e.g. from `z.unknown()`) | replace with `{ x-kubernetes-preserve-unknown-fields: true }` | structural schema requires every node to declare a `type` or use the escape hatch |
 
-A reference adapter (TypeScript, ~40 lines) lives at `examples/adapter.ts` in this skill (or copy from [k1c/src/cli/export-crds.ts](https://github.com/mizchi/k1c/blob/main/src/cli/export-crds.ts)).
+A reference adapter (TypeScript, ~40 lines) is available at [k1c/src/cli/export-crds.ts](https://github.com/mizchi/k1c/blob/main/src/cli/export-crds.ts).
 
 ### 3. Wrap the spec schema in the CRD envelope
 

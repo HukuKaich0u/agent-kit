@@ -20,6 +20,8 @@ https://assets.devographics.com/surveys/js<YYYY>/en-US/results.json
 https://assets.devographics.com/surveys/css<YYYY>/en-US/results.json
 ```
 
+If network/WebFetch is unavailable, skip this step and state in the report that ecosystem-survey signals were not collected (repo-local signals only).
+
 ## Step 1 — Inventory current stack
 
 List all significant dependencies from `package.json`:
