@@ -1,6 +1,6 @@
 ---
 name: backend-review-transactions
-description: Use when reviewing transactional correctness of a backend — multi-write operations without a transaction, read-modify-write races, lost updates, isolation-level assumptions, locking, deadlock ordering, dual-writes (DB + message queue), and idempotency of retried operations. Engine-generic with a Postgres/SQLite difference table. Highest-value on money, inventory, quota, and state-machine code.
+description: Use when reviewing transactional correctness of a backend — multi-write operations without a transaction, read-modify-write races, lost updates, isolation-level assumptions, locking, deadlock ordering, dual-writes (DB + message queue), and idempotency of retried operations. Engine-generic with a Postgres/MySQL/SQLite difference table. Highest-value on money, inventory, quota, and state-machine code.
 ---
 
 # Backend Review — Transactions & Consistency
@@ -26,6 +26,7 @@ The most common AI-generated problems are: multiple dependent writes with no tra
 | Engine | Default isolation | Trap |
 |---|---|---|
 | Postgres | Read Committed | each statement sees a fresh snapshot; two reads in one tx can differ; RMW races are NOT prevented |
+| MySQL/InnoDB | Repeatable Read | consistent snapshot reads, but writes see current data → write skew surprises; gap locks cause unexpected deadlocks |
 | SQLite | Serializable (single writer) | no concurrency bugs, but long write tx = `SQLITE_BUSY` for everyone; keep writes short, use `BEGIN IMMEDIATE` for RMW |
 
    Code assuming "repeatable read within a tx" on Postgres, or "my SELECT locked the row" on any engine without `FOR UPDATE`, is a finding.

@@ -164,7 +164,7 @@ The "Install" column may also be a row whose description names a specific platfo
 | T1 | backend-review-transactions | `HukuKaich0u/agent-kit/skills/backend/review-transactions` | ACID correctness — tx boundaries, read-modify-write races, isolation assumptions, dual-writes, idempotency |
 | T1 | backend-review-concurrency | `HukuKaich0u/agent-kit/skills/backend/review-concurrency` | Async/concurrent/parallel/batch review — unbounded fan-out, event-loop blocking, timeouts, batch resumability |
 | T2 | backend-review-architecture | `HukuKaich0u/agent-kit/skills/backend/review-architecture` | Structure & maintainability — dependency direction, boundary leaks, god modules (anti-dogma, proportional) |
-| T1 | db-migration-safety | `HukuKaich0u/agent-kit/skills/db/migration-safety` | Writing/reviewing a schema migration against live traffic — lock classification, expand-contract, backfill (Postgres/SQLite) |
+| T1 | db-migration-safety | `HukuKaich0u/agent-kit/skills/db/migration-safety` | Writing/reviewing a schema migration against live traffic — lock classification, expand-contract, backfill (Postgres/MySQL/SQLite) |
 
 ---
 
