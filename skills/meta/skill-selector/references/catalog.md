@@ -27,7 +27,7 @@ The "Install" column may also be a row whose description names a specific platfo
 
 | T | Skill | Install | Use when |
 |---|---|---|---|
-| T1 | typescript-best-practices | `HukuKaich0u/agent-kit/skills/lang/typescript` | Writing or reviewing TypeScript — strict type design, naming, error handling + runtime notes (Node lib/CLI, Workers, React). Read for any `.ts`/`.tsx`/`tsconfig` work |
+| T1 | typescript | `HukuKaich0u/agent-kit/skills/lang/typescript` | Writing or reviewing TypeScript — strict type design, naming, error handling + runtime notes (Node lib/CLI, Workers, React). Read for any `.ts`/`.tsx`/`tsconfig` work |
 | T1 | node-sqlite-vec | `HukuKaich0u/agent-kit/skills/node/sqlite-vec` | Project uses Node 24+ `node:sqlite` with `sqlite-vec` extension for vectors / RAG |
 | T1 | pi-coding-agent | `HukuKaich0u/agent-kit/skills/node/pi-coding-agent` | Embedding `@mariozechner/pi-coding-agent` as a coding-agent runtime in Node scripts |
 | T1 | dotenvx | `HukuKaich0u/agent-kit/skills/tooling/dotenvx` | Repo uses or considers `dotenvx` for env-var encryption / multi-env |
@@ -39,7 +39,7 @@ The "Install" column may also be a row whose description names a specific platfo
 
 | T | Skill | Install | Use when |
 |---|---|---|---|
-| T1 | rust-best-practices | `HukuKaich0u/agent-kit/skills/lang/rust` | Writing or reviewing Rust code — general best-practices guideline |
+| T1 | rust | `HukuKaich0u/agent-kit/skills/lang/rust` | Writing or reviewing Rust — error-handling decision rules (thiserror/anyhow), borrow-checker escalation ladder, async pitfalls, AI-mistake table |
 
 ---
 
@@ -141,20 +141,30 @@ The "Install" column may also be a row whose description names a specific platfo
 
 | T | Skill | Install | Use when |
 |---|---|---|---|
-| T1 | frontend-review-weekly | `HukuKaich0u/agent-kit/skills/frontend/review-weekly` | **Orchestrator** for the weekly AI review — dispatches all 8 domain skills and the 5 perspective sub-skills |
+| T1 | frontend-review-weekly | `HukuKaich0u/agent-kit/skills/frontend/review-weekly` | **Orchestrator** for the weekly AI review — dispatches the domain skills and synthesizes their reports into one prioritized weekly report |
 | T1 | frontend-review-triage | `HukuKaich0u/agent-kit/skills/frontend/review-triage` | Initial frontend-review assessment ("triage", day-1) — scorecard, top-3 risks, app classification |
 | T1 | frontend-review-ci | `HukuKaich0u/agent-kit/skills/frontend/review-ci` | CI is slow (>10 min), flaky, or you want to optimize GitHub Actions for a frontend project |
-| T1 | frontend-review-hygiene | `HukuKaich0u/agent-kit/skills/frontend/review-hygiene` | Code-hygiene audit — TypeScript strictness, lint, dead code, duplication |
+| T1 | frontend-review-hygiene | `HukuKaich0u/agent-kit/skills/frontend/review-hygiene` | Code-hygiene audit — TypeScript strictness, lint, dead code (knip) |
 | T1 | frontend-review-deps | `HukuKaich0u/agent-kit/skills/frontend/review-deps` | Dependency health — freshness, CVE triage with attack-vector weighting, Tier 1/2/3 library detection |
 | T1 | frontend-review-testing | `HukuKaich0u/agent-kit/skills/frontend/review-testing` | Test-infrastructure audit — vitest coverage, playwright config, Testing Library usage, VRT setup |
 | T1 | frontend-review-security | `HukuKaich0u/agent-kit/skills/frontend/review-security` | Frontend security review — HTML sinks, auth/token storage, route guards, env var exposure, AI self-pentest |
 | T1 | frontend-review-state | `HukuKaich0u/agent-kit/skills/frontend/review-state` | State management architecture review — server/URL/form/UI classification, Jotai/Zustand/Redux anti-patterns |
 | T1 | frontend-review-performance | `HukuKaich0u/agent-kit/skills/frontend/review-performance` | Rendering performance review — profiler-first, memo correctness, virtual scroll, `useTransition` |
-| T2 | frontend-expert | `HukuKaich0u/agent-kit/skills/frontend/review-perspectives/frontend-expert` | Frontend-architect perspective sub-skill (component design, state, DOM usage) |
-| T2 | frontend-ops-expert | `HukuKaich0u/agent-kit/skills/frontend/review-perspectives/frontend-ops-expert` | Frontend-Ops perspective sub-skill (CI/CD, scheduler, KPI ratchet, release process) |
-| T2 | performance-expert | `HukuKaich0u/agent-kit/skills/frontend/review-perspectives/performance-expert` | Performance perspective sub-skill (bundle size, LCP / CLS / INP, avoidable work) |
-| T2 | react-expert | `HukuKaich0u/agent-kit/skills/frontend/review-perspectives/react-expert` | React-specialist perspective sub-skill (hooks, re-rendering, Suspense / RSC) |
-| T2 | security-expert | `HukuKaich0u/agent-kit/skills/frontend/review-perspectives/security-expert` | Security-specialist perspective sub-skill (XSS / CSRF, authz boundaries, input validation) |
+
+---
+
+## Backend review (project is a backend / API / worker)
+
+**Signals**: a backend service where someone wants a structured review pass (data access / transactions / concurrency / architecture), or a schema migration against live traffic
+
+| T | Skill | Install | Use when |
+|---|---|---|---|
+| T1 | backend-review-triage | `HukuKaich0u/agent-kit/skills/backend/review-triage` | Entry point — classifies the service (api/worker/batch/event-driven) and plans which lenses to run |
+| T1 | backend-review-data-access | `HukuKaich0u/agent-kit/skills/backend/review-data-access` | N+1 queries, query-in-loop, missing eager loading, unbounded queries, index/WHERE mismatch (ORM-aware) |
+| T1 | backend-review-transactions | `HukuKaich0u/agent-kit/skills/backend/review-transactions` | ACID correctness — tx boundaries, read-modify-write races, isolation assumptions, dual-writes, idempotency |
+| T1 | backend-review-concurrency | `HukuKaich0u/agent-kit/skills/backend/review-concurrency` | Async/concurrent/parallel/batch review — unbounded fan-out, event-loop blocking, timeouts, batch resumability |
+| T2 | backend-review-architecture | `HukuKaich0u/agent-kit/skills/backend/review-architecture` | Structure & maintainability — dependency direction, boundary leaks, god modules (anti-dogma, proportional) |
+| T1 | db-migration-safety | `HukuKaich0u/agent-kit/skills/db/migration-safety` | Writing/reviewing a schema migration against live traffic — lock classification, expand-contract, backfill (Postgres/MySQL/SQLite) |
 
 ---
 
@@ -164,7 +174,7 @@ The "Install" column may also be a row whose description names a specific platfo
 
 | T | Skill | Install | Use when |
 |---|---|---|---|
-| T2 | drawio-skill | `HukuKaich0u/agent-kit/skills/tooling/drawio` | Creating diagrams (flowchart, architecture, ER, UML / sequence / class, network) as draw.io / diagrams.net files |
+| T2 | drawio | `HukuKaich0u/agent-kit/skills/tooling/drawio` | Creating diagrams (flowchart, architecture, ER, UML / sequence / class, network) as draw.io / diagrams.net files |
 
 ---
 
