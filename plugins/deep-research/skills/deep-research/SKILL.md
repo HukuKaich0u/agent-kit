@@ -69,6 +69,7 @@ Useful flags:
 - `--dry-run` print the budget and phase plan without spawning workers
 - `--resume <run-dir>` continue an interrupted run
 - `--max-concurrency <n>` override worker parallelism
+- `--no-keep-going` stop at the first recoverable failure instead of continuing (default is to keep going)
 
 The run takes ~20-30 minutes (quick) up to well over an hour (deep). Tell the
 user before starting a standard or deep run.

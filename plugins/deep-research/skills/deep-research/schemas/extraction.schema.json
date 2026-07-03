@@ -33,8 +33,8 @@
         ],
         "properties": {
           "requestedUrl": { "type": "string", "pattern": "^https?://" },
-          "resolvedUrl": { "type": "string", "pattern": "^https?://" },
-          "title": { "type": "string", "minLength": 1 },
+          "resolvedUrl": { "type": ["string", "null"], "pattern": "^https?://" },
+          "title": { "type": ["string", "null"], "minLength": 1 },
           "publisher": { "type": ["string", "null"], "minLength": 1 },
           "publisherGroup": { "type": ["string", "null"], "minLength": 1 },
           "originUrl": { "type": ["string", "null"], "pattern": "^https?://" },
@@ -81,6 +81,23 @@
                 }
               }
             }
+          }
+        },
+        "if": {
+          "properties": {
+            "extractionStatus": { "const": "extracted" }
+          }
+        },
+        "then": {
+          "properties": {
+            "resolvedUrl": { "type": "string", "pattern": "^https?://" },
+            "title": { "type": "string", "minLength": 1 }
+          }
+        },
+        "else": {
+          "properties": {
+            "excerpts": { "type": "array", "maxItems": 0 },
+            "claims": { "type": "array", "maxItems": 0 }
           }
         }
       }

@@ -29,7 +29,8 @@ const FLAG_SPEC = {
   "--locale": { key: "locale", takesValue: true },
   "--max-concurrency": { key: "maxConcurrency", takesValue: true },
   "--model": { key: "model", takesValue: true },
-  "--keep-going": { key: "keepGoing", takesValue: true },
+  "--keep-going": { key: "keepGoing", takesValue: "optional" },
+  "--no-keep-going": { key: "keepGoing", takesValue: false, value: false },
   "--dry-run": { key: "dryRun", takesValue: false },
   "--codex-bin": { key: "codexBin", takesValue: true },
 };
@@ -55,8 +56,18 @@ export function parseArgs(argv) {
     if (!spec) {
       throw new Error(`unknown flag: ${flag}`);
     }
-    if (!spec.takesValue) {
-      options[spec.key] = true;
+    if (spec.takesValue === false) {
+      options[spec.key] = "value" in spec ? spec.value : true;
+      continue;
+    }
+    if (spec.takesValue === "optional") {
+      const next = argv[i + 1];
+      if (next === "true" || next === "false") {
+        options[spec.key] = next;
+        i += 1;
+      } else {
+        options[spec.key] = true;
+      }
       continue;
     }
     const value = argv[++i];

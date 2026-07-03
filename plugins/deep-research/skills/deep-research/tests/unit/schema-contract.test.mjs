@@ -169,6 +169,41 @@ test("extraction schema enforces the two-source cap and ID patterns", () => {
   assert.equal(validate("support", badClaim).valid, false);
 });
 
+test("extraction schema allows null resolvedUrl/title when not extracted, but forbids excerpts/claims", () => {
+  const inaccessible = structuredClone(VALID.extraction);
+  inaccessible.sources[0].extractionStatus = "inaccessible";
+  inaccessible.sources[0].resolvedUrl = null;
+  inaccessible.sources[0].title = null;
+  inaccessible.sources[0].excerpts = [];
+  inaccessible.sources[0].claims = [];
+  assert.equal(validate("extraction", inaccessible).valid, true);
+
+  const stillNonEmpty = structuredClone(inaccessible);
+  stillNonEmpty.sources[0].excerpts = [{ localId: "x1", text: "e", locator: null }];
+  assert.equal(validate("extraction", stillNonEmpty).valid, false);
+
+  const stillHasClaims = structuredClone(inaccessible);
+  stillHasClaims.sources[0].claims = [
+    {
+      text: "c",
+      scope: "s",
+      importance: "central",
+      timeSensitivity: "low",
+      evidenceExcerptLocalIds: ["x1"],
+    },
+  ];
+  assert.equal(validate("extraction", stillHasClaims).valid, false);
+});
+
+test("extraction schema still requires non-null resolvedUrl/title when extracted", () => {
+  const bad = structuredClone(VALID.extraction);
+  bad.sources[0].resolvedUrl = null;
+  assert.equal(validate("extraction", bad).valid, false);
+  const badTitle = structuredClone(VALID.extraction);
+  badTitle.sources[0].title = null;
+  assert.equal(validate("extraction", badTitle).valid, false);
+});
+
 test("report schema requires at least one source and claim per finding", () => {
   const bad = structuredClone(VALID.report);
   bad.findings[0].sourceIds = [];

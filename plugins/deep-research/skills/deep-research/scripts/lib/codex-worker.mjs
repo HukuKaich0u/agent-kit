@@ -18,8 +18,6 @@ export const ERROR_CLASSES = [
   "search_error",
   "source_access_error",
   "rate_limit_error",
-  "budget_exhausted",
-  "audit_error",
   "internal_error",
 ];
 

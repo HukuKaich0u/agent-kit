@@ -183,7 +183,7 @@ export function renderReportMarkdown({ report, sources, preset, auditIncomplete 
 }
 
 function sourceLine(source) {
-  const parts = [source.title];
+  const parts = [source.title ?? source.canonicalUrl ?? "(untitled)"];
   if (source.publisher) parts.push(source.publisher);
   if (source.publishedAt) parts.push(source.publishedAt);
   parts.push(source.canonicalUrl);

@@ -35,7 +35,25 @@ test("parseArgs rejects an empty question", () => {
 test("parseArgs rejects invalid preset, as-of, and keep-going values", () => {
   assert.throws(() => parseArgs(["--question", "q", "--preset", "mega"]), /unknown preset/);
   assert.throws(() => parseArgs(["--question", "q", "--as-of", "July 1"]), /--as-of/);
-  assert.throws(() => parseArgs(["--question", "q", "--keep-going", "maybe"]), /--keep-going/);
+});
+
+test("parseArgs supports bare --keep-going, --keep-going true|false, and --no-keep-going", () => {
+  const bare = parseArgs(["--question", "q", "--keep-going"]);
+  assert.equal(bare.keepGoing, true);
+
+  const explicitTrue = parseArgs(["--question", "q", "--keep-going", "true"]);
+  assert.equal(explicitTrue.keepGoing, true);
+
+  const explicitFalse = parseArgs(["--question", "q", "--keep-going", "false"]);
+  assert.equal(explicitFalse.keepGoing, false);
+
+  const negated = parseArgs(["--question", "q", "--no-keep-going"]);
+  assert.equal(negated.keepGoing, false);
+
+  // A bare --keep-going does not consume an unrelated following flag.
+  const bareThenDryRun = parseArgs(["--question", "q", "--keep-going", "--dry-run"]);
+  assert.equal(bareThenDryRun.keepGoing, true);
+  assert.equal(bareThenDryRun.dryRun, true);
 });
 
 test("parseArgs allows resume without question", () => {
