@@ -9,19 +9,20 @@ You are optimizing GitHub Actions CI for a frontend project. The target is **med
 
 ## Procedure
 
+0. If `<repo>/.frontend-review/kpi/app-classification.json` exists (written by `frontend-review-triage`), read it and weight findings by its P0/P1 profile for this app type.
 1. **Collect CI timing + workflow inventory** with the bundled script:
    ```bash
-   node scripts/audit-ci.mjs --repo <client-repo> [--limit 50]
+   node scripts/audit-ci.mjs --repo <repo> [--limit 50]
    ```
    It reads `gh run list` history (per-workflow median/max duration) and inventories
    `.github/workflows/` (cache / concurrency / shard / needs flags), writing
-   `<client-repo>/.frontend-review/report/latest/raw/ci.json`. If `gh` is unavailable
+   `<repo>/.frontend-review/report/latest/raw/ci.json`. If `gh` is unavailable
    the timing section reports `available: false` — that absence is itself a finding.
 2. Read `ci.json`, then for the slowest runs dig into step-level timing:
    ```bash
    gh run view <run-id> --log | grep -E '^\d{4}-' | head -200
    ```
-4. Inventory current workflows under `.github/workflows/` and note:
+3. Inventory current workflows under `.github/workflows/` and note:
    - Does **every job** (lint, build, test, coverage, etc.) use a pnpm/npm store cache? A common miss: `test.yml` has cache but `lint.yml` and `pages.yml` do not.
    - Does `actions/setup-node` use `cache: pnpm`, or is there a manual `actions/cache` block for the pnpm store? Either is fine; the key must include `hashFiles('**/pnpm-lock.yaml')`.
    - Does `actions/cache` cache the Playwright browser store (`~/.cache/ms-playwright`)?
@@ -32,7 +33,7 @@ You are optimizing GitHub Actions CI for a frontend project. The target is **med
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/ci-analysis.md` with:
+Write `<repo>/.frontend-review/report/latest/md/ci-analysis.md` with:
 
 - Current median / max duration
 - Slowest 3 steps in a representative failing + passing run
@@ -40,6 +41,8 @@ Write `<client-repo>/.frontend-review/report/latest/md/ci-analysis.md` with:
 - Estimated wins per recommendation
 
 Then produce a draft PR description that the user can copy into `gh pr create`, naming the branch `ci/optimize`.
+
+Keep the report under 250 lines.
 
 ## Development Iteration Timing Targets
 
@@ -85,7 +88,8 @@ The **PR CI total** target is the critical gate. CI slower than 5 minutes is rou
 ## Boundaries
 
 - Do NOT actually create the PR or push the branch — just draft the description.
-- Do NOT modify workflow YAML in the client repo; the user does that after reviewing your proposal.
+- Do NOT modify workflow YAML in the repo; the user does that after reviewing your proposal.
+- Every finding must cite file:line (or a config key). Findings not verified by reading the actual code/config must be marked "unconfirmed" or dropped.
 
 ## Related
 

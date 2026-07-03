@@ -13,12 +13,13 @@ You are auditing the dependency health of a frontend project. This covers three 
 
 ## Procedure
 
+0. If `<repo>/.frontend-review/kpi/app-classification.json` exists (written by `frontend-review-triage`), read it and weight findings by its P0/P1 profile for this app type.
 1. **Collect freshness + CVE data** with the bundled script:
    ```bash
-   node scripts/audit-deps.mjs --repo <client-repo>
+   node scripts/audit-deps.mjs --repo <repo>
    ```
    It auto-detects the package manager and runs its `outdated` + `audit` in JSON
-   mode, writing `<client-repo>/.frontend-review/report/latest/raw/deps.json`.
+   mode, writing `<repo>/.frontend-review/report/latest/raw/deps.json`.
 2. Read `deps.json`. For **trend watch** (the judgment step the script can't do),
    check each significant library against its repo activity / deprecation status
    (npm `deprecated` flag, last-publish date, successor libraries). Then run the
@@ -46,7 +47,7 @@ Do not use CVSS score alone. A CVSS 9.8 RCE in a devDependency has zero producti
 2. Focus on Prototype Pollution / ReDoS / XSS — other types are low-risk for browser-only SPAs.
 3. For each remaining finding, check whether user-controlled input can reach the vulnerable code path. If not, downgrade to P2.
 4. For SSR / Edge Functions, treat RCE / Path Traversal / SSRF as P0.
-5. Document every ignored CVE in `kpi/audit-triage.md` with the reason.
+5. Document every ignored CVE in `kpi/ignored-cves.md` with the reason.
 
 ```bash
 # Runtime-only CVEs (excludes devDeps)
@@ -65,7 +66,7 @@ pnpm audit --prod --json 2>/dev/null | jq -r '
 
 ## Trend Watch — Library Tiers
 
-Cross-references `package.json` against `data/trend-watch-config.json`:
+See the `tech-trend-watch` skill for library tier classification:
 
 - **Tier 1 (migrate now)**: Deprecated / abandoned / superseded — no rational reason to continue. Includes libraries where migration cost is low and a mature alternative exists, even if not officially deprecated (`jest` → vitest, `axios` → ky/fetch, `cypress` → Playwright).
 - **Tier 2 (plan migration)**: Maintenance mode / satisfaction declining / RSC-incompatible.
@@ -83,8 +84,8 @@ Before recommending a new dependency as a replacement, apply this order:
 
 | Use case | Avoid | Use instead |
 |---|---|---|
-| Date / time | moment, date-fns, dayjs | `Temporal` (polyfill), or `Date` for simple cases |
-| Array / object utilities | lodash, ramda | `Array.prototype.{flatMap,findLast,groupBy}`, `Object.{entries,fromEntries,groupBy}`, `structuredClone()` |
+| Date / time | moment, date-fns, dayjs | `Temporal` (polyfill; verify runtime support first — Temporal especially is not yet universally available), or `Date` for simple cases |
+| Array / object utilities | lodash, ramda | `Array.prototype.{flatMap,findLast,groupBy}`, `Object.{entries,fromEntries,groupBy}`, `structuredClone()` (verify runtime support first — Temporal especially is not yet universally available) |
 | HTTP requests | axios, request | `fetch` + `AbortController` |
 | UUID generation | uuid, nanoid | `crypto.randomUUID()` |
 | URL / query params | qs, query-string | `URL`, `URLSearchParams` |
@@ -103,19 +104,22 @@ Before recommending a new dependency as a replacement, apply this order:
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/deps-review.md` with:
+Write `<repo>/.frontend-review/report/latest/md/deps-review.md` with:
 
 - **Outdated packages** table (name, current, latest, breaking?)
 - **CVE findings** after attack-vector triage (priority, package, type, reason for priority)
 - **Trend watch** findings by tier (Tier 1: migration now, Tier 2: plan, Tier 3: monitor)
-- **Ignored CVEs** with justification (for `kpi/audit-triage.md`)
+- **Ignored CVEs** with justification (for `kpi/ignored-cves.md`)
 - **Recommended PRs**: update batches + migration starting points
+
+Keep the report under 250 lines.
 
 ## Boundaries
 
 - Do NOT assess TypeScript / lint / dead code — that's `frontend-review-hygiene`.
 - Do NOT run the AI pentest or check HTML sinks — that's `frontend-review-security`.
-- Do NOT touch source files in the client repo.
+- Do NOT touch source files in the repo.
+- Every finding must cite file:line (or a config key). Findings not verified by reading the actual code/config must be marked "unconfirmed" or dropped.
 
 ## Related
 

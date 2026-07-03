@@ -14,13 +14,14 @@ You are performing a frontend security review. The focus areas are:
 
 ## Procedure
 
+0. If `<repo>/.frontend-review/kpi/app-classification.json` exists (written by `frontend-review-triage`), read it and weight findings by its P0/P1 profile for this app type.
 1. **Scan for risky static patterns** with the bundled script:
    ```bash
-   node scripts/audit-security.mjs --repo <client-repo>
+   node scripts/audit-security.mjs --repo <repo>
    ```
    It walks the source tree (skipping node_modules / build output) and flags
    HTML-injection sinks, client-side env exposure, and eval-family calls, writing
-   `<client-repo>/.frontend-review/report/latest/raw/security.json` with file+line
+   `<repo>/.frontend-review/report/latest/raw/security.json` with file+line
    for every hit. Line-based — a clean scan is NOT proof of safety.
 2. Read `security.json`. For each `dangerouslySetInnerHTML` / `v-html` / `.innerHTML =`
    hit, open the file and judge whether the input is sanitized. For each env-exposure
@@ -134,7 +135,7 @@ Draft these for the human to run against the deployed staging URL:
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/security-review.md` with:
+Write `<repo>/.frontend-review/report/latest/md/security-review.md` with:
 
 - **Static findings** (risky sinks, env var exposure)
 - **Auth / Authorization findings** (token storage, route guard gaps, logout issues)
@@ -150,6 +151,7 @@ Do NOT execute the `gh issue create` commands yourself — print them for the hu
 - Do NOT run scanners against production URLs.
 - Do NOT touch the client source code.
 - CVE triage and trend-watch are handled by `frontend-review-deps`.
+- Every finding must cite file:line (or a config key). Findings not verified by reading the actual code/config must be marked "unconfirmed" or dropped.
 
 ## Related
 

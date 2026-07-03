@@ -2,9 +2,9 @@
 // audit-hygiene.mjs — code-quality hygiene metrics for frontend-review-hygiene.
 //
 // Zero-dependency. Runs TypeScript (`tsc --noEmit`), the project's linter
-// (eslint or biome, auto-detected), dead-code (knip if available), and a
-// duplication signal, then writes a raw JSON report. Each tool is best-effort:
-// a missing tool is recorded as `available: false`, not a crash.
+// (eslint or biome, auto-detected), and dead-code (knip if available), then
+// writes a raw JSON report. Each tool is best-effort: a missing tool is
+// recorded as `available: false`, not a crash.
 //
 //   node audit-hygiene.mjs --repo /abs/path/to/client-repo [--json]
 //

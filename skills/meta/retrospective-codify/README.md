@@ -47,4 +47,4 @@ See [SKILL.md](./SKILL.md) for what this skill does and when to use it.
 
 「最初に何で失敗したか」と「最終的に何で解決したか」を対にして、その学びを ast-grep rule / skill / CLAUDE.md rule のどれかに固定する meta skill です。試行錯誤の末の解決を、未来の自分や別 agent が同じ罠にはまらないよう再現可能な形で残します。
 
-Claude / Codex の両方で使う前提で整えています。分類フローと出力テンプレートは [SKILL.md](./SKILL.md) を参照してください(日本語版は [SKILL-ja.md](./SKILL-ja.md))。
+Claude / Codex の両方で使う前提で整えています。分類フローと出力テンプレートは [SKILL.md](./SKILL.md) を参照してください。

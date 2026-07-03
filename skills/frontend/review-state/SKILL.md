@@ -9,6 +9,7 @@ You are reviewing the state management architecture of a frontend project. The m
 
 ## Procedure
 
+0. If `<repo>/.frontend-review/kpi/app-classification.json` exists (written by `frontend-review-triage`), read it and weight findings by its P0/P1 profile for this app type.
 1. Read `package.json` to identify the state management libraries in use.
 2. Grep for global state usage patterns:
    ```bash
@@ -100,7 +101,7 @@ Check that the logout handler:
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/state-review.md` with:
+Write `<repo>/.frontend-review/report/latest/md/state-review.md` with:
 
 - **State inventory**: which libraries are used, rough count of atoms/stores/contexts
 - **Misclassified state**: server/URL/form state found in global store (these are bugs)
@@ -115,6 +116,7 @@ Keep under 200 lines. File-level details stay in the raw search output, not in t
 - Do NOT rewrite state management code. The report identifies gaps; engineering implements fixes.
 - Do NOT touch source files in the client repo.
 - Rendering performance (re-renders, memo usage) is covered by `frontend-review-performance`.
+- Every finding must cite file:line (or a config key). Findings not verified by reading the actual code/config must be marked "unconfirmed" or dropped.
 
 ## Related
 

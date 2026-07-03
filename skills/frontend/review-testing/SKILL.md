@@ -13,12 +13,13 @@ You are auditing the testing posture of a frontend project. The phase is Week 2:
 
 ## Procedure
 
+0. If `<repo>/.frontend-review/kpi/app-classification.json` exists (written by `frontend-review-triage`), read it and weight findings by its P0/P1 profile for this app type.
 1. **Collect coverage posture** with the bundled script:
    ```bash
-   node scripts/audit-coverage.mjs --repo <client-repo>   # add --run to execute the suite
+   node scripts/audit-coverage.mjs --repo <repo>   # add --run to execute the suite
    ```
    It detects test-config presence and reads an existing `coverage-summary.json`,
-   writing `<client-repo>/.frontend-review/report/latest/raw/coverage.json`. By default
+   writing `<repo>/.frontend-review/report/latest/raw/coverage.json`. By default
    it does NOT run the suite (slow / side effects) — pass `--run` to opt in. No
    coverage setup at all is itself the headline finding.
 2. Read `coverage.json`.
@@ -30,12 +31,14 @@ You are auditing the testing posture of a frontend project. The phase is Week 2:
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/testing-review.md` with:
+Write `<repo>/.frontend-review/report/latest/md/testing-review.md` with:
 
 - **Current state**: vitest configured? playwright configured? how many tests? what coverage %?
 - **Gaps**: missing config, missing scripts, no coverage merge
 - **Recommended PRs** (3-5 max): each with title, affected files, expected coverage delta
 - **Branch coverage checklist** for the router/controller branches that should get the first E2E tests
+
+Keep the report under 250 lines.
 
 ## Component Testing — Testing Library First
 
@@ -106,7 +109,8 @@ This avoids tests that pass even when the integration contract breaks.
 ## Boundaries
 
 - Do NOT write actual test code — propose structure and counts only.
-- Do NOT run `vitest` or `playwright` from this skill; the scripts don't execute tests, only read existing reports.
+- Do NOT run `vitest` or `playwright` from this skill; the script only reads existing coverage reports by default, and executes `vitest run --coverage` only when invoked with `--run`.
+- Every finding must cite file:line (or a config key). Findings not verified by reading the actual code/config must be marked "unconfirmed" or dropped.
 
 ## Related
 
