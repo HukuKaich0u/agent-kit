@@ -1,6 +1,6 @@
 ---
 name: "deep-research"
-description: "Use when the user asks for deep research, a multi-source investigation, a cited report, or explicitly wants counterevidence checked — e.g. 'Xについてdeep researchして', '複数の情報源を調べて引用付きレポートにして', '反対意見も含めて徹底的に調査して'. Runs a resumable multi-worker research pipeline (scope → search fan-out → extraction → claim verification → cited report) via a Node.js orchestrator. Do NOT trigger for simple fact checks, single-URL summaries, or questions answerable from conversation."
+description: "Use when the user asks for deep research, a multi-source investigation, a cited report, or explicitly wants counterevidence checked — e.g. 'Xについてdeep researchして', '複数の情報源を調べて引用付きレポートにして', '反対意見も含めて徹底的に調査して'. Runs a resumable multi-worker research pipeline (scope → search fan-out → extraction → claim verification → cited report) via a Node.js orchestrator. Works from Codex and Claude Code alike. Do NOT trigger for simple fact checks, single-URL summaries, or questions answerable from conversation."
 ---
 
 # Deep Research
@@ -15,12 +15,27 @@ resumable JSON artifacts and a cited `report.md`.
 
 Do NOT run the research yourself in this session. Your job is to clarify the
 request, launch the orchestrator, then read the artifacts back to the user.
+This works the same whether the calling agent is Codex or Claude Code; the
+workers are always codex CLI processes.
+
+## Locate the plugin
+
+The orchestrator lives in the agent-kit repository at
+`plugins/deep-research/`. Resolve `PLUGIN_DIR` in this order:
+
+1. This skill file itself lives inside the plugin
+   (`<plugin>/skills/deep-research/SKILL.md`) — if you know this file's real
+   path (resolve symlinks: `realpath`), the plugin root is two directories up.
+2. `$AGENT_KIT_DIR/plugins/deep-research` if the env var is set.
+3. `~/Documents/repos/personal/agent-kit/plugins/deep-research` (primary clone).
+4. Otherwise ask the user where the agent-kit clone is.
 
 ## Prerequisites
 
 - Node.js >= 22
 - Authenticated `codex` CLI >= 0.142.5 with web search available
-- Run `npm install` once inside the plugin directory if `node_modules` is missing
+  (required even when invoked from Claude Code — workers run on codex)
+- Run `npm install` once inside `PLUGIN_DIR` if `node_modules` is missing
 
 ## Clarification boundary
 
@@ -42,7 +57,7 @@ confirm with the user before it goes into search queries.
 ## Launch
 
 Choose a preset: `quick` (fast survey), `standard` (default), `deep`
-(thorough). From the plugin root:
+(thorough). From `PLUGIN_DIR`:
 
 ```bash
 node scripts/deep-research.mjs \
@@ -59,8 +74,17 @@ Useful flags:
 - `--resume <run-dir>` continue an interrupted run
 - `--max-concurrency <n>` override worker parallelism
 
-The run can take from ~10 minutes (quick) to well over an hour (deep). Tell
-the user before starting a standard or deep run.
+The run takes ~20-30 minutes (quick) up to well over an hour (deep). Tell the
+user before starting a standard or deep run.
+
+Long-run hygiene (measured on macOS):
+
+- Prefix with `caffeinate -i` (macOS) — system sleep suspends workers and
+  timers, which blows the run deadline and fails the run.
+- From Claude Code, launch it as a background task and report progress from
+  the run directory (`events.jsonl`) while waiting.
+- If a run fails or is interrupted, `--resume <run-dir>` reuses every phase
+  that completed; do not restart from scratch.
 
 ## After the run
 
