@@ -1,6 +1,6 @@
 ---
 name: backend-review-transactions
-description: Use when reviewing transactional correctness of a backend — multi-write operations without a transaction, read-modify-write races, lost updates, isolation-level assumptions, locking, deadlock ordering, dual-writes (DB + message queue), and idempotency of retried operations. Engine-generic with a Postgres/MySQL/SQLite difference table. Highest-value on money, inventory, quota, and state-machine code.
+description: Use when reviewing transactional correctness of a backend — multi-write operations without a transaction, read-modify-write races, lost updates, isolation-level assumptions, locking, deadlock ordering, dual-writes (DB + message queue), and idempotency of retried operations. Engine-generic with a Postgres/MySQL/SQLite/DynamoDB difference table. Highest-value on money, inventory, quota, and state-machine code.
 ---
 
 # Backend Review — Transactions & Consistency
@@ -28,8 +28,9 @@ The most common AI-generated problems are: multiple dependent writes with no tra
 | Postgres | Read Committed | each statement sees a fresh snapshot; two reads in one tx can differ; RMW races are NOT prevented |
 | MySQL/InnoDB | Repeatable Read | consistent snapshot reads, but writes see current data → write skew surprises; gap locks cause unexpected deadlocks |
 | SQLite | Serializable (single writer) | no concurrency bugs, but long write tx = `SQLITE_BUSY` for everyone; keep writes short, use `BEGIN IMMEDIATE` for RMW |
+| DynamoDB | none — per-item atomic only | plain `GetItem`→`PutItem` RMW is a lost update: use `ConditionExpression` (+ version attribute) or `UpdateItem` with arithmetic; multi-item invariants need `TransactWriteItems` (≤100 items/4MB, idempotency via `ClientRequestToken`); GSIs are eventually consistent — never read-own-write through a GSI |
 
-   Code assuming "repeatable read within a tx" on Postgres, or "my SELECT locked the row" on any engine without `FOR UPDATE`, is a finding.
+   Code assuming "repeatable read within a tx" on Postgres, or "my SELECT locked the row" on any engine without `FOR UPDATE`, is a finding. On DynamoDB the equivalent finding is any read-check-write in application code without a `ConditionExpression` — there is no lock to hope for.
 6. **Deadlock ordering.** Where multiple rows/tables are locked (explicitly or by writes), check every code path acquires them in one consistent order (e.g. always lock accounts by ascending id). Flag pairs of endpoints that write the same two tables in opposite orders.
 7. **Dual-write (DB + queue/event).** Find every place a DB write and a message publish must both happen. Publishing inside the tx (the publish is not rolled back with the tx → ghost event for a write that never happened) and publishing after commit (crash between commit and publish → event lost) are BOTH broken under failure. Durable fix: outbox table written in the same tx + relay, or CDC. Flag each dual-write and state which failure window it currently has; recommend outbox only where the business impact justifies it.
 8. **Retries × idempotency.** For every handler that can be retried (queue consumers are at-least-once by default; HTTP clients with retry middleware; webhooks), check the effect of running it twice: double-charge, double-send, duplicate rows? Require an idempotency key / unique constraint / upsert, or an explicit statement of why duplication is tolerable.

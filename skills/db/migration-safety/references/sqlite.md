@@ -34,4 +34,8 @@ Notes: do NOT instead mutate `sqlite_schema` tricks; the transaction makes the s
 - `PRAGMA busy_timeout = 5000` on every app connection — during migrations, writers then queue briefly instead of throwing `SQLITE_BUSY`.
 - WAL mode (`PRAGMA journal_mode=WAL`) keeps readers unblocked during the whole migration; verify it's on before running anything proportional.
 - D1 specifics: migrations run via `wrangler d1 migrations`; no long-lived sessions, so batch backfills as separate statements/requests, keyset-paginated, and remember D1 has request duration limits — a rebuild of a big table may need the copy done in batches into the new table before the swap.
+- Turso / libSQL specifics:
+  - Same SQLite DDL semantics (including the 12-step rebuild), same single-writer model — but every write transaction now holds the write lock **across network latency**, so an interactive migration transaction is far more expensive than embedded SQLite. Prefer `batch()` / single-round-trip statements; keep the rebuild transaction tight.
+  - Embedded replicas serve stale reads until they sync — after a schema change, app instances on unsynced replicas briefly see the pre-migration schema. Deploy order: migrate primary → force replica sync / restart readers → ship code that needs the new schema.
+  - Whether a multi-statement migration file runs atomically depends on the client/protocol version — verify against current Turso docs before relying on it; when unsure, wrap the rebuild in an explicit transaction and confirm it is executed as one.
 - Down-migrations that "restore" a dropped column cannot restore its data — SQLite rollback plans are roll-forward or restore-from-backup more often than not; say so.

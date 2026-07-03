@@ -35,4 +35,9 @@ Version matters — rules below assume PG 12+; notes where later versions change
   A blocked ACCESS EXCLUSIVE request blocks all *subsequent* readers too — the DDL waiting is itself the outage.
 - Retry loop around lock-timeout failures beats one long wait.
 - Long-running transactions (including the migration tool's own wrapping tx) hold back `CREATE INDEX CONCURRENTLY` and vacuum — keep migration transactions short, one DDL per migration where possible.
+- RDS / Aurora specifics:
+  - No real superuser (`rds_superuser` at best): extensions come from the RDS allowlist; some maintenance shortcuts from blog posts will not work. Session-level `SET lock_timeout` / `statement_timeout` still work and remain the right tool.
+  - Server-wide defaults live in parameter groups, not `postgresql.conf` — set migration timeouts per session, not by editing the instance.
+  - Index builds and rewrites push replica lag on Aurora readers just like self-hosted streaming replicas; time large builds accordingly.
+  - RDS Blue/Green Deployments give a full-copy rehearsal + fast-switchover path for rewriting-class changes — worth it for `int`→`bigint` style rewrites on big tables (logical-replication based; check the current restrictions for your engine version before committing to it).
 - Renaming a table/column is instant lock-wise but always **breaking** — expand–contract regardless.

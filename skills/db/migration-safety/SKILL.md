@@ -1,6 +1,6 @@
 ---
 name: db-migration-safety
-description: Use when writing or reviewing a database schema migration that will run against a live system — classifies each DDL as safe / locking / data-rewriting for the actual engine, enforces expand-contract for breaking changes, and requires a backfill and rollback plan. Engine-generic workflow with Postgres, MySQL, and SQLite lock-behavior references. Do NOT use for greenfield schemas with no live traffic (just write the DDL).
+description: Use when writing or reviewing a database schema migration that will run against a live system — classifies each DDL as safe / locking / data-rewriting for the actual engine, enforces expand-contract for breaking changes, and requires a backfill and rollback plan. Engine-generic workflow with Postgres (incl. RDS/Aurora), MySQL, SQLite (incl. D1/Turso), and DynamoDB references. Do NOT use for greenfield schemas with no live traffic (just write the DDL).
 ---
 
 # DB Migration Safety
@@ -11,11 +11,12 @@ If there is no live traffic (greenfield, pre-launch), say so and stop — this w
 
 ## Procedure
 
-1. **Identify the engine and deployment reality.** Postgres / MySQL / SQLite (which version — safety rules changed across versions), table sizes of the affected tables (row count order of magnitude), and whether deploys are rolling (old and new app code run simultaneously — assume yes).
+1. **Identify the engine and deployment reality.** Postgres / MySQL / SQLite / DynamoDB (which version — safety rules changed across versions), table sizes of the affected tables (row count order of magnitude), and whether deploys are rolling (old and new app code run simultaneously — assume yes). Managed flavors map to their base engine's reference plus its platform notes: RDS/Aurora → postgres.md, D1/Turso → sqlite.md.
 2. **Classify every DDL statement** using the engine reference file:
    - [references/postgres.md](references/postgres.md)
    - [references/mysql.md](references/mysql.md)
-   - [references/sqlite.md](references/sqlite.md)
+   - [references/sqlite.md](references/sqlite.md) (incl. D1 / Turso notes)
+   - [references/dynamodb.md](references/dynamodb.md) (no DDL — index/item-shape/rebuild classification)
 
    Classes:
    - **safe** — metadata-only or brief lock; ship it
@@ -55,7 +56,7 @@ For a **review**: a table of statements × classification × verdict, plus the c
 
 - `backend-review-transactions` — the constraints (unique, version columns) that reviews demand get added via this skill
 - `sql-schema-audit` — static schema quality (SQLite/D1)
-- References: [postgres.md](references/postgres.md), [mysql.md](references/mysql.md), [sqlite.md](references/sqlite.md)
+- References: [postgres.md](references/postgres.md), [mysql.md](references/mysql.md), [sqlite.md](references/sqlite.md), [dynamodb.md](references/dynamodb.md)
 
 ## Agent compatibility
 

@@ -1,6 +1,6 @@
 ---
 name: backend-review-data-access
-description: 'Use when reviewing how a backend talks to its database — N+1 queries, queries inside loops, missing eager loading, overfetching, missing pagination, and index/WHERE mismatches. ORM-aware (Prisma, Drizzle, TypeORM, ActiveRecord, Django ORM, SQLAlchemy, GORM) and engine-generic. Evidence-first: findings must be confirmed by reading the actual query path, not pattern-matching alone.'
+description: 'Use when reviewing how a backend talks to its database — N+1 queries, queries inside loops, missing eager loading, overfetching, missing pagination, and index/WHERE mismatches. ORM-aware (Prisma, Drizzle, TypeORM, ActiveRecord, Django ORM, SQLAlchemy, GORM), engine-generic, with a DynamoDB variant (Scan-in-request-path, unbatched Get/Put loops, dropped pagination cursors). Evidence-first: findings must be confirmed by reading the actual query path, not pattern-matching alone.'
 ---
 
 # Backend Review — Data Access
@@ -38,7 +38,12 @@ The failure mode to avoid in YOUR review: reporting a "possible N+1" from a grep
    - List endpoints with no `LIMIT` / `take` / `page` parameter — flag every unbounded `findMany`/`all()` reachable from an HTTP handler.
    - Fetch-then-filter: `.filter()` / `select { ... }` in application code on a result set the DB could have filtered with a WHERE.
 5. **Index / WHERE mismatch (static signal only).** Collect the WHERE/ORDER BY columns of the hottest queries and diff against the schema's indexes. Report as "no index found for this predicate — verify with the engine's plan tool"; do not claim slowness without a plan.
-6. **Connection handling.** One pool per process (not per request); transactions/connections released on error paths; pool size not defaulted to 1 or unbounded.
+6. **DynamoDB variant (when the data layer is DynamoDB, not an ORM).** The equivalents to hunt:
+   - `Scan` (or `Query` + broad `FilterExpression`) in a request path — filters run AFTER the read, so you pay for and read the whole table/partition; must be a `Query` on a key or GSI.
+   - `GetItem`/`PutItem` inside a loop — the literal N+1; use `BatchGetItem` (≤100) / `BatchWriteItem` (≤25) with unprocessed-item retry.
+   - Ignored `LastEvaluatedKey` — Query/Scan silently truncate at 1MB; a list endpoint that drops the cursor returns partial data with no error.
+   - Missing `ProjectionExpression` on wide items (the `SELECT *` equivalent), and hot-partition key design (low-cardinality or monotonically increasing partition keys) on the hottest access paths.
+7. **Connection handling.** One pool per process (not per request); transactions/connections released on error paths; pool size not defaulted to 1 or unbounded.
 
 ## Measure-First Principle
 
