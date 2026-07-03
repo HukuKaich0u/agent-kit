@@ -1,5 +1,5 @@
 ---
-name: typescript-best-practices
+name: typescript
 description: Use when writing or reviewing TypeScript — strict-mode type design, naming, error handling, and module/API layout, plus runtime-specific notes for Node libraries / CLIs, Cloudflare Workers, and React frontends. Trigger on `.ts` / `.tsx` / `tsconfig.json` work even when "TypeScript" is not named. For a structured frontend review pass, defer to the `frontend-review-*` skills.
 ---
 

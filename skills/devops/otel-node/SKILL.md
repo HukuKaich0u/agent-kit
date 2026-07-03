@@ -12,16 +12,16 @@ description: Node.js OpenTelemetry setup — SDK init, auto-instrumentation pack
 import { NodeSDK } from "@opentelemetry/sdk-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
-import { Resource } from "@opentelemetry/resources";
-import { SEMRESATTRS_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
+import { resourceFromAttributes } from "@opentelemetry/resources";
+import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
 
 const exporter = new OTLPTraceExporter({
   url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT + "/v1/traces",
 });
 
 export const sdk = new NodeSDK({
-  resource: new Resource({
-    [SEMRESATTRS_SERVICE_NAME]: process.env.SERVICE_NAME ?? "my-service",
+  resource: resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: process.env.SERVICE_NAME ?? "my-service",
   }),
   spanProcessor: new BatchSpanProcessor(exporter),
 });
@@ -31,6 +31,8 @@ process.on("SIGTERM", () => sdk.shutdown());
 ```
 
 Load before the app entry: `node --import ./otel.js server.js` or `tsx --import ./otel.ts server.ts`.
+
+> **Migration note**: older SDKs (pre-2.x) used `new Resource({...})` from `@opentelemetry/resources` and `SEMRESATTRS_SERVICE_NAME` from `@opentelemetry/semantic-conventions`. Both were replaced by `resourceFromAttributes({...})` and `ATTR_SERVICE_NAME` respectively. Verify against the installed SDK version — this API changed around SDK 2.x.
 
 ## Auto-instrumentation packages
 

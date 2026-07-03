@@ -28,7 +28,7 @@ push to release   ──► cd-production.yml   ──┘
                        │
                        ├─ capture pre-deploy version_id (first_deploy detection)
                        ├─ apply D1 migrations
-                       ├─ build (clean → db:verify → moon build → bundle check)
+                       ├─ build (project-specific — the bundled deploy.yml uses MoonBit's `moon build` as its example; replace with your build command)
                        ├─ wrangler deploy
                        ├─ smoke (continue-on-error)
                        ├─ if smoke failed: wrangler rollback <pre_deploy_id>
@@ -57,7 +57,7 @@ Minimal smoke runner. Reads `SMOKE_BASE_URL`, optional `CF_ACCESS_CLIENT_ID/SECR
 
 ## .env.cloudflare contract
 
-Single dotenvx-encrypted file is the source of truth for every Cloudflare credential. Repo only needs ONE GitHub Actions secret: `DOTENV_PRIVATE_KEY_CLOUDFLARE`. Rotating that key rotates every CF credential.
+Single dotenvx-encrypted file is the source of truth for every Cloudflare credential. Repo only needs ONE GitHub Actions secret: `DOTENV_PRIVATE_KEY_CLOUDFLARE`. Rotating that key rotates every CF credential. This `.env.cloudflare` + dotenvx layout is this skill's assumed convention, not a hard requirement — adapt it to your project's existing secrets-management setup if it differs.
 
 Keys this skill expects:
 
@@ -77,6 +77,12 @@ Keys this skill expects:
 ## Source
 
 Runnable upstream references: [`mizchi/cloudflare-starterkit-mbt`](https://github.com/mizchi/cloudflare-starterkit-mbt) has a minimal runnable starter; [`mizchi/mnemo`](https://github.com/mizchi/mnemo) has a more elaborated version with multi-D1-shard migrations + utels-sourcemap upload integrated.
+
+## Boundaries
+
+- Do NOT deploy without capturing the pre-deploy version_id first — it is the only rollback target if smoke fails.
+- Do NOT disable the auto-rollback step to "make CI green" — a red CI on smoke failure is the workflow doing its job, not a bug to silence.
+- A smoke-test failure after rollback must fail the workflow (see "Fail the workflow if smoke failed") — a rollback that succeeds does not make the underlying deploy attempt a pass.
 
 ## Agent compatibility
 

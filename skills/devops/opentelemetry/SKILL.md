@@ -109,6 +109,7 @@ tracer.startActiveSpan("handle request", { context: ctx }, (span) => {
 ## OTLP Exporter Config
 
 ```typescript
+import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 
@@ -117,14 +118,21 @@ const exporter = new OTLPTraceExporter({
   headers: { Authorization: `Bearer ${process.env.OTEL_API_KEY}` },
 });
 
-provider.addSpanProcessor(
-  new BatchSpanProcessor(exporter, {
-    maxQueueSize: 512,
-    scheduledDelayMillis: 2000,
-    exportTimeoutMillis: 10_000,
-  })
-);
+const provider = new NodeTracerProvider({
+  spanProcessors: [
+    new BatchSpanProcessor(exporter, {
+      maxQueueSize: 512,
+      scheduledDelayMillis: 2000,
+      exportTimeoutMillis: 10_000,
+    }),
+  ],
+});
+provider.register();
 ```
+
+*Verify against the installed SDK version — this API changed around SDK 2.x.*
+
+> **Migration note**: older SDKs (pre-2.x) constructed the provider first and then called `provider.addSpanProcessor(new BatchSpanProcessor(exporter, {...}))` afterward. Current SDKs pass processors as the `spanProcessors` array in the provider's constructor instead.
 
 Use `BatchSpanProcessor` in production — it is async and low-overhead. `SimpleSpanProcessor` blocks the event loop; use only for local debugging.
 

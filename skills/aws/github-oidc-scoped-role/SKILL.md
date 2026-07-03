@@ -19,6 +19,8 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 ```
 
+> Note: `thumbprint_list` is legacy for the GitHub OIDC provider — AWS now validates well-known IdPs against their root CA and ignores the thumbprint. Keeping the `tls_certificate` derivation is harmless but optional.
+
 One provider per AWS account. If it already exists, use a `data` source instead.
 
 ## Scope: `sub` (repo+branch) vs `job_workflow_ref` (specific workflow file)

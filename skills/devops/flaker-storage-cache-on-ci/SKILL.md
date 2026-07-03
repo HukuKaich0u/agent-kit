@@ -3,6 +3,8 @@ name: flaker-storage-cache-on-ci
 description: Persist flaker's DuckDB storage across GitHub Actions runs and feed it from multiple sources (vitest reports, custom adapter reports, etc.). Use when wiring `@mizchi/flaker` into a new repo's CI, adding a new ingest source to an existing flaker setup, or debugging why `flaker apply` / `flaker run --gate ...` "lost its history" between runs. Encodes the cache key shape, fetch-depth requirements, `--changed` derivation, and the import-step placement that internal flaker users converged on.
 ---
 
+> **Scope**: this is a runbook for the `@mizchi/flaker` CLI. Version-sensitive (notes verified against flaker 0.11.x). If the project does not use flaker, this skill does not apply.
+
 # flaker storage cache on GitHub Actions
 
 `flaker` keeps its data in a DuckDB file at the path declared by `flaker.toml` `[storage] path` (default `.flaker/data`). For flaky detection / KPI / quarantine to work, that file must persist between CI runs. GitHub Actions has no first-class runtime storage, so the convention is **`actions/cache@v4` with a sliding key**.

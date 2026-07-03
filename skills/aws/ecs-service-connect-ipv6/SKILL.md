@@ -30,19 +30,21 @@ OpenTelemetry Collector の例:
 ```yaml
 exporters:
   # 旧: otlp (gRPC) で IPv6 で詰まる
-  # otlp/tempo:
-  #   endpoint: tempo.study-aws.local:4317
+  # otlp/<service>:
+  #   endpoint: <service>.<namespace>.local:4317
   # 新: otlphttp で OK
-  otlphttp/tempo:
-    endpoint: http://tempo.study-aws.local:4318
+  otlphttp/<service>:
+    endpoint: http://<service>.<namespace>.local:4318
     tls:
       insecure: true
 
 service:
   pipelines:
     traces:
-      exporters: [otlphttp/tempo]
+      exporters: [otlphttp/<service>]
 ```
+
+(Throughout, `<service>.<namespace>.local` denotes your Service Connect DNS name — e.g. `tempo.study-aws.local` for service `tempo` in namespace `study-aws`.)
 
 target 側の Service Connect 設定は HTTP port (4318) も alias にしておく:
 
@@ -50,13 +52,13 @@ target 側の Service Connect 設定は HTTP port (4318) も alias にしてお�
 service_connect_configuration {
   service {
     port_name      = "otlp-grpc"
-    discovery_name = "tempo"
-    client_alias { port = 4317; dns_name = "tempo.study-aws.local" }
+    discovery_name = "<service>"
+    client_alias { port = 4317; dns_name = "<service>.<namespace>.local" }
   }
   service {
     port_name      = "otlp-http"
-    discovery_name = "tempo-http"
-    client_alias { port = 4318; dns_name = "tempo.study-aws.local" }
+    discovery_name = "<service>-http"
+    client_alias { port = 4318; dns_name = "<service>.<namespace>.local" }
   }
 }
 ```
@@ -78,7 +80,7 @@ Go なら `GODEBUG=netdns=go+1` で `gai.conf` 設定を有効化、`/etc/gai.co
 ECS Task の中から DNS resolve を確認:
 
 ```sh
-aws ecs execute-command --cluster <c> --task <t> --container <name> --interactive --command "/bin/sh -c 'getent hosts tempo.study-aws.local'"
+aws ecs execute-command --cluster <c> --task <t> --container <name> --interactive --command "/bin/sh -c 'getent hosts <service>.<namespace>.local'"
 ```
 
 IPv6 が返るなら本症状確定。
