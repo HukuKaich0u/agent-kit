@@ -1,12 +1,12 @@
 ---
 name: sql-plan-audit
-description: Run EXPLAIN QUERY PLAN against every query in a sqlc-style catalog and diff the plans against a baseline. Detects new full-table SCANs and TEMP B-TREE sort scans introduced by PRs. SQLite/D1-only today; engine extension noted below.
+description: 'Run EXPLAIN against every query in a sqlc-style catalog and diff the plans against a baseline. Detects new full-table scans and un-indexed sorts introduced by PRs. Two runners: SQLite/D1 (in-memory, zero setup) and Postgres/RDS (via psql against a throwaway DB; fixtures required for meaningful plans).'
 version: 0.1.0
 metadata:
   hermes:
     tags: [sql, sqlite, d1, dba, performance, sqlc]
     related_skills: [sql-lint, sql-schema-audit, sql-security]
-    engines: [sqlite]
+    engines: [sqlite, postgres]
 ---
 
 # SQL Plan Audit
@@ -106,19 +106,35 @@ Pre-push (pkfire / lefthook / pre-commit) is the right boundary — running this
 - Functions like `datetime('now')` are evaluated at plan time. Side effects (writes) are not run because the in-memory DB has the same schema but no rows.
 - Subqueries and CTEs may produce extra rows in the plan; the diff treats them stably.
 
-## Engine extensibility
+## Postgres / RDS
 
-The runner is SQLite-specific. To support Postgres / MySQL: swap the `node:sqlite` driver and the EXPLAIN syntax; the parser, baseline diff, and severity classifier are engine-agnostic. Not implemented here — drop a sibling script when needed.
+`scripts/explain-runner-pg.mjs` is the Postgres sibling — same catalog format, same output/baseline contract, same CI wiring. Differences that matter:
+
+1. **It needs a live Postgres and `psql`.** It never touches your data: by default it creates a throwaway database on the given `--db-url`, loads the schema (+fixtures), and drops it afterwards. A disposable local instance is the standard setup:
+   ```bash
+   docker run --rm -d --name plan-audit-pg -e POSTGRES_HOST_AUTH_METHOD=trust -p 54329:5432 postgres:17
+   node scripts/explain-runner-pg.mjs \
+     --db-url postgres://postgres@localhost:54329/postgres \
+     --schema db/schema.sql --queries db/queries.sql --fixtures db/fixtures.sql \
+     --out .linters/query-plans-pg.txt
+   docker rm -f plan-audit-pg
+   ```
+   Never point `--db-url` at a production/RDS instance — match the engine major version locally instead (plans can differ across versions). `--reuse-db` targets the URL's own database directly for environments where `CREATE DATABASE` is not allowed; only use it against a scratch DB.
+2. **Fixtures are required for meaningful results.** Postgres plans are cost-based: against empty tables the planner prefers Seq Scan for almost everything, so a schema-only run is noise (the runner warns). Load representative row *counts* (values don't matter) via `--fixtures` — `generate_series` inserts are enough — and the runner executes `ANALYZE` after loading. Keep the fixtures file committed next to the schema so baselines are reproducible.
+3. **Binds are handled via generic plans.** Each query runs as `PREPARE` + `EXPLAIN EXECUTE` with `plan_cache_mode = force_generic_plan` and NULL binds, so the plan is independent of bind values (same semantics as the SQLite runner). `$1`-style params and `sqlc.arg/narg/slice(...)` are supported. If Postgres cannot infer a parameter's type ("could not determine data type of parameter"), the query is reported as a per-query ERROR — add an explicit cast (`$1::bigint`) in the catalog.
+4. **Severity mapping**: `!` = `Seq Scan`, `?` = `Sort` / `Incremental Sort` (no index covers the ordering), unmarked = index access. The same small-table caveat applies — a Seq Scan on a 50-row lookup table is often the *correct* plan; the marker is a flag, not a verdict.
 
 ## Requirements
 
-- Node 22 or newer (uses the built-in `node:sqlite` module).
+- Node 22 or newer (SQLite runner uses the built-in `node:sqlite` module).
+- Postgres runner: `psql` on PATH and a disposable Postgres to connect to (docker one-liner above).
 - A sqlc-style query catalog (`-- name: X :type` markers). Other named-query formats can be supported by adjusting `parseQueryCatalog` in the runner.
 
 ## Files
 
-- `scripts/explain-runner.mjs` — CLI entrypoint, no dependencies.
+- `scripts/explain-runner.mjs` — SQLite/D1 runner, no dependencies.
+- `scripts/explain-runner-pg.mjs` — Postgres runner, no npm dependencies (shells out to `psql`).
 
 ## Agent compatibility
 
-- Claude と Codex のどちらでも使える。同梱の Node スクリプト(`node:sqlite` 利用)を実行するだけで harness 非依存。Node 22+ が前提。
+- Claude と Codex のどちらでも使える。同梱の Node スクリプトを実行するだけで harness 非依存。Node 22+ が前提。Postgres runner は追加で `psql` と使い捨て Postgres(docker)が必要。
