@@ -51,6 +51,8 @@ Read this file when:
 | External | `rounded=1;dashed=1;fillColor=#f5f5f5;strokeColor=#666666;` | Dashed border for external systems |
 | Layout | TB or LR by tier count; ≥4 tiers → TB | Hub nodes centered |
 
+**AWS (or Azure/GCP) icon-based architecture → read `references/aws-architecture.md` first.** Vendor icons paint their label *outside* the geometry box (bottom), which invalidates naive spacing; that file has the label-zone math, spacing constants, port discipline (no bottom-center exits), official VPC/AZ/subnet group container styles, and a pre-export checklist.
+
 ## ML / Deep Learning Model Diagram
 
 For neural network architecture diagrams — ideal for papers targeting NeurIPS, ICML, ICLR.

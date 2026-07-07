@@ -84,7 +84,7 @@ Give nodes a `group` key and the script wraps each group in a labeled container 
 python3 <this-skill-dir>/scripts/validate.py diagram.drawio
 ```
 
-It catches dangling edge endpoints, duplicate/reserved ids, broken parent references (errors), plus off-grid/negative geometry and overlapping sibling nodes (warnings) — without launching draw.io. Exit status is non-zero on any error (or any warning with `--strict`), so it can gate the workflow. Auto-layout output should always pass clean; a failure means a malformed input graph (e.g. an edge referencing a missing node id).
+It catches dangling edge endpoints, duplicate/reserved ids, broken parent references, missing edge geometry (errors), plus absolute-coordinate overlaps, container overflow/title-zone collisions, icon label-zone collisions, clipped labels (CJK-aware), edges routed through nodes, stacked parallel edges, and labeled edges missing `labelBackgroundColor` (warnings) — without launching draw.io. Exit status is non-zero on any error (or any warning with `--strict`), so it can gate the workflow. Auto-layout output should pass clean apart from possible label-related warnings (Graphviz sizes nodes from your `width`/`height`, not the text) — fix those by enlarging the node sizes in the graph JSON; a structural failure means a malformed input graph (e.g. an edge referencing a missing node id).
 
 ## Importers — visualize code structure
 

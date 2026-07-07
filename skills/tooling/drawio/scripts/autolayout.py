@@ -297,9 +297,12 @@ def to_drawio(graph, height, pos, edge_pts, color=True):
                     f'<Array as="points">{points}</Array></mxGeometry>')
         else:
             geom = '<mxGeometry relative="1" as="geometry"/>'
+        # Labeled edges get a background so the text stays readable where the
+        # line crosses other edges/shapes (same rule as hand-written edges).
+        estyle = EDGE_STYLE + ("labelBackgroundColor=#ffffff;" if edge.get("label") else "")
         cells.append(
             f'        <mxCell id="e{i}" value="{attr(edge.get("label", ""))}" '
-            f'style="{EDGE_STYLE}" edge="1" parent="1" '
+            f'style="{estyle}" edge="1" parent="1" '
             f'source="{attr(edge["source"])}" target="{attr(edge["target"])}">\n'
             f"          {geom}\n"
             f"        </mxCell>"

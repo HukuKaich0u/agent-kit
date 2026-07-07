@@ -10,8 +10,12 @@ Read this when something looks wrong in the output (rendering, export, layout, e
 | `--` inside XML comments | Illegal per XML spec — use single hyphens or rephrase |
 | Special characters in `value` | Use XML entities: `&amp;` `&lt;` `&gt;` `&quot;` |
 | Literal `\n` in label text | Use `&#xa;` for line breaks in `value` attributes |
-| Overlapping shapes | Scale spacing with complexity (200–350px); leave routing corridors |
-| Edges crossing through shapes | Add waypoints, distribute entry/exit points, or increase spacing |
+| Overlapping shapes | Scale spacing with complexity (200–350px); leave routing corridors. Run `scripts/validate.py` — it detects overlaps in absolute coordinates, container overflow, and icon label-zone collisions |
+| Edges crossing through shapes | Add waypoints, distribute entry/exit points, or increase spacing. `validate.py` flags blocked edge corridors deterministically |
+| Edge label struck through by its own line / unreadable at crossings | Add `labelBackgroundColor=#ffffff;` to the edge style; shift the label along the edge (label geometry `x` −0.6…0.6) away from bends and other labels |
+| Vertical line cuts through an AWS icon's name text | The label paints *below* the icon (outside its geometry) and the edge exits bottom-center. Exit at `exitX=0.25/0.75;exitY=1` or a side instead — see `references/aws-architecture.md` |
+| Text hidden under a shape or line | Document order = paint order. Move free text/legend cells to the end of `<root>`; never place an edge before a filled container (it vanishes under the fill) |
+| Two adjacent icons' labels collide | Labels can be wider than the 78px icon (CJK ≈ fontSize px/char). Increase column pitch (≥200px centers) or wrap with `&#xa;` |
 | Arrowhead overlaps bend | Final edge segment before target must be ≥20px — increase spacing or add waypoints |
 | Iteration loop never ends | After 5 rounds, suggest user open .drawio in draw.io desktop for fine-tuning |
 | `command not found: draw.io` after `brew install --cask drawio` | Homebrew installs the binary as `drawio` (no dot). Use `drawio --version`, not `draw.io --version`. The dot-name only exists inside the `.app` bundle (`/Applications/draw.io.app/Contents/MacOS/draw.io`) and on Windows (`draw.io.exe`). |
