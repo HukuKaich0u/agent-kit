@@ -14,6 +14,10 @@ the same tag score, prefers ones whose title contains the query terms verbatim
 with it). The bundled index (data/shape-index.json.gz) is the upstream draw.io
 shape data — see data/SHAPE-INDEX-NOTICE.md.
 
+For AWS queries, exact official-name/alias hits consult data/aws-icon-index.json
+first and return the official name, category color and style; generic search is
+the fallback.
+
 Usage:
   python3 shapesearch.py "aws lambda" [--limit N] [--json]
 """
@@ -25,6 +29,26 @@ import re
 import sys
 
 INDEX = os.path.join(os.path.dirname(__file__), "..", "data", "shape-index.json.gz")
+AWS_INDEX = os.path.join(os.path.dirname(__file__), "..", "data", "aws-icon-index.json")
+
+
+def norm_aws(s):
+    s = s.lower()
+    s = re.sub(r"^(amazon|aws)[-_ ]+", "", s)
+    return re.sub(r"[^a-z0-9]", "", s)
+
+
+def aws_lookup(query):
+    """Entries whose official name or alias equals the query (normalized)."""
+    if not os.path.exists(AWS_INDEX):
+        return []
+    key = norm_aws(query)
+    if not key:
+        return []
+    with open(AWS_INDEX, encoding="utf-8") as f:
+        entries = json.load(f)
+    return [e for e in entries
+            if any(norm_aws(n) == key for n in [e["name"]] + e.get("aliases", []))]
 _SOUNDEX_MAP = "01230120022455012603010202"   # A..Z digit codes
 _TRAIL = re.compile(r"\.*\d*$")               # strip trailing digits/dots before soundex
 
@@ -142,6 +166,28 @@ def main():
     ap.add_argument("--limit", type=int, default=10)
     ap.add_argument("--json", action="store_true", help="emit JSON instead of a table")
     args = ap.parse_args()
+
+    aws = aws_lookup(args.query)
+    if aws:
+        if args.json:
+            print(json.dumps(aws, indent=2, ensure_ascii=False))
+            return
+        for e in aws:
+            if e["kind"] == "group":
+                print(f"[AWS official group] {e['name']}")
+                print(f"  grIcon={e['grIcon']};strokeColor={e['strokeColor']};"
+                      f"fontColor={e['fontColor']};fillColor={e['fillColor']};"
+                      f"dashed={e['dashed']}  — full style: references/aws-architecture.md")
+                continue
+            color = e.get("official_color") or "?"
+            print(f"[AWS official] {e['name']}  ({e['kind']}, {e['category']}, {color})")
+            if e.get("aws4_style"):
+                print(f"  {e['aws4_style']}")
+            else:
+                print("  no mxgraph.aws4 counterpart — embed the official SVG "
+                      "(see references/aws-architecture.md):")
+                print(f"  svg: {e['svg']}")
+        return
 
     if not os.path.exists(INDEX):
         sys.exit(f"error: shape index not found at {INDEX}")
