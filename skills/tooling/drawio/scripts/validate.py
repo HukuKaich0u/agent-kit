@@ -63,7 +63,7 @@ _AWS_CACHE = None
 
 
 def aws_index():
-    """(resIcon token -> official fillColor, grIcon -> allowed frame combos)."""
+    """(icon token -> set of allowed fillColors, grIcon -> allowed frame combos)."""
     global _AWS_CACHE
     if _AWS_CACHE is not None:
         return _AWS_CACHE
@@ -74,10 +74,16 @@ def aws_index():
                 if e["kind"] == "group":
                     gr.setdefault(e["grIcon"], []).append(e)
                 elif e.get("aws4_style"):
-                    m = re.search(r"resIcon=(mxgraph\.aws4\.[a-z0-9_]+)", e["aws4_style"])
-                    fm = re.search(r"fillColor=(#[0-9A-Fa-f]{6})", e["aws4_style"])
+                    st = e["aws4_style"]
+                    m = re.search(r"resIcon=(mxgraph\.aws4\.[a-z0-9_]+)", st)
+                    if not m:
+                        m2 = re.search(r"shape=(mxgraph\.aws4\.[a-z0-9_]+)", st)
+                        if m2 and not m2.group(1).endswith(".resourceIcon") \
+                                and ".group" not in m2.group(1):
+                            m = m2
+                    fm = re.search(r"fillColor=(#[0-9A-Fa-f]{6})", st)
                     if m and fm:
-                        res[m.group(1)] = fm.group(1).upper()
+                        res.setdefault(m.group(1), set()).add(fm.group(1).upper())
     _AWS_CACHE = (res, gr)
     return _AWS_CACHE
 
@@ -478,9 +484,10 @@ def check_page(diagram):
                                  f"(look it up with shapesearch.py)")
                 else:
                     fill = (st.get("fillColor") or "").upper()
-                    if fill != res_fill[ri]:
+                    if fill not in res_fill[ri]:
+                        want = "/".join(sorted(res_fill[ri]))
                         errors.append(f"cell {cid!r} fillColor {fill or '(none)'} != official "
-                                      f"category color {res_fill[ri]} for {ri} — do not "
+                                      f"category color {want} for {ri} — do not "
                                       f"recolor AWS icons")
             gi = st.get("grIcon")
             if gi and gi.startswith("mxgraph.aws4.group"):

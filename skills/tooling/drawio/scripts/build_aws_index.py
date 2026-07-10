@@ -117,7 +117,12 @@ GROUPS = [
 
 
 def aws4_maps():
-    """resIcon token -> (style, title); normalized aws4 title -> token."""
+    """aws4 icon token -> (style, title); normalized aws4 title -> token.
+
+    Tokens come from resourceIcon entries (resIcon=...) and, second pass,
+    from standalone glyph shapes (shape=mxgraph.aws4.s3_vectors,
+    application_load_balancer, ...) that draw.io ships outside the
+    resourceIcon mechanism."""
     with gzip.open(SHAPE_INDEX, "rt", encoding="utf-8") as f:
         shapes = json.load(f)
     by_token, token_by_title = {}, {}
@@ -128,6 +133,19 @@ def aws4_maps():
             continue
         tok = m.group(1)
         by_token.setdefault(tok, (st, s.get("title", "")))
+        token_by_title.setdefault(norm(s.get("title", "")), tok)
+    for s in shapes:
+        st = s.get("style", "")
+        if "resIcon=" in st:
+            continue
+        m = re.search(r"shape=(mxgraph\.aws4\.[a-z0-9_]+)", st)
+        if not m:
+            continue
+        tok = m.group(1)
+        if tok.endswith(".resourceIcon") or tok.endswith(".group") or ".group_" in tok:
+            continue
+        if tok not in by_token:
+            by_token[tok] = (st, s.get("title", ""))
         token_by_title.setdefault(norm(s.get("title", "")), tok)
     return by_token, token_by_title
 
@@ -172,12 +190,20 @@ def main():
         aliases = list(EXTRA_ALIASES.get(key, []))
         if title and norm(title) != key and title not in aliases:
             aliases.append(title)
+        official = svg_color(path)
+        # The bundled shape-index still carries pre-2021 palette duplicates
+        # (old API Gateway pink, old ELB orange, ...). The official Release
+        # SVG color is the source of truth — rewrite the style fill for
+        # service icons so shapesearch hands out the current palette.
+        if kind == "service" and style and official and "resourceIcon" in style:
+            style = re.sub(r"fillColor=#[0-9A-Fa-f]{6}", "fillColor=" + official, style)
+            style = re.sub(r"strokeColor=#[0-9A-Fa-f]{6}", "strokeColor=#ffffff", style)
         entries.append({
             "kind": kind,
             "name": raw.replace("-", " ").replace("_", " "),
             "aliases": aliases,
             "category": cat.replace(cat_prefix, "").replace("-", " "),
-            "official_color": svg_color(path),
+            "official_color": official,
             "aws4_style": style,
             "svg": os.path.relpath(path, ROOT).replace(os.sep, "/"),
         })
