@@ -180,7 +180,8 @@ def main():
                       f"dashed={e['dashed']}  — full style: references/aws-architecture.md")
                 continue
             color = e.get("official_color") or "?"
-            print(f"[AWS official] {e['name']}  ({e['kind']}, {e['category']}, {color})")
+            cat = e.get("category") or "aws4 built-in"
+            print(f"[AWS official] {e['name']}  ({e['kind']}, {cat}, {color})")
             if e.get("aws4_style"):
                 print(f"  {e['aws4_style']}")
             else:

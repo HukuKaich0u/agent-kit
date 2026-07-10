@@ -6723,6 +6723,2536 @@
   "svg": "assets/aws/resource/Res_Storage/Res_Amazon-Simple-Storage-Service_VPC-Access-Points_48.svg"
  },
  {
+  "kind": "service",
+  "name": "Action",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.action;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Actuator",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.actuator;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Addon",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.addon;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Agent",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.agent;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Alarm",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.alarm;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Alexa Enabled Device",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.alexa_enabled_device;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Alexa Skill",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.alexa_skill;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Alexa Smart Home Skill",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.alexa_smart_home_skill;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Alexa Voice Service",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.alexa_voice_service;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "All Products",
+  "aliases": [],
+  "category": null,
+  "official_color": "#1E262E",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];gradientDirection=north;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#1E262E;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.all_products;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Ami",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ami;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Analytics",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.analytics;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Application",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Application Cost Profiler",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_cost_profiler;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Application Integration",
+  "aliases": [],
+  "category": null,
+  "official_color": "#E7157B",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_integration;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Apps",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.apps;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "AR & VR",
+  "aliases": [],
+  "category": null,
+  "official_color": "#BC1356",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#F34482;gradientDirection=north;fillColor=#BC1356;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ar_vr;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Archive",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.archive;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Attribute",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.attribute;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Attributes",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.attributes;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Auto Scaling",
+  "aliases": [],
+  "category": null,
+  "official_color": "#ED7100",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.auto_scaling3;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Automation",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.automation;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Auto Scaling",
+  "aliases": [],
+  "category": null,
+  "official_color": "#E7157B",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.autoscaling;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Aws Cloud",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.aws_cloud;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Bank",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bank;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Bedrock AgentCore",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock_agentcore;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Blockchain",
+  "aliases": [],
+  "category": null,
+  "official_color": "#ED7100",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.blockchain;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Bucket",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bucket;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Bucket With Objects",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bucket_with_objects;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Business Application",
+  "aliases": [],
+  "category": null,
+  "official_color": "#DD344C",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.business_application;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Bycicle",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bycicle;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Cache Node",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cache_node;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Cached Volume",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cached_volume;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Camera",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.camera;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Car",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.car;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Cart",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cart;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Certificate Manager 2",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.certificate_manager_2;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Certificate Manager",
+  "aliases": [],
+  "category": null,
+  "official_color": "#DD344C",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.certificate_manager_3;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Change Set",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.change_set;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Checklist",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.checklist;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Checklist Cost",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.checklist_cost;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Checklist Fault Tolerant",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.checklist_fault_tolerant;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Checklist Performance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.checklist_performance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Checklist Security",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.checklist_security;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Client",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.client;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Cluster",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cluster;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "CodeGuru",
+  "aliases": [],
+  "category": null,
+  "official_color": "#E7157B",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.codeguru;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "CodeStar",
+  "aliases": [],
+  "category": null,
+  "official_color": "#C925D1",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.codestar;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Coffee Pot",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.coffee_pot;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Compute",
+  "aliases": [],
+  "category": null,
+  "official_color": "#ED7100",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.compute;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Contact Center",
+  "aliases": [],
+  "category": null,
+  "official_color": "#DD344C",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.contact_center;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Container 1",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.container_1;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Container 2",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.container_2;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Container 3",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.container_3;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Containers",
+  "aliases": [],
+  "category": null,
+  "official_color": "#ED7100",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.containers;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Corporate Data Center",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.corporate_data_center;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Cost Management",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cost_management;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Customer Enablement",
+  "aliases": [],
+  "category": null,
+  "official_color": "#C925D1",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.customer_enablement;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Customer Engagement",
+  "aliases": [],
+  "category": null,
+  "official_color": "#3334B9",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#4D72F3;gradientDirection=north;fillColor=#3334B9;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.customer_engagement;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Customer Gateway",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.customer_gateway;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Data Encryption Key",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.data_encryption_key;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Data Pipeline",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.data_pipeline;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Database",
+  "aliases": [],
+  "category": null,
+  "official_color": "#C925D1",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.database;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Database Migration Workflow Job",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.database_migration_workflow_job;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Db Instance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.db_instance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Db Instance Read Replica",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.db_instance_read_replica;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Db Instance Standby",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.db_instance_standby;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Db On Instance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.db_on_instance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "DeepLens",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.deeplens;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Dense Compute Node",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dense_compute_node;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Dense Storage Node",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dense_storage_node;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Deployment",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.deployment;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Deployments",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.deployments;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Desired State",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.desired_state;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "End User Computing",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.desktop_and_app_streaming;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Developer Tools",
+  "aliases": [],
+  "category": null,
+  "official_color": "#C925D1",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.developer_tools;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "DevOps Agent",
+  "aliases": [],
+  "category": null,
+  "official_color": "#E7157B",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.devops_agent;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Disk",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.disk;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Documents",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.documents;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Door Lock",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.door_lock;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Download Distribution",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.download_distribution;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Echo",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.echo;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Edge Location",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.edge_location;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "EFS InfrequentAccess",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.efs_infrequentaccess;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "EFS Standard",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.efs_standard;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Elastic Ip Address",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_ip_address;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Elastic Network Adapter",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_network_adapter;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Elastic Network Interface",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_network_interface;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Email",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.email;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Email Notification",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.email_notification;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Emr Engine",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.emr_engine;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Emr Engine Mapr M3",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.emr_engine_mapr_m3;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Emr Engine Mapr M5",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.emr_engine_mapr_m5;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Emr Engine Mapr M7",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.emr_engine_mapr_m7;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Encrypted Data",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.encrypted_data;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Endpoints",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.endpoints;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Event Event Based",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.event_event_based;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Event Time Based",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.event_time_based;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Factory",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.factory;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Filtering Rule",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.filtering_rule;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Firetv",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.firetv;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Firetv Stick",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.firetv_stick;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Flow Logs",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.flow_logs;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Forums",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.forums;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "GameKit",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.gamekit;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Game Tech",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.games;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "GameSparks",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.gamesparks;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "General",
+  "aliases": [],
+  "category": null,
+  "official_color": "#1E262E",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];gradientDirection=north;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#1E262E;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.general;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Generic",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Generic Database",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.generic_database;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Genomics CLI",
+  "aliases": [],
+  "category": null,
+  "official_color": "#ED7100",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.genomics_cli;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Global Secondary Index",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.global_secondary_index;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Glue Elastic Views",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.glue_elastic_views;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Hardware Board",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.hardware_board;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Hdfs Cluster",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.hdfs_cluster;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Honeycode",
+  "aliases": [],
+  "category": null,
+  "official_color": "#DD344C",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.honeycode;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Hosted Zone",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.hosted_zone;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "House",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.house;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Http2 Protocol",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.http2_protocol;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Http Notification",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.http_notification;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Http Protocol",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.http_protocol;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Import Export",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.import_export;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Infrequent Access Storage Class",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.infrequent_access_storage_class;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Instance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.instance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Instance With Cloudwatch",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.instance_with_cloudwatch;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Instances",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.instances;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Instances 2",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.instances_2;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Internet",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Internet Alt1",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_alt1;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Internet Alt2",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_alt2;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Internet Gateway",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_gateway;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Internet of Things",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_of_things;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Inventory",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.inventory;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "1Click",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.iot_1click;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "EduKit",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.iot_edukit;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "RoboRunner",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.iot_roborunner;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Graph",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.iot_things_graph;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Item",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.item;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Items",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.items;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Kinesis Data Analytics",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.kinesis_data_analytics;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Lambda Function",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda_function;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Layers",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.layers;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Lightbulb",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lightbulb;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Long Term Security Credential",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.long_term_security_credential;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Lumberyard",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lumberyard;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Machine Learning",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.machine_learning;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Maintenance Windows",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.maintenance_windows;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Managed Apache Cassandra Service",
+  "aliases": [],
+  "category": null,
+  "official_color": "#C925D1",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.managed_apache_cassandra_service;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Management & Governance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#E7157B",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.management_and_governance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Media Services",
+  "aliases": [],
+  "category": null,
+  "official_color": "#ED7100",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.media_services;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Medical Emergency",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.medical_emergency;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Message",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.message;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Mfa Token",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.mfa_token;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Migration & Transfer",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.migration_and_transfer;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Mobile",
+  "aliases": [],
+  "category": null,
+  "official_color": "#DD344C",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.mobile;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Mobile Client",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.mobile_client;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Monitoring",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.monitoring;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Mqtt Protocol",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.mqtt_protocol;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Ms Sql Instance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ms_sql_instance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Ms Sql Instance Alternate",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ms_sql_instance_alternate;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Multimedia",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.multimedia;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Mysql Db Instance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.mysql_db_instance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Mysql Db Instance Alternate",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.mysql_db_instance_alternate;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Nat Gateway",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.nat_gateway;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Network Access Control List",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.network_access_control_list;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Networking and Content Delivery",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.networking_and_content_delivery;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Nimble Studio",
+  "aliases": [],
+  "category": null,
+  "official_color": "#ED7100",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.nimble_studio;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Non Cached Volume",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.non_cached_volume;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Object",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.object;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Office Building",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.office_building;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "OpsWorks",
+  "aliases": [],
+  "category": null,
+  "official_color": "#E7157B",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.opsworks;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Optimized Instance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.optimized_instance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Oracle Db Instance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.oracle_db_instance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Oracle Db Instance Alternate",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.oracle_db_instance_alternate;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Parameter Store",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.parameter_store;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Partner Central",
+  "aliases": [],
+  "category": null,
+  "official_color": "#E7157B",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.partner_central;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Patch Manager",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.patch_manager;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Peering",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.peering;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Permissions",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.permissions;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Piop",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.piop;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Police Emergency",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.police_emergency;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Policy",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.policy;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Postgresql Instance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.postgresql_instance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Quantum Technologies",
+  "aliases": [],
+  "category": null,
+  "official_color": "#ED7100",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.quantum_technologies;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Queue",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.queue;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Quick Suite",
+  "aliases": [],
+  "category": null,
+  "official_color": "#DD344C",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.quick_suite;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "RDS on VMware",
+  "aliases": [],
+  "category": null,
+  "official_color": "#C925D1",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds_on_vmware;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Registry",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.registry;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Reported State",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.reported_state;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Rescue",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rescue;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Resources",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.resources;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "RoboMaker",
+  "aliases": [],
+  "category": null,
+  "official_color": "#DD344C",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.robomaker;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Robotics",
+  "aliases": [],
+  "category": null,
+  "official_color": "#DD344C",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.robotics;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Role",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.role;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Route Table",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.route_table;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Router",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.router;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "RTB Fabric",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rtb_fabric;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Rule",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rule;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Rule 2",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rule_2;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Run Command",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.run_command;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Saml Token",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.saml_token;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Satellite",
+  "aliases": [],
+  "category": null,
+  "official_color": "#C925D1",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.satellite;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Search Documents",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.search_documents;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Security Agent",
+  "aliases": [],
+  "category": null,
+  "official_color": "#DD344C",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.security_agent;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Security Identity and Compliance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#DD344C",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.security_identity_and_compliance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Sensor",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sensor;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Server Migration Service",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.server_migration_service;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Serverless",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.serverless;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Servo",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.servo;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Shadow",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.shadow;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Simulator",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.simulator;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Snapshot",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.snapshot;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Snowcone",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.snowcone;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Snowmobile",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.snowmobile;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Spot Instance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.spot_instance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Sql Primary",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sql_primary;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Sql Replica",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sql_replica;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "SQL Workbench",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sql_workbench;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Ssl Padlock",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ssl_padlock;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Stack",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.stack;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Stack2",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.stack2;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "State Manager",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.state_manager;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Storage",
+  "aliases": [],
+  "category": null,
+  "official_color": "#7AA116",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.storage;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Streaming Distribution",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.streaming_distribution;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Sts",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sts;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Sts Alternate",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sts_alternate;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Sumerian",
+  "aliases": [],
+  "category": null,
+  "official_color": "#BC1356",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#F34482;gradientDirection=north;fillColor=#BC1356;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sumerian;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Table",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.table;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Tape Storage",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.tape_storage;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Template",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.template;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Temporary Security Credential",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.temporary_security_credential;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Thermostat",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.thermostat;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Thinkbox Draft",
+  "aliases": [],
+  "category": null,
+  "official_color": "#ED7100",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.thinkbox_draft;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Topic",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.topic;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Topic 2",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.topic_2;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Traditional Server",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.traditional_server;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Transfer for SFTP",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.transfer_for_sftp;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Travel",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.travel;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "User",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.user;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Users",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.users;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Utility",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.utility;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Vault",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.vault;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Virtual Tape Library",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.virtual_tape_library;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "VMware Cloud on AWS",
+  "aliases": [],
+  "category": null,
+  "official_color": "#ED7100",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.vmware_cloud_on_aws;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Volume",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.volume;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "VPC",
+  "aliases": [],
+  "category": null,
+  "official_color": "#8C4FFF",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.vpc;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Vpn Connection",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.vpn_connection;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Vpn Gateway",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.vpn_gateway;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "Windfarm",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.windfarm;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "WorkLink",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.worklink;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "WorkSpaces",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.workspaces;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "WorkSpaces Thin Client",
+  "aliases": [],
+  "category": null,
+  "official_color": "#01A88D",
+  "aws4_style": "sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#01A88D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.workspaces_thin_client;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
+  "kind": "service",
+  "name": "X1 Instance",
+  "aliases": [],
+  "category": null,
+  "official_color": "#FFFFFF",
+  "aws4_style": "sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.x1_instance;",
+  "svg": null,
+  "aws4_only": true
+ },
+ {
   "kind": "group",
   "name": "AWS Cloud",
   "aliases": [],

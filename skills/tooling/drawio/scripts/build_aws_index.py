@@ -186,6 +186,34 @@ def main():
         add("service", "Arch_", cat, f, raw, path, track_unmatched=True)
     for cat, f, raw, path in walk_icons("resource", r"Res_(.+)_48\.svg$"):
         add("resource", "Res_", cat, f, raw, path, track_unmatched=False)
+
+    # aws4 resourceIcons with no official-asset counterpart (services newer
+    # than the bundled Release, e.g. Bedrock AgentCore) — include them so
+    # validate.py does not flag legitimate built-in icons as unknown.
+    seen_tokens = set()
+    for e in entries:
+        st = e.get("aws4_style")
+        if st:
+            m = re.search(r"resIcon=(mxgraph\.aws4\.[a-z0-9_]+)", st)
+            if m:
+                seen_tokens.add(m.group(1))
+    n_aws4_only = 0
+    for tok in sorted(by_token):
+        if tok in seen_tokens:
+            continue
+        style, title = by_token[tok]
+        fm = re.search(r"fillColor=(#[0-9A-Fa-f]{6})", style)
+        entries.append({
+            "kind": "service",
+            "name": title,
+            "aliases": [],
+            "category": None,
+            "official_color": fm.group(1).upper() if fm else None,
+            "aws4_style": style,
+            "svg": None,
+            "aws4_only": True,
+        })
+        n_aws4_only += 1
     for name, gricon, stroke, font, fill, dashed in GROUPS:
         entries.append({
             "kind": "group", "name": name, "aliases": [], "grIcon": gricon,
@@ -196,12 +224,13 @@ def main():
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(entries, f, ensure_ascii=False, indent=1)
 
-    n_svc = sum(1 for e in entries if e["kind"] == "service")
-    n_hit = sum(1 for e in entries if e["kind"] == "service" and e["aws4_style"])
+    n_svc = sum(1 for e in entries if e["kind"] == "service" and not e.get("aws4_only"))
+    n_hit = sum(1 for e in entries if e["kind"] == "service"
+                and not e.get("aws4_only") and e["aws4_style"])
     n_res = sum(1 for e in entries if e["kind"] == "resource")
     n_grp = sum(1 for e in entries if e["kind"] == "group")
-    print(f"service {n_svc} (aws4 matched {n_hit}), resource {n_res}, "
-          f"group {n_grp} -> {OUT}")
+    print(f"service {n_svc} (aws4 matched {n_hit}, +{n_aws4_only} aws4-only), "
+          f"resource {n_res}, group {n_grp} -> {OUT}")
     for raw, tok in unmatched:
         suffix = f" (override token {tok} not in shape-index)" if tok else ""
         print(f"  unmatched: {raw}{suffix}")
