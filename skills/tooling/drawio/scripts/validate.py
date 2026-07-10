@@ -26,6 +26,10 @@ Layout (warnings — the overlap/readability class of bugs):
     points or waypoints (they render stacked)
   - labeled edges without labelBackgroundColor (unreadable where they cross
     other edges/shapes)
+  - AWS official-style conformance (needs data/aws-icon-index.json):
+    resourceIcon fillColor must equal the official category color (error),
+    group frames must match an official variant (error), unknown
+    resIcon/grIcon names (warning)
 
 Runs without launching draw.io, so it is a fast pre-export gate.
 
@@ -38,7 +42,9 @@ skipped with a warning — this skill always writes uncompressed XML.
 Usage: python3 validate.py <file.drawio> [--strict]
 """
 import argparse
+import json
 import math
+import os
 import re
 import sys
 import unicodedata
@@ -51,6 +57,29 @@ WIDE_W = 1.0       # fullwidth (CJK) glyph advance / fontSize
 LINE_H = 1.35      # line height / fontSize
 LABEL_PAD = 4      # inner horizontal padding per side inside a shape
 EPS = 1.0          # tolerance px for touch-vs-overlap
+
+AWS_INDEX = os.path.join(os.path.dirname(__file__), "..", "data", "aws-icon-index.json")
+_AWS_CACHE = None
+
+
+def aws_index():
+    """(resIcon token -> official fillColor, grIcon -> allowed frame combos)."""
+    global _AWS_CACHE
+    if _AWS_CACHE is not None:
+        return _AWS_CACHE
+    res, gr = {}, {}
+    if os.path.exists(AWS_INDEX):
+        with open(AWS_INDEX, encoding="utf-8") as f:
+            for e in json.load(f):
+                if e["kind"] == "group":
+                    gr.setdefault(e["grIcon"], []).append(e)
+                elif e.get("aws4_style"):
+                    m = re.search(r"resIcon=(mxgraph\.aws4\.[a-z0-9_]+)", e["aws4_style"])
+                    fm = re.search(r"fillColor=(#[0-9A-Fa-f]{6})", e["aws4_style"])
+                    if m and fm:
+                        res[m.group(1)] = fm.group(1).upper()
+    _AWS_CACHE = (res, gr)
+    return _AWS_CACHE
 
 
 # ---------- style / geometry helpers ----------
@@ -432,6 +461,46 @@ def check_page(diagram):
                 warns.append(f"edge {e.get('id')!r} has a label but no labelBackgroundColor — "
                              f"text becomes unreadable where it crosses lines/shapes; "
                              f"add labelBackgroundColor=#ffffff;")
+
+    # --- AWS official style conformance (data/aws-icon-index.json) ---
+    res_fill, gr_combos = aws_index()
+    if res_fill or gr_combos:
+        for c in cells:
+            if c.get("vertex") != "1":
+                continue
+            st = style_of(c)
+            cid = c.get("id")
+            if st.get("shape") == "mxgraph.aws4.resourceIcon":
+                ri = st.get("resIcon", "")
+                if ri not in res_fill:
+                    warns.append(f"cell {cid!r} resIcon {ri!r} not in the official AWS icon "
+                                 f"index — icon name may be wrong or outdated "
+                                 f"(look it up with shapesearch.py)")
+                else:
+                    fill = (st.get("fillColor") or "").upper()
+                    if fill != res_fill[ri]:
+                        errors.append(f"cell {cid!r} fillColor {fill or '(none)'} != official "
+                                      f"category color {res_fill[ri]} for {ri} — do not "
+                                      f"recolor AWS icons")
+            gi = st.get("grIcon")
+            if gi and gi.startswith("mxgraph.aws4.group"):
+                allowed = gr_combos.get(gi)
+                if allowed is None:
+                    warns.append(f"cell {cid!r} grIcon {gi!r} not in the official AWS "
+                                 f"group table")
+                    continue
+
+                def nc(v):
+                    return (v or "").upper()
+                ok = any(nc(st.get("strokeColor")) == nc(a["strokeColor"]) and
+                         nc(st.get("fontColor")) == nc(a["fontColor"]) and
+                         (st.get("dashed") or "0") == str(a["dashed"])
+                         for a in allowed)
+                if not ok:
+                    names = " / ".join(a["name"] for a in allowed)
+                    errors.append(f"cell {cid!r} group frame (grIcon {gi!r}) does not match "
+                                  f"any official variant ({names}) — copy the style verbatim "
+                                  f"from references/aws-architecture.md")
     return errors, warns
 
 
