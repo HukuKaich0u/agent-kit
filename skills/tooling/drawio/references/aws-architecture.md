@@ -1,6 +1,6 @@
 # AWS Architecture Diagrams (mxgraph.aws4)
 
-Read this whenever the diagram uses AWS icons (`mxgraph.aws4.*`) — the same rules apply to Azure/GCP icon sets, which share the external-label style.
+Read this whenever the diagram uses AWS icons (`mxgraph.aws4.*`) — the same rules apply to Azure/GCP icon sets, which share the external-label style. Icon choice, category colors and group frames are machine-checked against `data/aws-icon-index.json` (built from the official Release 22 assets in `assets/aws/`).
 
 ## The failure mode that causes most broken AWS diagrams
 
@@ -45,18 +45,65 @@ N services → 1 hub is the second-biggest source of tangled lines:
 - Style them as background noise: `dashed=1;strokeColor=#7F7F7F;` and label **one** edge only (e.g. 「ログ出力」) — not all N.
 - If exact per-service edges don't matter, one edge from the enclosing container boundary is cleaner than N parallel lines.
 
+## Official diagram rules (AWS Architecture Icons guideline, Release 22)
+
+Icons:
+- Use icons at their **predefined size, color and format**. Never recolor, crop, flip or rotate a service/resource icon. Keep 78×78 for resourceIcon. (`validate.py` errors when fillColor deviates from the official category color.)
+- Pick icons via the official index: `python3 <this-skill-dir>/scripts/shapesearch.py "<official name or S3/IAM-style short form>"`. Never guess a resIcon name.
+
+Labels (official naming rules):
+- ≤ 2 lines, never break mid-word. "Amazon"/"AWS" must stay on the same line as the first word of the service name (`Amazon QuickSight`, never `Amazon` / `Quick-Sight` — if a break is unavoidable, break after the second word).
+- Keep the Amazon/AWS prefix with the service name at least once; short forms (S3, IAM, SQS …) are fine after the full name has appeared once in the diagram.
+- Never reuse one short form for two services (e.g. ELB for both Elastic Load Balancing and Elastic Beanstalk).
+
+Arrows:
+- Official preset = **open arrowhead** (not filled classic): use `endArrow=open;endFill=0;` on AWS diagrams; keep orthogonal right-angle routing wherever possible, a single diagonal only when right angles are impossible.
+- Line weight 2 (`strokeWidth=2`) matches the official deck's 2pt rule.
+
+Groups:
+- Nested groups need a visible buffer on all sides (the padding constants above already exceed the official minimum).
+- Do not invent group frames: copy a row from the table below verbatim (`validate.py` errors otherwise). If no preset fits, use a plain rectangle container in the service's **category color** — not a recolored official group.
+
+Numbered callouts (optional):
+- Black circle, bold white number: `ellipse;fillColor=#232F3E;strokeColor=none;fontColor=#ffffff;fontStyle=1;fontSize=12;` at 24×24 (simple diagrams may use 32×32; never mix sizes in one diagram).
+- Number linearly (left→right / top→bottom / clockwise) and keep placement consistent.
+
+Icons with no mxgraph.aws4 counterpart (`shapesearch.py` prints `no mxgraph.aws4 counterpart`): embed the official SVG —
+
+```
+style="aspect=fixed;html=1;verticalLabelPosition=bottom;verticalAlign=top;align=center;fontSize=12;shape=image;image=data:image/svg+xml,<BASE64>;"
+```
+
+`<BASE64>` は `python3 -c "import base64,sys;print(base64.b64encode(open(sys.argv[1],'rb').read()).decode())" <svg path>` で生成（URI 内に `;` を含めないこと — style の区切りと衝突する）。geometry は 78×78。
+
 ## Group containers — official styles (copy verbatim)
 
 All are used with `vertex="1"`, children set `parent="<container-id>"` with **relative** coordinates, first child at `y ≥ 40`. If a style below lacks `container=1`, append `container=1;pointerEvents=0;` before using it as a parent.
 
+Every row is used with `vertex="1"` + `container=1`. The `points=[[0,0],[0.25,0],…]` connection-point array from the skeleton below may be prepended to any row (it only adds edge anchor points). **This table is generated from and kept in sync with `data/aws-icon-index.json` — `validate.py` errors on any frame whose stroke/font/dashed deviates** (e.g. the pre-2021 gray Region `#879196` is an error; current official Region is teal `#00A4A6`).
+
 | Group | style |
 |---|---|
-| AWS Cloud | `points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;` |
-| Region | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_region;strokeColor=#879196;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#879196;dashed=1;` |
-| VPC | `points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_vpc2;strokeColor=#8C4FFF;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#AAB7B8;dashed=0;` |
+| AWS Cloud | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;` |
+| AWS Cloud (logo) | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;` |
+| Region | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_region;strokeColor=#00A4A6;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#147EBA;dashed=1;` |
 | Availability Zone | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_availability_zone;strokeColor=#545B64;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#545B64;dashed=1;` |
-| Public subnet | `points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;grStroke=0;strokeColor=#7AA116;fillColor=#F2F6E8;verticalAlign=top;align=left;spacingLeft=30;fontColor=#248814;dashed=0;` |
-| Private subnet | same as Public subnet but `strokeColor=#00A4A6;fillColor=#E6F6F7;fontColor=#147EBA;` |
+| VPC | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_vpc2;strokeColor=#8C4FFF;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#AAB7B8;dashed=0;` |
+| Public subnet | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;grStroke=0;strokeColor=#7AA116;fillColor=#F2F6E8;verticalAlign=top;align=left;spacingLeft=30;fontColor=#248814;dashed=0;` |
+| Private subnet | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;grStroke=0;strokeColor=#00A4A6;fillColor=#E6F6F7;verticalAlign=top;align=left;spacingLeft=30;fontColor=#147EBA;dashed=0;` |
+| Security group | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;strokeColor=#DD3522;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#DD3522;dashed=0;` |
+| Auto Scaling group | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_auto_scaling_group;strokeColor=#D86613;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#D86613;dashed=1;` |
+| Server contents | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_on_premise;strokeColor=#7D8998;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#5A6C86;dashed=0;` |
+| Corporate data center | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_corporate_data_center;strokeColor=#7D8998;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#5A6C86;dashed=0;` |
+| EC2 instance contents | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_ec2_instance_contents;strokeColor=#D86613;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#D86613;dashed=0;` |
+| Spot Fleet | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_spot_fleet;strokeColor=#D86613;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#D86613;dashed=0;` |
+| AWS account | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=#CD2264;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#CD2264;dashed=0;` |
+| IoT Greengrass Deployment | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_iot_greengrass_deployment;strokeColor=#7AA116;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#3F8624;dashed=0;` |
+| IoT Greengrass | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_iot_greengrass;strokeColor=#7AA116;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#3F8624;dashed=0;` |
+| Elastic Beanstalk container | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_elastic_beanstalk;strokeColor=#D86613;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#D86613;dashed=0;` |
+| Step Functions workflow | `sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_step_functions_workflow;strokeColor=#CD2264;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#CD2264;dashed=0;` |
+
+Region 注記: 中国など AWS ロゴが使用できないリージョンでは AWS Cloud (logo) ではなく AWS Cloud を使う。
 
 Resource icons: get exact styles with `shapesearch.py` (`python3 <this-skill-dir>/scripts/shapesearch.py "aws lambda"`); default size 78×78 — keep it.
 
@@ -95,3 +142,5 @@ Resource icons: get exact styles with `shapesearch.py` (`python3 <this-skill-dir
 - Every labeled edge has `labelBackgroundColor`
 - No full-size empty containers; every container sized to content + padding
 - Cross-cutting hub edges share one corridor and carry at most one label
+- resIcon は shapesearch.py（公式索引）で引いたもの。色は style をそのまま使用（改変禁止）
+- グループ枠は本ファイルの表から verbatim コピー
