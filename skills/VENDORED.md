@@ -40,6 +40,10 @@
 - **code-review**: `docs/agents/issue-tracker.md` が無いと Spec 軸が機能しない。
   上流は `/setup-matt-pocock-skills`(未取り込み)でこれを作る前提。
   単体で使う場合は Standards 軸のみ有効、または issue-tracker.md を手動用意する。
+  **TODO(カスタマイズ保留中):** 上流そのままで取り込み済み。ユーザーの実運用
+  (GitHub Issues / ローカル Markdown spec 等)に合わせて SKILL.md 13行目・29行目の
+  `docs/agents/issue-tracker.md` / `/setup-matt-pocock-skills` 依存を書き換える予定。
+  改造したらこの表の「改造」列を「あり」にし、上流差分取り込み時の上書きに注意。
 - **research**: 既存の `plugins/deep-research` と用途が近接。トリガーが被り得るので、
   project 側で apm.yml に入れる際はどちらを使うか意識する。
 - **domain-modeling / diagnosing-bugs / tdd**: `CONTEXT.md` や `docs/adr/` を任意参照するが、
