@@ -72,3 +72,32 @@ apm install
 # deep-research skill をユーザースコープに導入する場合
 apm install -g HukuKaich0u/agent-kit/plugins/deep-research/skills/deep-research
 ```
+
+### vendored skills
+
+外部リポジトリから取り込んだ skill は、agent-kit の領域カテゴリに分散して配置している。
+出自(取得元・ライセンス・取り込みコミット)と上流差分の確認手順は
+[`skills/VENDORED.md`](skills/VENDORED.md) に一元管理している。
+
+現在 [mattpocock/skills](https://github.com/mattpocock/skills)(MIT)から取り込み済み:
+
+```sh
+# 例: 計画/設計を1問ずつ詰める grilling を project に追加
+apm install HukuKaich0u/agent-kit/skills/meta/grilling
+```
+
+| skill | 用途 | 配置 |
+|---|---|---|
+| grilling | 計画/設計を1問ずつ詰める | `skills/meta/grilling` |
+| handoff | 会話を引き継ぎ文書に圧縮 | `skills/meta/handoff` |
+| tdd | red-green-refactor | `skills/testing/tdd` |
+| codebase-design | deep module 設計語彙 | `skills/backend/codebase-design` |
+| domain-modeling | ドメインモデル/ADR/用語集 | `skills/backend/domain-modeling` |
+| diagnosing-bugs | 難バグ/性能劣化の診断ループ | `skills/tooling/diagnosing-bugs` |
+| resolving-merge-conflicts | マージ/リベース衝突の解消 | `skills/tooling/resolving-merge-conflicts` |
+| git-guardrails-claude-code | 危険 git を hook でブロック(Claude Code 専用) | `skills/tooling/git-guardrails-claude-code` |
+| code-review | Standards+Spec 2軸レビュー | `skills/tooling/code-review` |
+| prototype | 使い捨てプロトタイプで設計検証 | `skills/tooling/prototype` |
+| research | 軽量な一次情報調査→repo に Markdown | `skills/tooling/research` |
+
+上流の更新確認: `scripts/check-vendored.sh`(`--diff` で実 diff も表示)
