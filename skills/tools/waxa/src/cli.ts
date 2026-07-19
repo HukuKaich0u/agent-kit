@@ -16,9 +16,9 @@
  *   waxa <eval.yaml> [--task ID]
  *   waxa iterate <eval.yaml> [--max N] [--task ID]
  */
-import { parse as parseYaml, stringify as stringifyYaml } from "@std/yaml";
-import { dirname, join, resolve } from "@std/path";
-import { expandGlob } from "@std/fs";
+import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
+import { dirname, join, resolve } from "node:path";
+import { readFile, writeFile, stat, mkdir, readdir } from "node:fs/promises";
 
 // ---- Types ---------------------------------------------------------------
 
@@ -114,14 +114,14 @@ interface TaskResult {
 // ---- Helpers -------------------------------------------------------------
 
 async function loadYaml<T>(path: string): Promise<T> {
-  return parseYaml(await Deno.readTextFile(path)) as T;
+  return parseYaml(await readFile(path, "utf8")) as T;
 }
 
 async function findRepoRoot(start: string): Promise<string> {
   let dir = resolve(start);
   for (let i = 0; i < 8; i++) {
     try {
-      await Deno.stat(join(dir, ".waxa.yaml"));
+      await stat(join(dir, ".waxa.yaml"));
       return dir;
     } catch (_) { /* walk up */ }
     const parent = dirname(dir);
@@ -134,7 +134,7 @@ async function findRepoRoot(start: string): Promise<string> {
 }
 
 async function loadSkillBody(repoRoot: string, skillName: string): Promise<string> {
-  return await Deno.readTextFile(join(repoRoot, skillName, "SKILL.md"));
+  return await readFile(join(repoRoot, skillName, "SKILL.md"), "utf8");
 }
 
 /**
@@ -182,7 +182,7 @@ async function resolveLayout(
     const skillDir = dirname(baseDir);
     const skillMdPath = join(skillDir, "SKILL.md");
     try {
-      await Deno.stat(skillMdPath);
+      await stat(skillMdPath);
       let workspaceRoot: string;
       try {
         workspaceRoot = await findRepoRoot(skillDir);
@@ -218,8 +218,8 @@ async function resolveLayout(
 async function nextIterationNumber(resultsDir: string): Promise<number> {
   try {
     let max = 0;
-    for await (const entry of Deno.readDir(resultsDir)) {
-      if (!entry.isDirectory) continue;
+    for (const entry of await readdir(resultsDir, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
       const m = entry.name.match(/^iteration-(\d+)$/);
       if (m) max = Math.max(max, parseInt(m[1], 10));
     }
@@ -241,8 +241,9 @@ async function executeClaude(
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), timeoutSec * 1000);
   try {
-    const cmd = new Deno.Command("claude", {
-      args: [
+    const proc = Bun.spawn(
+      [
+        "claude",
         "-p",
         "--output-format",
         "text",
@@ -253,24 +254,26 @@ async function executeClaude(
         "--system-prompt",
         systemPrompt,
       ],
-      stdin: "piped",
-      stdout: "piped",
-      stderr: "piped",
-      signal: ctrl.signal,
-    });
-    const child = cmd.spawn();
-    const writer = child.stdin.getWriter();
-    await writer.write(new TextEncoder().encode(prompt));
-    await writer.close();
-    const { stdout, stderr, code } = await child.output();
+      {
+        stdin: "pipe",
+        stdout: "pipe",
+        stderr: "pipe",
+        signal: ctrl.signal,
+      },
+    );
+    await proc.stdin.write(new TextEncoder().encode(prompt));
+    await proc.stdin.end();
+    const stdout = await new Response(proc.stdout).text();
+    const stderr = await new Response(proc.stderr).text();
+    const code = await proc.exited;
     if (code !== 0) {
       throw new Error(
         `claude exit ${code}; stderr=${
-          new TextDecoder().decode(stderr).slice(0, 500)
-        }; stdout=${new TextDecoder().decode(stdout).slice(0, 200)}`,
+          stderr.slice(0, 500)
+        }; stdout=${stdout.slice(0, 200)}`,
       );
     }
-    return new TextDecoder().decode(stdout);
+    return stdout;
   } finally {
     clearTimeout(t);
   }
@@ -682,9 +685,11 @@ async function loadTasks(
 ): Promise<Task[]> {
   const tasks: Task[] = [];
   for (const pattern of evalCfg.tasks ?? []) {
-    for await (const f of expandGlob(pattern, { root: evalDir })) {
-      if (!f.isFile) continue;
-      const t = await loadYaml<Task>(f.path);
+    const glob = new Bun.Glob(pattern);
+    for await (const filePath of glob.scan({ cwd: evalDir, absolute: true })) {
+      const st = await stat(filePath);
+      if (!st.isFile()) continue;
+      const t = await loadYaml<Task>(filePath);
       if (!taskFilter || t.id === taskFilter || t.name === taskFilter) tasks.push(t);
     }
   }
@@ -743,10 +748,10 @@ async function persistTaskOutputs(
   config: "with_skill" | "without_skill",
 ): Promise<void> {
   const taskDir = join(iterDir, task.id, config);
-  await Deno.mkdir(taskDir, { recursive: true });
+  await mkdir(taskDir, { recursive: true });
 
   for (const trial of result.trials) {
-    await Deno.writeTextFile(
+    await writeFile(
       join(taskDir, `output-trial-${trial.trial}.txt`),
       trial.output,
     );
@@ -754,7 +759,7 @@ async function persistTaskOutputs(
 
   const durations = result.trials.map((t) => t.durationMs);
   const timingMean = durations.reduce((a, x) => a + x, 0) / Math.max(1, durations.length);
-  await Deno.writeTextFile(
+  await writeFile(
     join(taskDir, "timing.json"),
     JSON.stringify(
       {
@@ -776,7 +781,7 @@ async function persistTaskOutputs(
     }))
   );
   const passed = assertion_results.filter((a) => a.passed).length;
-  await Deno.writeTextFile(
+  await writeFile(
     join(taskDir, "grading.json"),
     JSON.stringify(
       {
@@ -834,7 +839,7 @@ async function writeBenchmark(
     };
   }
   const outFile = join(iterDir, "benchmark.json");
-  await Deno.writeTextFile(outFile, JSON.stringify(benchmark, null, 2) + "\n");
+  await writeFile(outFile, JSON.stringify(benchmark, null, 2) + "\n");
   return outFile;
 }
 
@@ -869,7 +874,7 @@ async function runEval(
     },
   };
   const layout = await resolveLayout(evalPath, evalCfg);
-  const skillBody = await Deno.readTextFile(layout.skillMdPath);
+  const skillBody = await readFile(layout.skillMdPath, "utf8");
 
   console.log(`Eval: ${evalCfg.name}`);
   console.log(`Skill: ${evalCfg.skill}`);
@@ -882,12 +887,12 @@ async function runEval(
   const tasks = await loadTasks(evalCfg, layout.baseDir, taskFilter);
   if (tasks.length === 0) {
     console.error("No tasks matched.");
-    Deno.exit(2);
+    process.exit(2);
   }
 
   const iterN = await nextIterationNumber(layout.resultsDir);
   const iterDir = join(layout.resultsDir, `iteration-${iterN}`);
-  await Deno.mkdir(iterDir, { recursive: true });
+  await mkdir(iterDir, { recursive: true });
 
   // Baseline mode forces serial execution to keep claude rate limits
   // and process count predictable; parallel-with-baseline is a future
@@ -998,7 +1003,7 @@ async function loadLedger(path: string, evalName: string, skill: string): Promis
 }
 
 async function saveLedger(path: string, ledger: Ledger): Promise<void> {
-  await Deno.writeTextFile(path, stringifyYaml(ledger as unknown as Record<string, unknown>));
+  await writeFile(path, stringifyYaml(ledger as unknown as Record<string, unknown>));
 }
 
 function classifyUnclear(
@@ -1028,7 +1033,7 @@ async function runIterate(args: string[]) {
   const evalPath = args[0];
   if (!evalPath) {
     console.error("Usage: run.ts iterate <eval.yaml> [--max N] [--task ID]");
-    Deno.exit(1);
+    process.exit(1);
   }
   const max = args.includes("--max") ? parseInt(args[args.indexOf("--max") + 1], 10) : 5;
   const taskFilter = args.includes("--task") ? args[args.indexOf("--task") + 1] : undefined;
@@ -1134,12 +1139,12 @@ async function runCompare(args: string[]) {
   const evalPath = args[0];
   if (!evalPath) {
     console.error("Usage: waxa compare <eval.yaml> --models <a,b,...> [--task ID]");
-    Deno.exit(1);
+    process.exit(1);
   }
   const modelsCsv = args.includes("--models") ? args[args.indexOf("--models") + 1] : "";
   if (!modelsCsv) {
     console.error("--models <csv> is required");
-    Deno.exit(1);
+    process.exit(1);
   }
   const models = modelsCsv.split(",").map((m) => m.trim()).filter(Boolean);
   const taskFilter = args.includes("--task") ? args[args.indexOf("--task") + 1] : undefined;
@@ -1173,7 +1178,7 @@ async function runVariant(args: string[]) {
   const evalPath = args[0];
   if (!evalPath) {
     console.error("Usage: waxa variant <eval.yaml> --base <skill> --candidate <skill> [--task ID]");
-    Deno.exit(1);
+    process.exit(1);
   }
   const base = args.includes("--base") ? args[args.indexOf("--base") + 1] : undefined;
   const candidate = args.includes("--candidate")
@@ -1181,7 +1186,7 @@ async function runVariant(args: string[]) {
     : undefined;
   if (!base || !candidate) {
     console.error("--base <skill> and --candidate <skill> are both required");
-    Deno.exit(1);
+    process.exit(1);
   }
   const taskFilter = args.includes("--task") ? args[args.indexOf("--task") + 1] : undefined;
 
@@ -1327,7 +1332,7 @@ async function runInit(args: string[]) {
   const skillFromFlag = args.includes("--skill")
     ? args[args.indexOf("--skill") + 1]
     : undefined;
-  const cwd = Deno.cwd();
+  const cwd = process.cwd();
 
   // 0.2.0 layout: scaffold `<cwd>/evals/` (skill-local). The user
   // typically runs `waxa init` from inside the skill's own directory,
@@ -1336,13 +1341,13 @@ async function runInit(args: string[]) {
   const skill = skillFromFlag ?? cwd.split("/").filter(Boolean).pop();
   if (!skill) {
     console.error("could not infer skill name; pass --skill <name>");
-    Deno.exit(2);
+    process.exit(2);
   }
 
   // SKILL.md sanity check (warn only, don't block — the user may be
   // scaffolding the eval before authoring the skill body).
   try {
-    await Deno.stat(join(cwd, "SKILL.md"));
+    await stat(join(cwd, "SKILL.md"));
   } catch (_) {
     console.error(
       `[warn] ${cwd}/SKILL.md not found; \`waxa <eval.yaml>\` will fail until it exists.`,
@@ -1351,7 +1356,7 @@ async function runInit(args: string[]) {
 
   const evalDir = join(cwd, "evals");
   const tasksDir = join(evalDir, "tasks");
-  await Deno.mkdir(tasksDir, { recursive: true });
+  await mkdir(tasksDir, { recursive: true });
 
   const writes: Array<[string, string]> = [
     [join(evalDir, "eval.yaml"), EVAL_TEMPLATE.replaceAll("__SKILL__", skill)],
@@ -1368,7 +1373,7 @@ async function runInit(args: string[]) {
   for (const [path, body] of writes) {
     let exists = true;
     try {
-      await Deno.stat(path);
+      await stat(path);
     } catch (_) {
       exists = false;
     }
@@ -1376,7 +1381,7 @@ async function runInit(args: string[]) {
       console.error(`skip (exists): ${path}    — pass --force to overwrite`);
       continue;
     }
-    await Deno.writeTextFile(path, body);
+    await writeFile(path, body);
     console.log(`${exists ? "wrote (forced)" : "created"}: ${path}`);
   }
 
@@ -1424,7 +1429,7 @@ async function checkWaxaQuality(skillDir: string): Promise<AuditFinding[]> {
 
   let body: string;
   try {
-    body = await Deno.readTextFile(skillMdPath);
+    body = await readFile(skillMdPath, "utf8");
   } catch (_) {
     findings.push({
       level: "error",
@@ -1533,10 +1538,10 @@ async function checkWaxaQuality(skillDir: string): Promise<AuditFinding[]> {
   // scripts/ suspicious pattern
   const scriptsDir = join(skillDir, "scripts");
   try {
-    for await (const entry of Deno.readDir(scriptsDir)) {
-      if (!entry.isFile) continue;
+    for (const entry of await readdir(scriptsDir, { withFileTypes: true })) {
+      if (!entry.isFile()) continue;
       const p = join(scriptsDir, entry.name);
-      const text = await Deno.readTextFile(p);
+      const text = await readFile(p, "utf8");
       const susPatterns: Array<[string, RegExp]> = [
         ["pipe-to-shell", /\b(curl|wget|fetch)\b[^\n]*\|\s*(sh|bash|zsh)\b/i],
         ["eval-call", /\beval\s*[\(`]/],
@@ -1568,7 +1573,7 @@ async function checkWaxaQuality(skillDir: string): Promise<AuditFinding[]> {
   let hasLicense = false;
   for (const candidate of ["LICENSE", "LICENSE.txt", "LICENSE.md", "license"]) {
     try {
-      await Deno.stat(join(skillDir, candidate));
+      await stat(join(skillDir, candidate));
       hasLicense = true;
       break;
     } catch (_) { /* try next */ }
@@ -1589,20 +1594,19 @@ async function checkWaxaQuality(skillDir: string): Promise<AuditFinding[]> {
 async function runApmAudit(skillMdPath: string): Promise<AuditFinding[]> {
   // best-effort: skip silently if apm is not on PATH
   try {
-    const which = new Deno.Command("which", { args: ["apm"], stdout: "piped", stderr: "null" });
-    const r = await which.output();
-    if (!r.success) return [];
+    const which = Bun.spawn(["which", "apm"], { stdout: "pipe", stderr: "ignore" });
+    await new Response(which.stdout).text();
+    const code = await which.exited;
+    if (code !== 0) return [];
   } catch (_) {
     return [];
   }
   try {
-    const cmd = new Deno.Command("apm", {
-      args: ["audit", "--file", skillMdPath, "--format", "json"],
-      stdout: "piped",
-      stderr: "piped",
+    const cmd = Bun.spawn(["apm", "audit", "--file", skillMdPath, "--format", "json"], {
+      stdout: "pipe",
+      stderr: "pipe",
     });
-    const { stdout } = await cmd.output();
-    const text = new TextDecoder().decode(stdout);
+    const text = await new Response(cmd.stdout).text();
     if (!text.trim()) return [];
     let parsed: unknown;
     try {
@@ -1655,7 +1659,7 @@ async function runApmAudit(skillMdPath: string): Promise<AuditFinding[]> {
 async function runAudit(args: string[]) {
   if (args.length === 0 || args[0].startsWith("-")) {
     console.error("Usage: waxa audit <skill-dir> [--no-apm] [--json]");
-    Deno.exit(2);
+    process.exit(2);
   }
   const skillDir = resolve(args[0]);
   const noApm = args.includes("--no-apm");
@@ -1684,11 +1688,12 @@ async function runAudit(args: string[]) {
       console.log(`  ${icon} [${f.source}/${f.rule}] ${f.message}${loc}`);
     }
   }
-  Deno.exit(findings.some((f) => f.level === "error") ? 1 : 0);
+  process.exit(findings.some((f) => f.level === "error") ? 1 : 0);
 }
 
 async function main() {
-  const sub = Deno.args[0];
+  const args = process.argv.slice(2);
+  const sub = args[0];
   if (!sub || sub === "-h" || sub === "--help") {
     console.error("Usage:");
     console.error("  waxa init [--skill <name>] [--force]                          scaffold <skill>/evals/");
@@ -1697,37 +1702,37 @@ async function main() {
     console.error("  waxa iterate <eval.yaml> [--max N] [--task <id>]              iteration loop");
     console.error("  waxa compare <eval.yaml> --models <csv> [--task <id>]         multi-model comparison");
     console.error("  waxa variant <eval.yaml> --base <skill> --candidate <skill>   skill A/B exploration");
-    Deno.exit(sub ? 0 : 1);
+    process.exit(sub ? 0 : 1);
   }
 
   if (sub === "init") {
-    await runInit(Deno.args.slice(1));
+    await runInit(args.slice(1));
     return;
   }
   if (sub === "audit") {
-    await runAudit(Deno.args.slice(1));
+    await runAudit(args.slice(1));
     return;
   }
   if (sub === "iterate") {
-    await runIterate(Deno.args.slice(1));
+    await runIterate(args.slice(1));
     return;
   }
   if (sub === "compare") {
-    await runCompare(Deno.args.slice(1));
+    await runCompare(args.slice(1));
     return;
   }
   if (sub === "variant") {
-    await runVariant(Deno.args.slice(1));
+    await runVariant(args.slice(1));
     return;
   }
 
   // Default: single run
-  const taskFilter = Deno.args.includes("--task")
-    ? Deno.args[Deno.args.indexOf("--task") + 1]
+  const taskFilter = args.includes("--task")
+    ? args[args.indexOf("--task") + 1]
     : undefined;
-  const withBaseline = Deno.args.includes("--baseline");
+  const withBaseline = args.includes("--baseline");
   const { results } = await runEval(sub, { taskFilter, withBaseline });
-  Deno.exit(results.every((r) => r.passRate === 1) ? 0 : 1);
+  process.exit(results.every((r) => r.passRate === 1) ? 0 : 1);
 }
 
 if (import.meta.main) {

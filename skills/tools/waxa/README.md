@@ -7,6 +7,13 @@ Skill evaluation CLI with an empirical-prompt-tuning iteration loop, structured 
 
 > Status: 0.x — API subject to change. Used in [mizchi/skills](https://github.com/mizchi/skills) to evaluate the agent skills published from that repo.
 
+> **agent-kit fork note.** This vendored copy was ported **Deno → Bun** for this
+> environment (no Deno here). Run it with `bun run src/cli.ts <...>` from
+> `tools/waxa/` after a one-time `bun install`. The original Deno source is kept
+> at `src/cli.ts.deno.bak`; the `deno task ...` commands below are the upstream
+> instructions and do **not** apply to this fork. `npx @mizchi/waxa` still works
+> as a network fallback (published npm build).
+
 ## What waxa does
 
 - **`type: self-report` grader** — forces a structured tail block (`Phase trace`, `Unclear points` (Issue / Cause / General Fix Rule), `Discretionary fill-ins`, `Retries`) at the executor's output and grades it.

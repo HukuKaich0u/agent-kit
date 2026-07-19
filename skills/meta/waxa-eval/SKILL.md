@@ -199,27 +199,45 @@ The pre-0.2.0 monorepo layout (`<repo-root>/evals/<skill>/eval.yaml` + `<repo-ro
 
 Bare minimum:
 
+This repo vendors the CLI under `tools/waxa/` and runs it on **Bun** (not Deno).
+Invoke it as `bun run <repo>/skills/tools/waxa/src/cli.ts <args>`, where `<repo>`
+is the agent-kit checkout root (`git rev-parse --show-toplevel`). Below, `WAXA`
+denotes that `bun run …/cli.ts` prefix — write it out in full each time (do NOT
+rely on a `$WAXA` shell variable: under zsh a bare `$WAXA` is not word-split and
+fails; if you want a shortcut, use a function `waxa(){ bun run …/cli.ts "$@"; }`
+or run through bash).
+
 ```bash
+# One-time: install the CLI's own dep (yaml). Run inside tools/waxa/.
+( cd "$(git rev-parse --show-toplevel)/skills/tools/waxa" && bun install )
+
 # Scaffold the eval skeleton (run inside the skill's own dir).
-npx @mizchi/waxa init [--skill <name>] [--force]
+WAXA init [--skill <name>] [--force]
 
 # Single eval pass.
-npx @mizchi/waxa <skill>/evals/eval.yaml
+WAXA <skill>/evals/eval.yaml
 
 # Single task.
-npx @mizchi/waxa <skill>/evals/eval.yaml --task <task-id>
+WAXA <skill>/evals/eval.yaml --task <task-id>
 
 # Single eval with baseline (with_skill vs without_skill, reports Delta).
-npx @mizchi/waxa <skill>/evals/eval.yaml --baseline
+WAXA <skill>/evals/eval.yaml --baseline
 
 # Iteration loop (auto re-runs while pass rate improves; writes ledger.yaml).
-npx @mizchi/waxa iterate <skill>/evals/eval.yaml --max 4
+WAXA iterate <skill>/evals/eval.yaml --max 4
 
 # Audit a skill directory (apm audit hidden-Unicode scan + waxa native
 # quality checks: frontmatter, body length, When-NOT-to-use, suspicious
 # scripts, LICENSE).
-npx @mizchi/waxa audit <skill>/ [--no-apm] [--json]
+WAXA audit <skill>/ [--no-apm] [--json]
 ```
+
+A concrete invocation looks like:
+`bun run "$(git rev-parse --show-toplevel)/skills/tools/waxa/src/cli.ts" audit <skill>/`.
+
+> Fallback: `npx @mizchi/waxa <...>` pulls the published npm build over the
+> network — use only if the vendored Bun copy is unavailable. The vendored copy
+> is the source of truth here (it was ported Deno→Bun for this environment).
 
 The methodology is detailed in the `empirical-prompt-tuning` skill, available wherever the skill catalog is sourced from.
 
@@ -281,4 +299,4 @@ A real flow often uses both: `empirical` for the in-session Iter 0 + first dispa
 
 - `waxa` は外部 CLI プロセス(`claude -p` を executor に使う)。Claude CLI が前提のため、Codex など別 harness で回す場合は executor 設定をその harness の headless 実行コマンドに読み替える。
 - CLI を回せない環境では、in-session の `empirical-prompt-tuning`(fresh subagent dispatch)に切り替える。スコープ表のとおり methodology は共通で、dispatch 機構だけが違う。
-- CLI 本体は本 repo の `tools/waxa/` に同梱。npm 公開名は `@mizchi/waxa`(`npx @mizchi/waxa ...` はそのまま使える正しいコマンド)。
+- CLI 本体は本 repo の `tools/waxa/` に同梱。**この環境向けに Deno→Bun 移植済み**なので、`bun run tools/waxa/src/cli.ts <...>` で動く(上の `$WAXA` 参照)。元 Deno 版は `src/cli.ts.deno.bak` に退避。npm 公開名 `@mizchi/waxa` の `npx` 実行はネット越しのフォールバック。

@@ -1,0 +1,14 @@
+{
+  "name": "@mizchi/waxa",
+  "version": "0.3.1",
+  "type": "module",
+  "bin": {
+    "waxa": "./src/cli.ts"
+  },
+  "dependencies": {
+    "yaml": "^2"
+  },
+  "scripts": {
+    "waxa": "bun run src/cli.ts"
+  }
+}
