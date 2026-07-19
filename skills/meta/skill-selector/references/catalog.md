@@ -76,9 +76,7 @@ The "Install" column may also be a row whose description names a specific platfo
 |---|---|---|---|
 | T1 | cloudflare-deploy | `HukuKaich0u/agent-kit/skills/cloudflare/deploy` | Deploying to Cloudflare Workers / Pages — wrangler commands, secrets, custom domains |
 | T1 | cloudflare-workers-cd-rollback | `HukuKaich0u/agent-kit/skills/devops/workers-cd-rollback` | Adding push-to-deploy + automatic rollback on smoke failure to a Workers GitHub Actions pipeline |
-| T1 | cloudflare-workers-otel-utels | `HukuKaich0u/agent-kit/skills/cloudflare/workers-otel-utels` | Adding OTLP tracing / metrics / logs and utels error tracking to a Worker without touching handler code |
 | T3 | cloudflare-access-app-setup | `HukuKaich0u/agent-kit/skills/cloudflare/access-app-setup` | Gating a Worker behind Cloudflare Access via API in one shot — app + email allowlist + service token |
-| T3 | utels-project-bootstrap | `HukuKaich0u/agent-kit/skills/tooling/utels-project-bootstrap` | Registering a new utels.dev project and writing the returned ingest token into a wrangler secret in one shot |
 
 ### AWS
 **Signals**: ECS / Fargate service, GitHub Actions → AWS OIDC, aws-vault MFA error
@@ -89,13 +87,6 @@ The "Install" column may also be a row whose description names a specific platfo
 | T3 | aws-ecs-service-connect-ipv6 | `HukuKaich0u/agent-kit/skills/aws/ecs-service-connect-ipv6` | ECS Service Connect alias resolves to IPv6 in IPv4-only Fargate task; `network is unreachable` |
 | T3 | aws-vault-mfa-iam | `HukuKaich0u/agent-kit/skills/aws/vault-mfa-iam` | aws-vault session blocked by IAM MFA-required policy; `iam:*` rejected with `InvalidClientTokenId` |
 | T4 | aws-ecs-codedeploy-blue-green | `HukuKaich0u/agent-kit/skills/aws/ecs-codedeploy-blue-green` | Existing CodeDeploy blue/green setup that cannot be migrated — prefer ALB-native weighted routing for new setups |
-
-### Kubernetes
-**Signals**: `k8s/`, CRD YAML, zod/TypeBox/Valibot schema to CRD conversion
-
-| T | Skill | Install | Use when |
-|---|---|---|---|
-| T3 | k8s-crd-from-typed-schema | `HukuKaich0u/agent-kit/skills/k8s/crd-from-typed-schema` | Generating CRDs from a typed schema source (zod / TypeBox / Valibot) — Structural Schema dialect restrictions, `/status` subresource trap, metadata-prohibition rule |
 
 ### Release / changelog
 **Signals**: `CHANGELOG.md`, release-please config, `.changeset/`, version-tag-driven release

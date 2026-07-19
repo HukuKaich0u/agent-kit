@@ -150,7 +150,6 @@ Collector logs show `Trace ID: ... Name: GET /api/users` when spans arrive. No o
 ## Related
 
 - `devops/opentelemetry` — signal design, span naming, sampling, W3C propagation
-- `cloudflare/workers-otel-utels` — Cloudflare Workers telemetry (no Node runtime, fetch-boundary approach)
 - esbuild + Vite + SWC all share the same `require-in-the-middle` failure mode
 - `instrumentation-*` packages do not support static import patching as of 2026-05
 
