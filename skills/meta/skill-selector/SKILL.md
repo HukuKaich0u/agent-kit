@@ -104,7 +104,7 @@ Reverse failure: forcing a Phase 1 fit when the catalog truly has nothing suitab
 - `skill-finder` — Phase 2 owner; cross-source survey + waxa eval gate when the catalog has no fit
 - `apm-usage` — actual `apm install` syntax and manifest format
 - `empirical-prompt-tuning` — how to test a candidate skill before adopting it
-- `superpowers:writing-skills` — when no existing skill fits, write one instead of adopting a poor match
+- `optimizing-descriptions` — when no existing skill fits and you write one, shape its description to trigger correctly
 
 ## Agent compatibility
 
