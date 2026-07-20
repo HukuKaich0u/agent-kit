@@ -267,7 +267,3 @@ gh run view <run_id> --log | grep -i "cache"
 | `node:*` image for Playwright VRT | apt-get hangs in Docker Desktop on macOS | Use `mcr.microsoft.com/playwright` image |
 | Scheduled workflow without `workflow_dispatch` | Can't manually re-trigger | Always add `workflow_dispatch:` |
 | Action pinned to tag not SHA | Tag can be moved (supply-chain risk) | Pin to full commit SHA |
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。GitHub Actions のチューニング知識で harness 非依存(`gh` があればよい)。

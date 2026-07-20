@@ -18,8 +18,6 @@ Create a new file under `.scratch/<feature-slug>/` (creating the directory if ne
 
 Read the file at the referenced path. The user will normally pass the path or the issue number directly.
 
-If no path was passed (e.g. `code-review`'s Spec axis is looking for the originating spec), search the repo for a spec matching the branch name or feature — `.scratch/<feature>/spec.md` first, then any PRD/spec under `docs/` or `specs/` — before asking the user.
-
 ## Wayfinding operations
 
 Used by `/wayfinder`. The **map** is a file with one **child** file per ticket.

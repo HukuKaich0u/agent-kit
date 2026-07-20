@@ -20,8 +20,6 @@ https://assets.devographics.com/surveys/js<YYYY>/en-US/results.json
 https://assets.devographics.com/surveys/css<YYYY>/en-US/results.json
 ```
 
-If network/WebFetch is unavailable, skip this step and state in the report that ecosystem-survey signals were not collected (repo-local signals only).
-
 ## Step 1 — Inventory current stack
 
 List all significant dependencies from `package.json`:
@@ -167,8 +165,4 @@ Write a review doc with:
 ## Related
 
 - `dep-lib-review` — executes the actual update (patch/minor/major batching)
-- `frontend-review-deps` — operational dependency audit with CVE triage and trend-watch (agent runs the tooling directly)
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。State of JS/CSS + Tech Radar を使った年次スタックレビューの手法で harness 非依存(WebFetch / ブラウザでデータを参照)。
+- `frontend-review-deps` — operational dependency audit with CVE triage and trend-watch scripts

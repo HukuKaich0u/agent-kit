@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install HukuKaich0u/agent-kit/skills/sql/security
+apm install mizchi/skills/sql/security
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - HukuKaich0u/agent-kit/skills/sql/security
+    - mizchi/skills/sql/security
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add HukuKaich0u/agent-kit --skill sql-security
+npx skills add mizchi/skills --skill sql-security
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit HukuKaich0u/agent-kit/skills/sql/security ~/.claude/skills/sql-security
+npx degit mizchi/skills/sql/security ~/.claude/skills/sql-security
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

@@ -9,7 +9,6 @@ You are reviewing the rendering performance of a React frontend. The most common
 
 ## Procedure
 
-0. If `<repo>/.frontend-review/kpi/app-classification.json` exists (written by `frontend-review-triage`), read it and weight findings by its P0/P1 profile for this app type.
 1. Check `package.json` for performance-related packages (`@tanstack/react-virtual`, `react-window`, `@welldone-software/why-did-you-render`, etc.).
 2. Grep for existing memo usage:
    ```bash
@@ -19,23 +18,13 @@ You are reviewing the rendering performance of a React frontend. The most common
    ```
 3. Find the largest list-rendering components (look for `.map(` on arrays with no size guard).
 4. Look for Context providers that change frequently and might cause wide re-renders.
-5. For data-dense apps (maps, charts, real-time dashboards): check whether heavy rendering is in React state or in a canvas/WebGL ref.
+5. For `iot-ops` / map / chart apps: check whether heavy rendering is in React state or in a canvas/WebGL ref.
 
 ## Profiler-First Principle
 
 **Do not recommend memo / useCallback / useMemo without first profiling.** Premature memoization adds cognitive overhead and can slow things down (each hook has a cost).
 
 When writing the report, prefix every optimization recommendation with: "After profiling confirms X re-renders per interaction, consider Y."
-
-## React 19 / React Compiler check (do this before the memoization review)
-
-Check `package.json` for React 19 and the React Compiler (`babel-plugin-react-compiler` / `react-compiler-runtime`). If the compiler is enabled, most manual memoization guidance below is obsolete — the compiler memoizes automatically. In that case:
-
-- Review for **compiler bailouts** (rules-of-hooks violations, mutation of props/state) instead of recommending manual `memo` / `useCallback` / `useMemo`.
-- Treat existing manual memoization as removable-after-verification, not as a pattern to extend.
-- Consider React 19 primitives where they simplify code: `use`, Actions / `useActionState`, `useOptimistic`.
-
-If the repo is on React 18 or the compiler is off, apply the sections below as written.
 
 ## Memoization Correctness
 
@@ -122,9 +111,9 @@ const filtered = useMemo(() => items.filter(i => i.name.includes(deferredQuery))
 
 Flag heavy filter/sort operations that block the main thread on every keystroke — these are candidates for `useTransition`.
 
-## Canvas / WebGL Separation (data-dense apps)
+## Canvas / WebGL Separation (iot-ops / map / chart apps)
 
-For data-dense apps (maps, charts, real-time dashboards), React state is the wrong tool for per-frame updates.
+For data-dense UIs (real-time dashboards, map overlays, charting), React state is the wrong tool for per-frame updates.
 
 Check whether:
 - High-frequency data (sensor readings, map tile updates, chart data) bypasses React state and goes directly to canvas/WebGL via `useRef`.
@@ -142,7 +131,7 @@ useEffect(() => {
 
 ## Output
 
-Write `<repo>/.frontend-review/report/latest/md/performance-review.md` with:
+Write `<client-repo>/.frontend-review/report/latest/md/performance-review.md` with:
 
 - **Profiling recommendation**: what to measure first and how (React DevTools Profiler, why-did-you-render)
 - **Memoization gaps / misuse**: file:line references for each finding
@@ -159,14 +148,8 @@ Keep under 200 lines. Recommendations without profiling evidence must be explici
 - Do NOT propose optimization without a measurement plan.
 - Do NOT touch source files in the client repo.
 - State management architecture (store design, selector granularity) is covered by `frontend-review-state`.
-- Every finding must cite file:line (or a config key). Findings not verified by reading the actual code/config must be marked "unconfirmed" or dropped.
 
-## Related
+## Reference
 
-- `frontend-review-state` — state architecture (store design, selector granularity)
-- `frontend-review-weekly` — orchestrator
+- Checklist: `24-rendering-performance.md`, `23-state-management.md`, `C2-lighthouse.md`
 - Tools: React DevTools Profiler, `@welldone-software/why-did-you-render`, `@tanstack/react-virtual`
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。profiler-first の診断とソース読解ベースで harness 非依存(計測ツールはブラウザ DevTools / ライブラリ側)。

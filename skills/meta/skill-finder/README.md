@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install HukuKaich0u/agent-kit/skills/meta/skill-finder
+apm install mizchi/skills/meta/skill-finder
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - HukuKaich0u/agent-kit/skills/meta/skill-finder
+    - mizchi/skills/meta/skill-finder
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add HukuKaich0u/agent-kit --skill skill-finder
+npx skills add mizchi/skills --skill skill-finder
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit HukuKaich0u/agent-kit/skills/meta/skill-finder ~/.claude/skills/skill-finder
+npx degit mizchi/skills/meta/skill-finder ~/.claude/skills/skill-finder
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

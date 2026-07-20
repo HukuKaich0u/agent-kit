@@ -7,7 +7,7 @@ templater = raw
 exclude_rules =
   AM04,   ; SELECT * — handled by catalog-lint with better context.
   CP02,   ; Inconsistent capitalisation of identifiers — too noisy on quoted JSON refs.
-  LT12,   ; Files must end with a single trailing newline — git enforces.
+  L009,   ; Files must end with a single trailing newline — git enforces.
 
 [sqlfluff:rules:capitalisation.keywords]
 capitalisation_policy = upper

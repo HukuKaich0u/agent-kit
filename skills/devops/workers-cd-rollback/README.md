@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install HukuKaich0u/agent-kit/skills/devops/workers-cd-rollback
+apm install mizchi/skills/devops/workers-cd-rollback
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - HukuKaich0u/agent-kit/skills/devops/workers-cd-rollback
+    - mizchi/skills/devops/workers-cd-rollback
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add HukuKaich0u/agent-kit --skill cloudflare-workers-cd-rollback
+npx skills add mizchi/skills --skill cloudflare-workers-cd-rollback
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit HukuKaich0u/agent-kit/skills/devops/workers-cd-rollback ~/.claude/skills/cloudflare-workers-cd-rollback
+npx degit mizchi/skills/devops/workers-cd-rollback ~/.claude/skills/cloudflare-workers-cd-rollback
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

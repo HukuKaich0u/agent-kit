@@ -26,8 +26,7 @@ apm install owner/repo
 apm install owner/repo/skills/skill-name    # subdirectory skill
 apm install owner/repo#v1.0.0               # pinned version
 
-# Global (user-scope) install → deploys to the agent's skills dir
-# (~/.claude/skills/ for Claude; the target is set by `targets:` in apm.yml)
+# Global (user-scope) install → ~/.claude/skills/
 apm install -g owner/repo/skills/skill-name
 
 # Update all to latest
@@ -122,7 +121,7 @@ Add the following to chezmoi's `.chezmoiignore`:
 .claude/skills/<apm-managed-name>
 ```
 
-Watch for name collisions with your own skills (those copied into the chezmoi source with `chezmoi add`). On collision APM overwrites at install time.
+Watch for name collisions with your own skills (those copied into the chezmoi source with `chezmoi add`). On collision APM overwrites at install time. See the `chezmoi-management` skill for details.
 
 ## Creating skills in a repository
 
@@ -254,8 +253,3 @@ No extra configuration needed if `gh auth login` is done.
 - Local skills always override dependency skills on name collision
 - Dependencies processed in declaration order; first wins
 - `apm install --force` overwrites local files on collision
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。APM 自体が複数 harness 対応で、`targets:`(claude / codex / …)で配布先を指定する。デプロイ先 path(`~/.claude/skills/` 等)は targets と harness で決まる。
-- chezmoi 併用節は dotfile 管理ツールと併用する場合の任意情報(chezmoi は実在 OSS)。使わなければ無視してよい。

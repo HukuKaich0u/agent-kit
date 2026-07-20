@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install HukuKaich0u/agent-kit/skills/lang/translate-programming-language
+apm install mizchi/skills/lang/translate-programming-language
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - HukuKaich0u/agent-kit/skills/lang/translate-programming-language
+    - mizchi/skills/lang/translate-programming-language
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add HukuKaich0u/agent-kit --skill translate-programming-language
+npx skills add mizchi/skills --skill translate-programming-language
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit HukuKaich0u/agent-kit/skills/lang/translate-programming-language ~/.claude/skills/translate-programming-language
+npx degit mizchi/skills/lang/translate-programming-language ~/.claude/skills/translate-programming-language
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

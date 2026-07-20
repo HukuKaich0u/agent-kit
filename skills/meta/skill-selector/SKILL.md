@@ -82,9 +82,9 @@ Reverse failure: forcing a Phase 1 fit when the catalog truly has nothing suitab
 
 ## Maintenance of the catalog
 
-- Catalog is part of this skill. Keep it in sync when this repo's `skills/` (and any upstream skill repos referenced) gain or lose skills.
+- Catalog is part of this skill. Keep it in sync when `mizchi/skills` (and upstream skill repos referenced) gain or lose skills.
 - A skill discovered through Phase 2 (`skill-finder`) may be promoted into the catalog after it has been used in 2+ projects without issue and after passing its waxa eval.
-- If the catalog feels stale, cross-check against the actual contents of this repo's `skills/` directory before falling back to `skill-finder`.
+- If the catalog feels stale, cross-check against [`mizchi/skills` README](https://github.com/mizchi/skills) before falling back to `skill-finder`.
 
 ## Common mistakes
 
@@ -104,10 +104,5 @@ Reverse failure: forcing a Phase 1 fit when the catalog truly has nothing suitab
 - `skill-finder` — Phase 2 owner; cross-source survey + waxa eval gate when the catalog has no fit
 - `apm-usage` — actual `apm install` syntax and manifest format
 - `empirical-prompt-tuning` — how to test a candidate skill before adopting it
-- `optimizing-descriptions` — when no existing skill fits and you write one, shape its description to trigger correctly
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。APM の `targets:` で配布先 harness を指定する前提なので、skill 選定ロジック自体は harness 非依存。
-- signal source の一つ `~/.claude/CLAUDE.md` は Claude の場合の例。Codex なら相当の global instruction file を見る。固定パスではなく「動いている agent の global 指示ファイル」として読む。
-- deploy target の path(`.claude/skills/` / `.agents/skills/` 等)は `apm install` の出力に従う。harness ごとに異なる。
+- `superpowers:writing-skills` — when no existing skill fits, write one instead of adopting a poor match
+- `chezmoi-management` — for skills that must stay private (the APM-vs-chezmoi boundary)

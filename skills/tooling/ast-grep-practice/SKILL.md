@@ -677,7 +677,3 @@ files:
 - sgconfig: https://ast-grep.github.io/reference/sgconfig.html
 - Playground: https://ast-grep.github.io/playground.html
 - Rule catalog: https://ast-grep.github.io/catalog/
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。`ast-grep`(`sg`)CLI の操作知識で harness 非依存(`ast-grep` が PATH にあればよい)。

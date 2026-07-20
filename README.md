@@ -93,7 +93,10 @@ apm install -g HukuKaich0u/agent-kit/plugins/deep-research/skills/deep-research
 apm install HukuKaich0u/agent-kit/skills/meta/grilling
 ```
 
+現在は全60本とも**上流の内容そのまま(ローカル改造なし)**。2026-07-20 に一度クリーンリセットし、
+必要なものから少しずつカスタマイズし直す方針(旧カスタム版は git 履歴 `0fd8ec3` にある)。
+
 各 skill の一覧と状態は [`skills/INVENTORY.md`](skills/INVENTORY.md)、
-出自・取り込みコミット・ローカル改造の詳細は [`skills/VENDORED.md`](skills/VENDORED.md) を参照。
+出自・取り込みコミットの詳細は [`skills/VENDORED.md`](skills/VENDORED.md) を参照。
 
 上流の更新確認: `scripts/check-vendored.sh`(両上流を一括チェック、`--diff` で実 diff も表示)

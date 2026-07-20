@@ -154,7 +154,3 @@ PR を出す側:
 - 短縮 SHA で pin する（`#abc1234`）— GitHub codeload が 404 を返す
 - `link:` のまま長期間 merge を待つ（意図して退避するのは可、ただし lockfile が ghq HEAD に依存する点を忘れない）
 - 上流の `prepare` script を当てにして `dist/` を git track しない（pnpm v10 の allowlist で詰まる、user 体験が悪化する）
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。git ref pin / `link:` 退避の運用知識で harness 非依存(`git` / pnpm があればよい)。

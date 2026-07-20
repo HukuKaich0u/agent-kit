@@ -1,6 +1,6 @@
 ---
 name: frontend-review-testing
-description: Use when auditing test infrastructure — vitest coverage, playwright configuration, VRT setup, coverage merging. Produces recommendations for the testing phase. Runs the project's coverage tooling (`vitest run --coverage`) via a bundled audit script.
+description: Use when auditing test infrastructure — vitest coverage, playwright configuration, VRT setup, coverage merging. Produces recommendations for Week 2 testing phase. Runs `scripts/audit-coverage.sh`.
 ---
 
 # Frontend Review — Testing
@@ -13,16 +13,8 @@ You are auditing the testing posture of a frontend project. The phase is Week 2:
 
 ## Procedure
 
-0. If `<repo>/.frontend-review/kpi/app-classification.json` exists (written by `frontend-review-triage`), read it and weight findings by its P0/P1 profile for this app type.
-1. **Collect coverage posture** with the bundled script:
-   ```bash
-   node scripts/audit-coverage.mjs --repo <repo>   # add --run to execute the suite
-   ```
-   It detects test-config presence and reads an existing `coverage-summary.json`,
-   writing `<repo>/.frontend-review/report/latest/raw/coverage.json`. By default
-   it does NOT run the suite (slow / side effects) — pass `--run` to opt in. No
-   coverage setup at all is itself the headline finding.
-2. Read `coverage.json`.
+1. Run `scripts/audit-coverage.sh --repo <client-repo>`.
+2. Read `coverage/coverage-summary.json` if it exists.
 3. Inspect:
    - `vitest.config.*` — is coverage configured? provider v8?
    - `playwright.config.*` — projects, webServer, sharding
@@ -31,14 +23,12 @@ You are auditing the testing posture of a frontend project. The phase is Week 2:
 
 ## Output
 
-Write `<repo>/.frontend-review/report/latest/md/testing-review.md` with:
+Write `<client-repo>/.frontend-review/report/latest/md/testing-review.md` with:
 
 - **Current state**: vitest configured? playwright configured? how many tests? what coverage %?
 - **Gaps**: missing config, missing scripts, no coverage merge
 - **Recommended PRs** (3-5 max): each with title, affected files, expected coverage delta
 - **Branch coverage checklist** for the router/controller branches that should get the first E2E tests
-
-Keep the report under 250 lines.
 
 ## Component Testing — Testing Library First
 
@@ -109,14 +99,9 @@ This avoids tests that pass even when the integration contract breaks.
 ## Boundaries
 
 - Do NOT write actual test code — propose structure and counts only.
-- Do NOT run `vitest` or `playwright` from this skill; the script only reads existing coverage reports by default, and executes `vitest run --coverage` only when invoked with `--run`.
-- Every finding must cite file:line (or a config key). Findings not verified by reading the actual code/config must be marked "unconfirmed" or dropped.
+- Do NOT run `vitest` or `playwright` from this skill; the scripts don't execute tests, only read existing reports.
 
-## Related
+## Reference
 
-- `testing/playwright-test`, `testing/playwright-cli` — E2E authoring + CLI usage
-- `frontend-review-weekly` — orchestrator
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。収集は同梱の `scripts/audit-coverage.mjs`(zero-dep Node)で行う。デフォルトは config 検出 + 既存 summary 読み取りのみ、`--run` で suite 実行。coverage 設定が無いこと自体が finding。
+- Checklist: `07-unit-test.md`, `08-e2e-playwright.md`, `15-vrt.md`, `13-kpi-tracking.md`
+- Phase: `week-2-testing.md`, `week-3-security-vrt.md`

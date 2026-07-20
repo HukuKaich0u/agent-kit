@@ -86,7 +86,3 @@ The N+1 detector is engine-agnostic, but the `--callee-prefix` heuristic depends
 
 - `scripts/index-coverage.mjs` — per-query SCAN attribution + drop candidates + FK-cascade-load-bearing list.
 - `scripts/n-plus-one.mjs` — `for`-loop sqlc-call detector.
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。同梱の Node スクリプト(`node:sqlite` 利用)を実行するだけで harness 非依存。Node 22+ が前提。

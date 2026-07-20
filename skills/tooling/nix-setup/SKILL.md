@@ -12,7 +12,7 @@ Reference for setting up reproducible development environments. Two paths share 
 
 ## Decision: devbox or pure flake?
 
-`devbox` runs on top of Nix (uses Nix store + nixpkgs internally), so picking one or the other is a UX choice, not a stack choice. Sensible defaults:
+`devbox` runs on top of Nix (uses Nix store + nixpkgs internally), so picking one or the other is a UX choice, not a stack choice. Defaults for mizchi/<repo>:
 
 | When | Use |
 |---|---|
@@ -177,7 +177,7 @@ For environments that lack systemd, have only root, or forbid nested namespaces,
 - Drops `/etc/profile.d/nix.sh` so PATH works in subsequent shells
 
 ```bash
-cp <agent-skills-dir>/nix-setup/assets/setup_nix.sh .   # e.g. ~/.claude/skills/nix-setup/assets/setup_nix.sh on Claude
+cp ~/.claude/skills/nix-setup/assets/setup_nix.sh .
 bash setup_nix.sh
 . "$HOME/.nix-profile/etc/profile.d/nix.sh"  # apply to the current shell too
 nix --version
@@ -596,8 +596,3 @@ Errors and warnings still print; only the routine status lines are suppressed.
 - [oxalica/rust-overlay](https://github.com/oxalica/rust-overlay)
 - [moonbit-community/moonbit-overlay](https://github.com/moonbit-community/moonbit-overlay)
 - [microsoft/apm](https://github.com/microsoft/apm)
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。devbox / Nix flake のセットアップ知識で harness 非依存。
-- `setup_nix.sh` の配置先 path(`~/.claude/skills/nix-setup/assets/`)は harness 固有。固定でなく install 先として読む。sandbox 環境(Claude Code web 等)向けの軽量 flake 経路も本文に記載済み。

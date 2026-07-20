@@ -33,8 +33,6 @@ Create a GitHub issue.
 
 Run `gh issue view <number> --comments`.
 
-If no issue number is available (e.g. `code-review`'s Spec axis found no `#123` reference in the commit messages), fall back to a repo-internal spec file: look for a PRD/spec under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature before asking the user.
-
 ## Wayfinding operations
 
 Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.

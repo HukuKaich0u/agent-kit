@@ -75,7 +75,3 @@ npx playwright screenshot --browser=chromium https://example.com screenshot.png
 # PDF (Chromium only)
 npx playwright pdf https://example.com page.pdf
 ```
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。Playwright CLI(`npx playwright ...`)の使い方で harness 非依存。

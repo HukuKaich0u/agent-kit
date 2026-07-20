@@ -190,9 +190,5 @@ Write a brief summary with:
 
 ## Related
 
-- `frontend-review-deps` — the frontend-review-suite version (CVE triage + trend-watch, agent runs `pnpm outdated`/`audit` directly)
+- `frontend-review-deps` — extended version with scripts for the frontend-review suite (CVE triage + trend-watch data files)
 - `upstream-fix-and-pin` — when the fix needs to come from patching upstream
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。`pnpm outdated` / `pnpm audit`(or npm/yarn)を叩く依存レビュー手順で harness 非依存。

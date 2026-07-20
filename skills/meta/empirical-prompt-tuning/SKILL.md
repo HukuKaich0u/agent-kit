@@ -1,6 +1,6 @@
 ---
 name: empirical-prompt-tuning
-description: Use when you explicitly want to evaluate and improve a skill, prompt, or instruction set with repeated fresh-agent trials, structured self-reporting, and scenario-based measurement instead of relying on author intuition.
+description: Methodology for iteratively improving agent-facing instructions (skills / slash commands / CLAUDE.md / code-gen prompts) via bias-free executor + two-sided evaluation (self-report + instruction-side metrics). Meta-skill, invoke ONLY when the user explicitly asks for an "empirical" eval of a prompt or skill, or for the Iter-0 description / body consistency check. Do NOT auto-invoke after every skill edit; this loop is operator-triggered by name.
 ---
 
 # Empirical Prompt Tuning
@@ -9,7 +9,7 @@ The author of a prompt cannot judge its quality. The clearer the writer thinks s
 
 ## When to use
 
-- Right after creating or substantially revising a skill / command / task prompt
+- Right after creating or substantially revising a skill / slash command / task prompt
 - When an agent does not behave as expected and you want to attribute the cause to ambiguity on the instruction side
 - When hardening high-importance instructions (frequently used skills, automation-core prompts)
 
@@ -29,7 +29,7 @@ When not to use:
 1. **Baseline preparation**: Fix the target prompt and prepare the following two things.
    - **Evaluation scenarios**, 2 to 3 kinds (1 median + 1 to 2 edge). Realistic tasks that assume actual situations where the target prompt would apply.
    - **Requirements checklist** (for computing accuracy). For each scenario, enumerate 3 to 7 items the deliverable must satisfy. Accuracy % = items satisfied / total items. Fix this in advance (do not move it afterward).
-2. **Bias-free read**: Have a "blank-slate" executor read the instruction. **Dispatch a fresh subagent** with whatever subagent facility the environment provides. Do not substitute with a self-reread (it is structurally impossible to view text you just wrote objectively). When running multiple scenarios in parallel, use multiple fresh subagent invocations. For how to handle environments where dispatch is unavailable, see the "Environment constraints" section.
+2. **Bias-free read**: Have a "blank-slate" executor read the instruction. **Dispatch a new subagent** via the Task tool. Do not substitute with a self-reread (it is structurally impossible to view text you just wrote objectively). When running multiple scenarios in parallel, place multiple Agent invocations within a single message. For how to handle environments where dispatch is unavailable, see the "Environment constraints" section.
 3. **Execution**: Hand the subagent a prompt that follows the **subagent invocation contract** described below, and have it execute the scenario. The executor produces an implementation or output and returns a self-report at the end.
 4. **Two-sided evaluation**: Record the following from the returned results.
    - **Executor self-report** (extracted from the body of the subagent's report): unclear points / discretionary fill-ins / places where template application got stuck
@@ -38,8 +38,8 @@ When not to use:
    - **Instruction-side measurements** (the judgment rules are defined canonically in this section; refer to it from elsewhere):
      - Success/failure: counts as success (○) only when **all** requirements tagged `[critical]` are ○. If even one is × or partial, it is failure (×). The label is the binary ○ / × only.
      - Accuracy (achievement rate of the requirements checklist, %. ○ = full score, × = 0, partial = 0.5; sum and divide by total items)
-     - Step count (use the `tool_uses` field in the subagent or execution metadata as-is when available. Include Read / Grep, do not exclude them)
-     - Duration (`duration_ms` from the subagent or execution metadata when available)
+     - Step count (use the `tool_uses` field in the usage meta attached to the Task tool return value as-is. Include Read / Grep, do not exclude them)
+     - Duration (`duration_ms` from the Task tool usage meta)
      - Retry count (how many times the subagent redid the same decision. Extract from the subagent's self-report; not measurable from the instruction side)
      - **On failure, add a one-line note to the "unclear points" section of the presentation format stating "which [critical] item dropped"** (for root cause tracing)
    - The requirements checklist must include **at least one** `[critical]`-tagged item (if there are zero, the success judgment becomes vacuous). Do not add or remove [critical] tags after the fact.
@@ -124,12 +124,12 @@ You are an executor reading <target prompt name> with a blank slate.
 - Retries: number of times you redid the same decision and why
 ```
 
-The caller extracts the self-report portion from the report and fills the evaluation-axis table by obtaining `tool_uses` / `duration_ms` from the subagent or execution metadata when the environment exposes it.
+The caller extracts the self-report portion from the report and fills the evaluation-axis table by obtaining `tool_uses` / `duration_ms` from the Agent tool's usage meta.
 
 ## Environment constraints
 
-In environments where dispatching a new subagent is not possible (already running as a subagent, subagent tooling is disabled, etc.), **do not apply** this skill.
-- Alternative 1: ask the user to start a separate Claude or Codex session and delegate the evaluation there
+In environments where dispatching a new subagent is not possible (already running as a subagent, Task tool is disabled, etc.), **do not apply** this skill.
+- Alternative 1: ask the parent session's user to start a separate Claude Code session and delegate the evaluation there
 - Alternative 2: give up on evaluation and explicitly report to the user "empirical evaluation skipped: dispatch unavailable"
 - **NG**: substitute with a self-reread (bias enters, so you must not trust the evaluation result)
 
@@ -171,7 +171,7 @@ When iterations approach a plateau but convergence criteria (2 consecutive clear
 - **Conservative variant**: current prompt + next-best minor fix
 - **Exploratory variant**: current prompt with one structural change — reorder sections, split a dense paragraph, drop a redundant section, or add a missing scaffolding (e.g., a worked example)
 
-Dispatch fresh subagents on the same scenarios in parallel. Keep the variant with higher accuracy; on tie, prefer fewer unclear points; on further tie, prefer lower `tool_uses`.
+Dispatch fresh subagents on the same scenarios in parallel (one message with multiple Agent tool calls). Keep the variant with higher accuracy; on tie, prefer fewer unclear points; on further tie, prefer lower `tool_uses`.
 
 Pairwise-comparison caveats:
 - Do **not** ask a subagent to rate "A vs B" directly. LLM position bias and self-preference bias make such judgments noisy at small n.
@@ -239,12 +239,7 @@ Record and present to the user with the following form at each iteration:
 
 ## Related
 
+- `superpowers:writing-skills` — the TDD approach for skill creation. Essentially the same as this skill's "baseline → fix → rerun with a subagent"
 - `retrospective-codify` — fixating learnings after a task. This skill is during prompt development, retrospective-codify is after a task ends; use them differently
-- `optimizing-descriptions` — description tuning once the skill exists and has been observed mistriggering
+- `superpowers:dispatching-parallel-agents` — conventions for running multiple scenarios in parallel
 - `waxa-eval` — operating manual for the `waxa` CLI, which automates the eval / iterate loop into an external process with a YAML scenario format and persistent ledger. This skill (empirical-prompt-tuning) covers the **methodology and the in-session Task-tool subagent flow**; `waxa-eval` covers the **CLI operation and YAML authoring**. They are complementary — use empirical for the Iter 0 static check, the `[critical]`-tagged checklist, and `tool_uses`-based skill diagnosis (none of which are accessible to a CLI process); use waxa-eval when persistence, CI repeatability, or external adoption gates are needed.
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使えるよう、特定 tool 名より「fresh subagent」「execution metadata」の概念で読む。
-- subagent metadata が取れない環境では、accuracy と structured reflection を主指標にして、step count や duration は補助扱いに落とす。
-- subagent dispatch 自体ができない環境では、この skill は適用せず、構造レビューだけに留める。

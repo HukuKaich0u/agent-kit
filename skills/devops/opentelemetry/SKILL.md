@@ -1,6 +1,6 @@
 ---
 name: opentelemetry
-description: Platform-agnostic OpenTelemetry reference — signal selection (traces/metrics/logs), span design, context propagation (W3C TraceContext), sampling strategies, and OTLP exporter config. Use before writing any OTel instrumentation to get design decisions right. The platform-specific skill devops/otel-node layers on top of this.
+description: Platform-agnostic OpenTelemetry reference — signal selection (traces/metrics/logs), span design, context propagation (W3C TraceContext), sampling strategies, and OTLP exporter config. Use before writing any OTel instrumentation to get design decisions right. Platform-specific skills (devops/otel-node, cloudflare/workers-otel-utels) layer on top of this.
 ---
 
 # OpenTelemetry — Core Patterns
@@ -109,7 +109,6 @@ tracer.startActiveSpan("handle request", { context: ctx }, (span) => {
 ## OTLP Exporter Config
 
 ```typescript
-import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 
@@ -118,21 +117,14 @@ const exporter = new OTLPTraceExporter({
   headers: { Authorization: `Bearer ${process.env.OTEL_API_KEY}` },
 });
 
-const provider = new NodeTracerProvider({
-  spanProcessors: [
-    new BatchSpanProcessor(exporter, {
-      maxQueueSize: 512,
-      scheduledDelayMillis: 2000,
-      exportTimeoutMillis: 10_000,
-    }),
-  ],
-});
-provider.register();
+provider.addSpanProcessor(
+  new BatchSpanProcessor(exporter, {
+    maxQueueSize: 512,
+    scheduledDelayMillis: 2000,
+    exportTimeoutMillis: 10_000,
+  })
+);
 ```
-
-*Verify against the installed SDK version — this API changed around SDK 2.x.*
-
-> **Migration note**: older SDKs (pre-2.x) constructed the provider first and then called `provider.addSpanProcessor(new BatchSpanProcessor(exporter, {...}))` afterward. Current SDKs pass processors as the `spanProcessors` array in the provider's constructor instead.
 
 Use `BatchSpanProcessor` in production — it is async and low-overhead. `SimpleSpanProcessor` blocks the event loop; use only for local debugging.
 
@@ -140,10 +132,6 @@ Use `BatchSpanProcessor` in production — it is async and low-overhead. `Simple
 
 - **`provider.register()` not called**: SDK is configured but nothing is exported. Call before any instrumentation runs.
 - **ESM + auto-instrumentation (Node.js)**: `require-in-the-middle` hooks do not fire for ESM static imports. See `devops/otel-node` for the workaround.
-- **Cloudflare Workers**: no Node.js runtime, fetch-boundary instrumentation needed (instrument at the `fetch` handler; OTLP export over HTTP).
+- **Cloudflare Workers**: no Node.js runtime, fetch-boundary instrumentation needed. See `cloudflare/workers-otel-utels`.
 - **Span name includes dynamic data**: explodes trace index cardinality. Move to attributes.
 - **No W3C propagation on outbound calls**: distributed trace breaks — downstream spans appear as orphaned roots.
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。platform 非依存の OpenTelemetry リファレンスで harness にも依存しない。

@@ -9,7 +9,7 @@ description: "Use when GitHub Actions PR checks are failing on a pull request an
 ## Overview
 
 Use gh to locate failing PR checks, fetch GitHub Actions logs for actionable failures, summarize the failure snippet, then propose a fix plan and implement after explicit approval.
-- If a planning skill (if one is available in the catalog) is available, use it; otherwise draft a concise plan inline and request approval before implementing.
+- If a plan-oriented skill (for example `create-plan`) is available, use it; otherwise draft a concise plan inline and request approval before implementing.
 
 Prereq: authenticate with the standard GitHub CLI once (for example, run `gh auth login`), then confirm with `gh auth status` (repo + workflow scopes are typically required).
 
@@ -51,7 +51,7 @@ Prereq: authenticate with the standard GitHub CLI once (for example, run `gh aut
    - Provide the failing check name, run URL (if any), and a concise log snippet.
    - Call out missing logs explicitly.
 6. Create a plan.
-   - Use a planning skill (if one is available in the catalog) to draft a concise plan and request approval; otherwise draft a concise plan inline and request approval before implementing.
+   - Use the `create-plan` skill to draft a concise plan and request approval.
 7. Implement after approval.
    - Apply the approved plan, summarize diffs/tests, and ask about opening a PR.
 8. Recheck status.
@@ -67,7 +67,3 @@ Usage examples:
 - `python "<path-to-skill>/scripts/inspect_pr_checks.py" --repo "." --pr "123"`
 - `python "<path-to-skill>/scripts/inspect_pr_checks.py" --repo "." --pr "https://github.com/org/repo/pull/123" --json`
 - `python "<path-to-skill>/scripts/inspect_pr_checks.py" --repo "." --max-lines 200 --context 40`
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。同梱の Python スクリプト + `gh` CLI で動くので harness 非依存(`python` と `gh` が PATH にあればよい)。

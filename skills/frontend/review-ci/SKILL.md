@@ -1,6 +1,6 @@
 ---
 name: frontend-review-ci
-description: Use when CI is slow (>10 min), flaky, or the user asks to optimize GitHub Actions for a frontend project. Analyzes `gh run list` history, identifies bottleneck steps, proposes sharding / cache / concurrency improvements.
+description: Use when CI is slow (>10 min), flaky, or the user asks to optimize GitHub Actions for a frontend project. Analyzes `gh run list` history, identifies bottleneck steps, proposes sharding / cache / concurrency improvements. Runs `scripts/audit-ci.sh`.
 ---
 
 # Frontend Review — CI Optimization
@@ -9,20 +9,13 @@ You are optimizing GitHub Actions CI for a frontend project. The target is **med
 
 ## Procedure
 
-0. If `<repo>/.frontend-review/kpi/app-classification.json` exists (written by `frontend-review-triage`), read it and weight findings by its P0/P1 profile for this app type.
-1. **Collect CI timing + workflow inventory** with the bundled script:
-   ```bash
-   node scripts/audit-ci.mjs --repo <repo> [--limit 50]
-   ```
-   It reads `gh run list` history (per-workflow median/max duration) and inventories
-   `.github/workflows/` (cache / concurrency / shard / needs flags), writing
-   `<repo>/.frontend-review/report/latest/raw/ci.json`. If `gh` is unavailable
-   the timing section reports `available: false` — that absence is itself a finding.
-2. Read `ci.json`, then for the slowest runs dig into step-level timing:
+1. Run `scripts/audit-ci.sh --repo <client-repo>`.
+2. Read `<client-repo>/.frontend-review/report/latest/raw/ci.json`.
+3. For the slowest runs, dig into step-level timing:
    ```bash
    gh run view <run-id> --log | grep -E '^\d{4}-' | head -200
    ```
-3. Inventory current workflows under `.github/workflows/` and note:
+4. Inventory current workflows under `.github/workflows/` and note:
    - Does **every job** (lint, build, test, coverage, etc.) use a pnpm/npm store cache? A common miss: `test.yml` has cache but `lint.yml` and `pages.yml` do not.
    - Does `actions/setup-node` use `cache: pnpm`, or is there a manual `actions/cache` block for the pnpm store? Either is fine; the key must include `hashFiles('**/pnpm-lock.yaml')`.
    - Does `actions/cache` cache the Playwright browser store (`~/.cache/ms-playwright`)?
@@ -33,7 +26,7 @@ You are optimizing GitHub Actions CI for a frontend project. The target is **med
 
 ## Output
 
-Write `<repo>/.frontend-review/report/latest/md/ci-analysis.md` with:
+Write `<client-repo>/.frontend-review/report/latest/md/ci-analysis.md` with:
 
 - Current median / max duration
 - Slowest 3 steps in a representative failing + passing run
@@ -41,8 +34,6 @@ Write `<repo>/.frontend-review/report/latest/md/ci-analysis.md` with:
 - Estimated wins per recommendation
 
 Then produce a draft PR description that the user can copy into `gh pr create`, naming the branch `ci/optimize`.
-
-Keep the report under 250 lines.
 
 ## Development Iteration Timing Targets
 
@@ -88,15 +79,10 @@ The **PR CI total** target is the critical gate. CI slower than 5 minutes is rou
 ## Boundaries
 
 - Do NOT actually create the PR or push the branch — just draft the description.
-- Do NOT modify workflow YAML in the repo; the user does that after reviewing your proposal.
-- Every finding must cite file:line (or a config key). Findings not verified by reading the actual code/config must be marked "unconfirmed" or dropped.
+- Do NOT modify workflow YAML in the client repo; the user does that after reviewing your proposal.
 
-## Related
+## Reference
 
-- `frontend-review-weekly` — orchestrator that runs this as part of the weekly pass
-- `devops/actions-ci-tuning` — general GitHub Actions tuning (cache / parallelism / runner sizing) beyond the frontend angle
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。データ収集は同梱の `scripts/audit-ci.mjs`(zero-dep Node)で決定的に行う。
-- `node` が前提。`gh` が PATH にあり認証済みなら timing が取れる(無ければ `available: false` で workflow inventory のみ)。Node 18+ で動く。
+- Checklist: `checklist/09-ci-optimization.md`
+- Phase: `phase/week-1-ci-baseline.md`
+- Templates: `templates/github-actions/ci.yml`, `templates/github-actions/e2e.yml`

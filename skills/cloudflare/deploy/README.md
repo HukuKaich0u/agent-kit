@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install HukuKaich0u/agent-kit/skills/cloudflare/deploy
+apm install mizchi/skills/cloudflare/deploy
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - HukuKaich0u/agent-kit/skills/cloudflare/deploy
+    - mizchi/skills/cloudflare/deploy
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add HukuKaich0u/agent-kit --skill cloudflare-deploy
+npx skills add mizchi/skills --skill cloudflare-deploy
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit HukuKaich0u/agent-kit/skills/cloudflare/deploy ~/.claude/skills/cloudflare-deploy
+npx degit mizchi/skills/cloudflare/deploy ~/.claude/skills/cloudflare-deploy
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

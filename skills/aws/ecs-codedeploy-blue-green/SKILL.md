@@ -65,43 +65,12 @@ resource "aws_lb_listener_rule" "weighted" {
 
 ### Traffic shift procedure
 
-#### Mandatory gate: verify green health before shifting ANY traffic
-
-Before running any `aws elbv2 modify-rule` command below, confirm every target in the green target group is healthy and the healthy count matches the expected task count:
-
 ```bash
-aws elbv2 describe-target-health --target-group-arn <green-tg-arn> \
-  --query 'TargetHealthDescriptions[].{Target:Target.Id,State:TargetHealth.State}' \
-  --output table
-```
-
-Or filter for a pass/fail signal directly with jq:
-
-```bash
-aws elbv2 describe-target-health --target-group-arn <green-tg-arn> \
-  | jq -e '[.TargetHealthDescriptions[].TargetHealth.State] | all(. == "healthy")'
-```
-
-Do not proceed unless: (1) every target's `TargetHealth.State` is `"healthy"`, and (2) the count of healthy targets equals the expected task count for the service (a target group with 1/3 healthy is not ready, even though the query above would still need all *listed* targets healthy — check the count too, e.g. via `length`).
-
-#### Staged-shift discipline
-
-Shift gradually, not in one jump:
-
-1. **Canary**: send a small percentage (e.g. 10%) to green.
-2. **Bake**: watch error rate / latency (CloudWatch `HTTPCode_Target_5XX_Count`, target response time) for a defined bake period (e.g. 5-15 minutes depending on traffic volume) before shifting further.
-3. **100% cutover**: only after the bake period passes clean.
-
-**On production, confirm with the user before executing the 100% cutover — never chain the commands in one shot.** Run canary, wait, observe, then ask before running full cutover.
-
-```bash
-# Canary: send 10% to green (run only after the health gate above passes)
+# Canary: send 10% to green
 aws elbv2 modify-rule --rule-arn <rule-arn> \
   --actions '[{"Type":"forward","ForwardConfig":{"TargetGroups":[{"TargetGroupArn":"<blue-arn>","Weight":90},{"TargetGroupArn":"<green-arn>","Weight":10}]}}]'
 
-# --- bake period: watch error rate / latency before continuing ---
-
-# Full cutover (production: confirm with the user first — do not chain from the canary step)
+# Full cutover
 aws elbv2 modify-rule --rule-arn <rule-arn> \
   --actions '[{"Type":"forward","ForwardConfig":{"TargetGroups":[{"TargetGroupArn":"<blue-arn>","Weight":0},{"TargetGroupArn":"<green-arn>","Weight":100}]}}]'
 
@@ -309,15 +278,3 @@ aws deploy create-deployment \
 - **Both blue and green target groups must have identical health check configuration.** Mismatched `healthy_threshold` / `unhealthy_threshold` values will cause one TG to always be considered unhealthy.
 - **`desired_count` on `aws_ecs_service` should not change during blue/green.** CodeDeploy manages task counts independently during deployment.
 - **CloudWatch alarm threshold for production**: use 5–10 for `threshold`, not 1. A single stray 5xx during the canary window will trigger a rollback on production load.
-
-## Boundaries
-
-- Do NOT shift any traffic to green without first running the target-health gate and confirming every target is `"healthy"` with the healthy count matching the expected task count.
-- Do NOT skip the bake period between canary and full cutover — a canary that "looks fine" after 30 seconds has not been observed long enough to catch elevated error rates or latency regressions.
-- On production, do NOT chain canary → 100% cutover in one shot — confirm with the user before executing the 100% cutover command.
-- Do NOT delete the blue target group / old ECS task set until after the bake period at 100% green passes — it is the rollback target.
-- Keep the rollback command (flip weights back to blue) at hand and ready to run before starting any shift, not something to look up after an incident starts.
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。中身は ECS / ALB / CodeDeploy のインフラ知識で harness 非依存(`aws` CLI と IaC ツールがあればよい)。

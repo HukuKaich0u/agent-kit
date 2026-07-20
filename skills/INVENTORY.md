@@ -25,6 +25,10 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 - **mizchi 48本を VENDORED.md 管理下に**(→ [`VENDORED.md`](VENDORED.md) の mizchi セクション)。
   base commit を事後特定(`d799945`、import 内容と 47/48 完全一致で確定)し、
   共通正規化と個別改造37本の内容を記録。check-vendored.sh は mattpocock + mizchi の両上流対応に一般化。
+- **vendored 60本を上流 HEAD に全リセット**(同日、上記の直後)。
+  「クリーンな上流状態を起点に、必要なものから少しずつカスタマイズし直す」方針に転換。
+  旧カスタム済み状態(壊れ参照の修正・自作 audit スクリプト・改善)は commit `0fd8ec3` から個別に拾える。
+  これに伴い、過去に「解決済み」とした項目のいくつかが未解決に戻った(下の要カスタム参照)。
 
 ---
 
@@ -32,16 +36,39 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 
 ここだけ見れば仕分けは進む。✅ 残す組は下の全一覧に回した。
 
-### 🔧 要カスタム(6本)— 使う前に自分向けの調整が必要
+### 🔧 要カスタム — 全リセット(2026-07-20)で上流の壊れ参照が復活している
 
-| skill | 何をする | 何を直す必要があるか |
-|---|---|---|
-| ~~tooling/code-review~~ | Standards/Spec 2軸でPRレビュー | **解決済み(2026-07-20)**: `setup-agent-kit` を移植し issue-tracker 依存を差し替え。GitHub Issues + repo内spec 両対応 |
-| cloudflare/access-app-setup | CF Access保護アプリをAPIで設定 | `mizchi/mnemo` 由来のドメインデフォルトが assets/scripts に残ってないか。**CF はこれから使う** |
-| devops/workers-cd-rollback | CF Worker CDの自動ロールバック | `.env.cloudflare`+dotenvx 規約が mizchi 固有。**CF はこれから使う** |
-| aws/github-oidc-scoped-role | GitHub Actions→AWS IAM OIDC | Bedrock 固有 ARN 前提。**残す確定**、汎用化するか要確認 |
-| meta/skill-finder ・ skill-selector | skill運用メタ系 | `apm` CLI 前提。**残す確定**(skill-finder は本人が明示的に欲しい) |
-| meta/waxa-eval | skill品質評価の CLI 操作 | **解決済み**: waxa を Bun 移植したので環境で動く。`bun run tools/waxa/src/cli.ts`。SKILL も更新済み |
+上流は mizchi / mattpocock の個人環境前提のため、以下は**使う前に修正が必要**。
+旧修正版はすべて commit `0fd8ec3` にあり、個別に拾って再適用できる。
+
+**優先度高(使うと決まっているのに壊れているもの):**
+
+| skill | 壊れている内容 |
+|---|---|
+| tooling/code-review | `/setup-matt-pocock-skills` と `docs/agents/issue-tracker.md` 前提。旧対応=setup-agent-kit 連携+repo内spec フォールバック |
+| meta/setup-agent-kit | 中身が上流 `setup-matt-pocock-skills` のまま(skill 名・文言が mattpocock 向け) |
+| meta/waxa-eval ・ skill-finder | waxa を上流前提(npx / mizchi repo パス)で呼ぶ。ローカルは Bun 移植版 `tools/waxa`(これはリセット対象外で維持) |
+| frontend/review-ci ・ deps ・ hygiene ・ security ・ testing ・ triage | SKILL が参照する `scripts/audit-*.sh` が上流に存在しない。旧対応=自作 `.mjs` スクリプト6本(0fd8ec3) |
+| meta/skill-selector | `references/catalog.md` が mizchi の skill 一覧。ローカルカタログ再構築版は 0fd8ec3 |
+
+**存在しない skill への参照(発火すると迷子になる):**
+
+- superpowers 系参照: meta/empirical-prompt-tuning ・ optimizing-descriptions ・ retrospective-codify ・ skill-finder
+- pkfire 参照: tooling/justfile ・ conventional-changelog ・ sql/security
+- chezmoi 参照: tooling/apm-usage ・ meta/skill-selector
+- `create-plan` 参照: devops/gh-fix-ci
+- 削除済み `workers-otel-utels` 参照: devops/opentelemetry ・ otel-node
+
+**mizchi 個人環境の値・古い記述:**
+
+- cloudflare/access-app-setup(mnemo ドメイン)・ devops/workers-cd-rollback(`.env.cloudflare`+moon build)・ aws/ecs-service-connect-ipv6(study-aws.local)
+- ai/vlmkit(旧 `vrt` 表記が残る)・ devops/opentelemetry ・ otel-node(OTel SDK 2.x 未対応のコード例)
+- aws/github-oidc-scoped-role(Bedrock 固有 ARN 前提)
+
+**その他(方針判断):**
+
+- 上流の `SKILL-ja.md` が復活・「Agent compatibility」節は消滅。再正規化(ja 削除+節追加)を一括でやり直すか要判断
+- sql/plan-audit の PG/RDS 用 EXPLAIN runner(自作)も外れた。SQL 監査4点は現状 SQLite/D1 中心に戻っている
 
 ### ❓ 保留・様子見
 
@@ -80,7 +107,7 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 
 ### mattpocock(12本, MIT, VENDORED.md 管理済み)
 
-- meta/setup-agent-kit — repo ごとの issue-tracker/domain 設定を scaffold(上流 `setup-matt-pocock-skills` を改造移植)
+- meta/setup-agent-kit — repo ごとの issue-tracker/domain 設定を scaffold(🔧 リセットで中身は上流 `setup-matt-pocock-skills` のまま)
 
 - meta/grilling — 計画を1問ずつ問い詰める
 - meta/handoff — 会話を引き継ぎ文書に圧縮
@@ -102,7 +129,7 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 
 実スタック直結(◎):
 - cloudflare/deploy — Workers/Pagesデプロイ
-- sql/lint ・ sql/plan-audit ・ sql/schema-audit ・ sql/security — SQL監査4点(SQLite/D1/PG対応)
+- sql/lint ・ sql/plan-audit ・ sql/schema-audit ・ sql/security — SQL監査4点(上流は SQLite/D1 中心。旧自作の PG/RDS runner は 0fd8ec3)
 
 汎用で使える(○ / -):
 - ai/review-image ・ ai/vlmkit — 画像/VRTレビュー
@@ -119,7 +146,11 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 
 ## 残った論点(次に向き合うもの)
 
-1. ~~**mizchi 由来の上流追従が未整備**~~ → **完了(2026-07-20)**。48本を VENDORED.md 管理下に置き、check-vendored.sh を両上流対応に一般化。
-2. **「もっと良い公開資産がないか」の精査**(君の本命)。tooling/testing/backend は使うが、より優れた mizchi/mattpocock/一流の skill がないか skill-finder + waxa-eval(移植済み)で精査したい。特に tooling/testing から。
-3. ~~**code-review の issue-tracker カスタマイズ**~~ → **完了(2026-07-20)**。`meta/setup-agent-kit` を mattpocock から移植し、GitHub Issues + repo内spec の両対応に。
-4. **レビュー系14本**(backend 5 + frontend 9)は最大クラスタ。内容の強化・改善の余地あり(本人談)。精査対象。
+1. **壊れ参照の再修正を「使う順」に少しずつ**(全リセット後の新しい進め方)。
+   上の 🔧 要カスタム表が対象リスト。旧修正は commit `0fd8ec3` から拾えるが、
+   そのままコピーせず「本当に要るか」を見てから当てる。優先候補: code-review + setup-agent-kit、waxa-eval/skill-finder、frontend audit スクリプト。
+2. **「もっと良い公開資産がないか」の精査**(君の本命)。tooling/testing/backend は使うが、より優れた mizchi/mattpocock/一流の skill がないか skill-finder + waxa-eval で精査したい。特に tooling/testing から。
+3. **レビュー系14本**(backend 5 + frontend 9)は最大クラスタ。内容の強化・改善の余地あり(本人談)。精査対象。
+4. **再正規化の方針決め**: SKILL-ja.md の扱い・Agent compatibility 節・README 自動生成(gen-skill-readme.rb)を再適用するか、上流のまま運用するか。
+
+※ 上流追従の仕組み(VENDORED.md + check-vendored.sh 両上流対応)はリセット後も有効。改造ゼロの今は上流差分がそのまま取り込める。

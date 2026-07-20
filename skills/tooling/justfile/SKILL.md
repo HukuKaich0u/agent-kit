@@ -1,6 +1,6 @@
 ---
 name: justfile
-description: Reference for the `just` command runner — justfile syntax and GitHub Actions integration. Use when a repo uses (or is adopting) a `justfile` and tasks must be added, modified, or audited.
+description: Reference for the `just` command runner — justfile syntax and GitHub Actions integration. Use when an existing repo already has a `justfile` and tasks must be added, modified, or audited. For new mizchi-owned repos, prefer the `pkfire` skill (`Taskfile.pkl` + `pkf`) instead; justfile is kept only for compatibility with existing repos.
 ---
 
 # justfile Skill
@@ -165,7 +165,3 @@ clean:
 - https://github.com/casey/just
 - https://just.systems/man/en/
 - https://github.com/extractions/setup-just
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。`just` command runner の構文 + GitHub Actions 連携の知識で harness 非依存。

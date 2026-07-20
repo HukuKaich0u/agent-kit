@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install HukuKaich0u/agent-kit/skills/frontend/review-performance
+apm install mizchi/skills/frontend/review-performance
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - HukuKaich0u/agent-kit/skills/frontend/review-performance
+    - mizchi/skills/frontend/review-performance
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add HukuKaich0u/agent-kit --skill frontend-review-performance
+npx skills add mizchi/skills --skill frontend-review-performance
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit HukuKaich0u/agent-kit/skills/frontend/review-performance ~/.claude/skills/frontend-review-performance
+npx degit mizchi/skills/frontend/review-performance ~/.claude/skills/frontend-review-performance
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

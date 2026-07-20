@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install HukuKaich0u/agent-kit/skills/aws/ecs-codedeploy-blue-green
+apm install mizchi/skills/aws/ecs-codedeploy-blue-green
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - HukuKaich0u/agent-kit/skills/aws/ecs-codedeploy-blue-green
+    - mizchi/skills/aws/ecs-codedeploy-blue-green
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add HukuKaich0u/agent-kit --skill aws-ecs-codedeploy-blue-green
+npx skills add mizchi/skills --skill aws-ecs-codedeploy-blue-green
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit HukuKaich0u/agent-kit/skills/aws/ecs-codedeploy-blue-green ~/.claude/skills/aws-ecs-codedeploy-blue-green
+npx degit mizchi/skills/aws/ecs-codedeploy-blue-green ~/.claude/skills/aws-ecs-codedeploy-blue-green
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

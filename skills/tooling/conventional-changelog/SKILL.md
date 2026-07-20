@@ -405,7 +405,7 @@ module.exports = { extends: ['@commitlint/config-conventional'] };
 
 **Pitfall**: Without `additional_dependencies`, the hook cannot resolve `config-conventional` at run time and fails with `Cannot find module`. Just `extends` in `commitlint.config.js` is not enough; you must also declare it explicitly in the hook's isolated environment.
 
-If the repo drives tasks through a task runner (justfile / Taskfile / npm scripts) rather than git hooks directly, wire commitlint in as a runner task instead of a standalone hook.
+In the mizchi-default pkfire ecosystem, commitlint is wired into a `Taskfile.pkl` task instead — see the `chezmoi-management` and `pkfire` skills.
 
 ### commitizen (interactive commit creation)
 
@@ -444,7 +444,3 @@ git cz
 - Conventional Commits: https://www.conventionalcommits.org/
 - release-please: https://github.com/googleapis/release-please
 - git-cliff: https://git-cliff.org/
-
-## Agent compatibility
-
-- Claude と Codex のどちらでも使える。Conventional Commits + changelog 自動化のリファレンスで harness 非依存。
