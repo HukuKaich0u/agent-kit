@@ -31,19 +31,30 @@
 | `skills/tooling/diagnosing-bugs` | `skills/engineering/diagnosing-bugs` | なし | 難バグ/性能劣化の診断ループ。`scripts/hitl-loop.template.sh` 添付 |
 | `skills/tooling/resolving-merge-conflicts` | `skills/engineering/resolving-merge-conflicts` | なし | マージ/リベース衝突の解消 |
 | `skills/tooling/git-guardrails-claude-code` | `skills/misc/git-guardrails-claude-code` | なし | 危険 git を hook でブロック。**Claude Code 専用**(Codex 不可) |
-| `skills/tooling/code-review` | `skills/engineering/code-review` | なし | Standards+Spec 2軸レビュー。**要注意**(下記) |
+| `skills/tooling/code-review` | `skills/engineering/code-review` | **あり** | Standards+Spec 2軸レビュー。issue-tracker 依存を書き換え(下記) |
+| `skills/meta/setup-agent-kit` | `skills/engineering/setup-matt-pocock-skills` | **あり** | リネーム+agent-kit 向けに調整。テンプレ4種同梱(下記) |
 | `skills/tooling/prototype` | `skills/engineering/prototype` | なし | 使い捨てプロトタイプで設計検証。`LOGIC.md`/`UI.md` 添付 |
 | `skills/tooling/research` | `skills/engineering/research` | なし | 軽量な一次情報調査→repo に Markdown。deep-research plugin と用途が近接 |
 
 ### 取り込み時の注意
 
-- **code-review**: `docs/agents/issue-tracker.md` が無いと Spec 軸が機能しない。
-  上流は `/setup-matt-pocock-skills`(未取り込み)でこれを作る前提。
-  単体で使う場合は Standards 軸のみ有効、または issue-tracker.md を手動用意する。
-  **TODO(カスタマイズ保留中):** 上流そのままで取り込み済み。ユーザーの実運用
-  (GitHub Issues / ローカル Markdown spec 等)に合わせて SKILL.md 13行目・29行目の
-  `docs/agents/issue-tracker.md` / `/setup-matt-pocock-skills` 依存を書き換える予定。
-  改造したらこの表の「改造」列を「あり」にし、上流差分取り込み時の上書きに注意。
+- **code-review**(改造あり / 2026-07-20): `docs/agents/issue-tracker.md` が Spec 軸のソース。
+  上流の `/setup-matt-pocock-skills` 依存を `setup-agent-kit` skill に差し替え済み。
+  あわせて「issue-tracker.md が無くても Spec 軸は step 2 のフォールバック(引数パス /
+  repo 内 spec ファイル)で動く。GitHub remote があれば `gh issue view` が既定」を明記。
+  上流差分を取り込む際、SKILL.md の該当2行(13行目付近・spec 探索順の1項目)は上書き注意。
+
+- **setup-agent-kit**(改造あり / 2026-07-20): 上流 `setup-matt-pocock-skills` の移植。
+  ほぼそのまま移植する方針で、テンプレート4種(`issue-tracker-github/gitlab/local.md`、
+  `triage-labels.md`、`domain.md`)も同梱。加えた変更:
+  - skill 名・見出し・文言を `setup-agent-kit` / agent-kit 向けにリネーム
+  - 対象 skill の説明を agent-kit の実態(現状 `code-review` の Spec 軸)に合わせた
+  - Section B(triage ラベル)は「agent-kit は triage skill を同梱しないので通常スキップ」と明記
+  - `issue-tracker-github.md` / `issue-tracker-local.md` の「fetch the relevant ticket」節に、
+    issue 番号が無い場合の repo 内 spec フォールバック(`docs/` `specs/` `.scratch/`)を追記
+  上流の `agents/openai.yaml`(Codex 用 policy)は未取り込み。
+  なお triage / to-tickets / to-spec / qa / wayfinder 等、テンプレが言及する skill は agent-kit 未導入。
+  将来取り込むならテンプレの該当節がそのまま効く。
 - **research**: 既存の `plugins/deep-research` と用途が近接。トリガーが被り得るので、
   project 側で apm.yml に入れる際はどちらを使うか意識する。
 - **domain-modeling / diagnosing-bugs / tdd**: `CONTEXT.md` や `docs/adr/` を任意参照するが、

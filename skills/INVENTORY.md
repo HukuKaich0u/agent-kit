@@ -1,6 +1,6 @@
 # Skills Inventory(棚卸し表)
 
-agent-kit の全 skill(現在 **68本**)の棚卸しと状態管理。
+agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 各 skill が「何をするか・出自・環境依存・重複」を一覧化し、精査の起点にする。
 
 ## この表の使い方
@@ -20,7 +20,9 @@ agent-kit の全 skill(現在 **68本**)の棚卸しと状態管理。
 - **mattpocock 11本 vendoring**(→ [`VENDORED.md`](VENDORED.md)、上流追従は check-vendored.sh)
 - **waxa を Deno→Bun 移植**(`tools/waxa/`)。これで waxa-eval / skill-finder が環境で動くようになった
 - **3本削除**: utels-project-bootstrap / cloudflare/workers-otel-utels / k8s/crd-from-typed-schema(utels.dev 未使用・k8s 非スタック)
+- **`setup-agent-kit` 移植**(上流 `setup-matt-pocock-skills` をリネーム+調整)。これで code-review の Spec 軸が機能する
 - **未整備の論点**: mizchi 由来 45本は 2026-06-28 の一括 import のまま上流追従の仕組みがない(mattpocock と違い VENDORED.md 管理外)。vendoring 扱いに整えるか要検討。
+  なお上流 mizchi/skills のディレクトリ構造は agent-kit とほぼ同一階層(`sql/` `frontend/` `aws/` 等)なので、check-vendored.sh のマッピングは機械的に書ける見込み。
 
 ---
 
@@ -32,7 +34,7 @@ agent-kit の全 skill(現在 **68本**)の棚卸しと状態管理。
 
 | skill | 何をする | 何を直す必要があるか |
 |---|---|---|
-| tooling/code-review | Standards/Spec 2軸でPRレビュー | `docs/agents/issue-tracker.md` 前提。**残す確定・カスタム議論は保留中**(VENDORED.md にTODO) |
+| ~~tooling/code-review~~ | Standards/Spec 2軸でPRレビュー | **解決済み(2026-07-20)**: `setup-agent-kit` を移植し issue-tracker 依存を差し替え。GitHub Issues + repo内spec 両対応 |
 | cloudflare/access-app-setup | CF Access保護アプリをAPIで設定 | `mizchi/mnemo` 由来のドメインデフォルトが assets/scripts に残ってないか。**CF はこれから使う** |
 | devops/workers-cd-rollback | CF Worker CDの自動ロールバック | `.env.cloudflare`+dotenvx 規約が mizchi 固有。**CF はこれから使う** |
 | aws/github-oidc-scoped-role | GitHub Actions→AWS IAM OIDC | Bedrock 固有 ARN 前提。**残す確定**、汎用化するか要確認 |
@@ -73,7 +75,9 @@ agent-kit の全 skill(現在 **68本**)の棚卸しと状態管理。
 - lang/typescript — TypeScriptベストプラクティス
 - meta/empirical-prompt-tuning — skill/promptをsubagentで実測評価
 
-### mattpocock(11本, MIT, VENDORED.md 管理済み)
+### mattpocock(12本, MIT, VENDORED.md 管理済み)
+
+- meta/setup-agent-kit — repo ごとの issue-tracker/domain 設定を scaffold(上流 `setup-matt-pocock-skills` を改造移植)
 
 - meta/grilling — 計画を1問ずつ問い詰める
 - meta/handoff — 会話を引き継ぎ文書に圧縮
@@ -114,5 +118,5 @@ agent-kit の全 skill(現在 **68本**)の棚卸しと状態管理。
 
 1. **mizchi 由来 45本の上流追従が未整備**(最大の宿題)。mattpocock は VENDORED.md + check-vendored.sh で管理したのに、mizchi 分は 2026-06-28 の import のまま。君の運用スタイル(公開資産を取ってきてカスタム)からすると、mizchi 分も VENDORED.md 管理下に置いて上流追従できる形にするのが筋。
 2. **「もっと良い公開資産がないか」の精査**(君の本命)。tooling/testing/backend は使うが、より優れた mizchi/mattpocock/一流の skill がないか skill-finder + waxa-eval(移植済み)で精査したい。特に tooling/testing から。
-3. **code-review の issue-tracker カスタマイズ**(保留中)。君の実運用(GitHub Issues か / ローカル spec か)を決めて SKILL を書き換える。
+3. ~~**code-review の issue-tracker カスタマイズ**~~ → **完了(2026-07-20)**。`meta/setup-agent-kit` を mattpocock から移植し、GitHub Issues + repo内spec の両対応に。
 4. **レビュー系14本**(backend 5 + frontend 9)は最大クラスタ。内容の強化・改善の余地あり(本人談)。精査対象。
