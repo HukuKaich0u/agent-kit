@@ -13,7 +13,8 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 - **🔗 統合候補** — 別の skill と機能が重なる。役割分担を明記するか片方に寄せる。
 - **🔎 上位互換を探す** — 現状で足りるが、より優れた公開 skill があれば差し替え検討(skill-finder + waxa-eval で評価)。
 
-出自は git 初出コミットで確定。**mizchi≈45・mattpocock 11・自作≈9・Agents365-ai 1**。
+出自は git 初出コミットで確定。**mizchi 48・mattpocock 12・自作 8・Agents365-ai 1**(計69)。
+※ meta/empirical-prompt-tuning は旧自作版を mizchi 版で置換したため mizchi 由来にカウント。
 
 ## 2026-07-20 に確定した変更
 
@@ -21,8 +22,9 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 - **waxa を Deno→Bun 移植**(`tools/waxa/`)。これで waxa-eval / skill-finder が環境で動くようになった
 - **3本削除**: utels-project-bootstrap / cloudflare/workers-otel-utels / k8s/crd-from-typed-schema(utels.dev 未使用・k8s 非スタック)
 - **`setup-agent-kit` 移植**(上流 `setup-matt-pocock-skills` をリネーム+調整)。これで code-review の Spec 軸が機能する
-- **未整備の論点**: mizchi 由来 45本は 2026-06-28 の一括 import のまま上流追従の仕組みがない(mattpocock と違い VENDORED.md 管理外)。vendoring 扱いに整えるか要検討。
-  なお上流 mizchi/skills のディレクトリ構造は agent-kit とほぼ同一階層(`sql/` `frontend/` `aws/` 等)なので、check-vendored.sh のマッピングは機械的に書ける見込み。
+- **mizchi 48本を VENDORED.md 管理下に**(→ [`VENDORED.md`](VENDORED.md) の mizchi セクション)。
+  base commit を事後特定(`d799945`、import 内容と 47/48 完全一致で確定)し、
+  共通正規化と個別改造37本の内容を記録。check-vendored.sh は mattpocock + mizchi の両上流対応に一般化。
 
 ---
 
@@ -63,7 +65,7 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 
 判断不要でそのまま使えるもの。出自ごとにまとめた。
 
-### 自作(9本)— 一番信頼できる、君が書いたもの
+### 自作(8本)— 一番信頼できる、君が書いたもの
 
 - backend/review-architecture — BE構造・依存方向・境界漏れをレビュー
 - backend/review-concurrency — 非同期/並行処理の危険パターン
@@ -73,7 +75,8 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 - db/migration-safety — DB移行の安全性分類(◎ PG/RDS/SQLite/DynamoDB全対応)
 - lang/rust — Rustベストプラクティス
 - lang/typescript — TypeScriptベストプラクティス
-- meta/empirical-prompt-tuning — skill/promptをsubagentで実測評価
+
+※ meta/empirical-prompt-tuning は旧自作版があったが mizchi 版で置換済み(mizchi の項に移動)
 
 ### mattpocock(12本, MIT, VENDORED.md 管理済み)
 
@@ -95,7 +98,7 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 
 - tooling/drawio — draw.io CLIで図生成(君が v1.16.0 まで検証済み)
 
-### mizchi(残り・環境依存なしで使えるもの)
+### mizchi(48本, MIT 既定 / 一部 Apache-2.0, VENDORED.md 管理済み)
 
 実スタック直結(◎):
 - cloudflare/deploy — Workers/Pagesデプロイ
@@ -107,7 +110,7 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 - devops/actions-ci-tuning ・ devops/gh-fix-ci ・ devops/opentelemetry ・ devops/otel-node — CI/OTel
 - frontend/review-*(9本)— フロントレビュー一式
 - lang/translate-programming-language — 言語間移行
-- meta/extract-glossary ・ optimizing-descriptions ・ retrospective-codify ・ skill-finder ・ skill-selector ・ waxa-eval — メタ系
+- meta/empirical-prompt-tuning ・ extract-glossary ・ optimizing-descriptions ・ retrospective-codify ・ skill-finder ・ skill-selector ・ waxa-eval — メタ系
 - node/sqlite-vec — Node sqlite-vec(○ Turso/D1関連)
 - testing/playwright-cli ・ playwright-test — Playwright
 - tooling/apm-usage ・ ast-grep-practice ・ conventional-changelog ・ dep-lib-review ・ dotenvx ・ justfile ・ nix-setup ・ tech-trend-watch ・ upstream-fix-and-pin — ツール系
@@ -116,7 +119,7 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 
 ## 残った論点(次に向き合うもの)
 
-1. **mizchi 由来 45本の上流追従が未整備**(最大の宿題)。mattpocock は VENDORED.md + check-vendored.sh で管理したのに、mizchi 分は 2026-06-28 の import のまま。君の運用スタイル(公開資産を取ってきてカスタム)からすると、mizchi 分も VENDORED.md 管理下に置いて上流追従できる形にするのが筋。
+1. ~~**mizchi 由来の上流追従が未整備**~~ → **完了(2026-07-20)**。48本を VENDORED.md 管理下に置き、check-vendored.sh を両上流対応に一般化。
 2. **「もっと良い公開資産がないか」の精査**(君の本命)。tooling/testing/backend は使うが、より優れた mizchi/mattpocock/一流の skill がないか skill-finder + waxa-eval(移植済み)で精査したい。特に tooling/testing から。
 3. ~~**code-review の issue-tracker カスタマイズ**~~ → **完了(2026-07-20)**。`meta/setup-agent-kit` を mattpocock から移植し、GitHub Issues + repo内spec の両対応に。
 4. **レビュー系14本**(backend 5 + frontend 9)は最大クラスタ。内容の強化・改善の余地あり(本人談)。精査対象。
