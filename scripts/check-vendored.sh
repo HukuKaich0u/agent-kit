@@ -38,6 +38,7 @@ declare -a MAP=(
   "skills/tooling/code-review:skills/engineering/code-review"
   "skills/tooling/prototype:skills/engineering/prototype"
   "skills/tooling/research:skills/engineering/research"
+  "skills/meta/setup-agent-kit:skills/engineering/setup-matt-pocock-skills"
 )
 
 TMP="$(mktemp -d)"
