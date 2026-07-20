@@ -1,6 +1,6 @@
 # Skills Inventory(棚卸し表)
 
-agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
+agent-kit の全 skill(現在 **117本**)の棚卸しと状態管理。
 各 skill が「何をするか・出自・環境依存・重複」を一覧化し、精査の起点にする。
 
 ## この表の使い方
@@ -13,7 +13,7 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 - **🔗 統合候補** — 別の skill と機能が重なる。役割分担を明記するか片方に寄せる。
 - **🔎 上位互換を探す** — 現状で足りるが、より優れた公開 skill があれば差し替え検討(skill-finder + waxa-eval で評価)。
 
-出自は git 初出コミットで確定。**mizchi 48・mattpocock 12・自作 8・Agents365-ai 1**(計69)。
+出自: **mizchi 67・mattpocock 41・自作 8・Agents365-ai 1**(計117)。
 ※ meta/empirical-prompt-tuning は旧自作版を mizchi 版で置換したため mizchi 由来にカウント。
 
 ## 2026-07-20 に確定した変更
@@ -29,6 +29,10 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
   「クリーンな上流状態を起点に、必要なものから少しずつカスタマイズし直す」方針に転換。
   旧カスタム済み状態(壊れ参照の修正・自作 audit スクリプト・改善)は commit `0fd8ec3` から個別に拾える。
   これに伴い、過去に「解決済み」とした項目のいくつかが未解決に戻った(下の要カスタム参照)。
+- **完全ミラー化で +48本 → 計117本**(同日)。上流 2 repo の skill を取捨選択せず全部置く方針に。
+  mizchi +19(MoonBit 系・k8s・utels 等の削除済み13を再取込+formal-methods 2+review-perspectives 5)、
+  mattpocock +29(to-spec / to-tickets / triage / implement 等の実用系15+deprecated 4+in-progress 9…)。
+  追加分は**全て未精査**。mattpocock の `deprecated/` `in-progress/` `personal/` はステータスが分かるよう同名ディレクトリに配置。
 
 ---
 
@@ -105,7 +109,9 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 
 ※ meta/empirical-prompt-tuning は旧自作版があったが mizchi 版で置換済み(mizchi の項に移動)
 
-### mattpocock(12本, MIT, VENDORED.md 管理済み)
+### mattpocock(41本, MIT, VENDORED.md 管理済み)
+
+初期取り込みの12本(精査済み):
 
 - meta/setup-agent-kit — repo ごとの issue-tracker/domain 設定を scaffold(🔧 リセットで中身は上流 `setup-matt-pocock-skills` のまま)
 
@@ -121,11 +127,19 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 - tooling/research — 一次情報調査→Markdown(🔗 deep-research と重複)
 - tooling/code-review — 🔧 上の要カスタム参照
 
+完全ミラーで追加した29本(**未精査**、2026-07-20):
+
+- 実用系15: meta/ask-matt ・ grill-me ・ grill-with-docs ・ teach ・ writing-great-skills、
+  tooling/implement ・ to-spec ・ to-tickets ・ triage ・ wayfinder ・ migrate-to-shoehorn ・ scaffold-exercises ・ setup-pre-commit、
+  backend/improve-codebase-architecture
+  ※ to-spec / to-tickets / triage が入ったので setup-agent-kit のテンプレが言及する skill 群が揃った
+- deprecated/ 4本 ・ in-progress/ 9本 ・ personal/ 2本 — 上流のステータスのままの置き場。発火対象にする前に個別判断
+
 ### Agents365-ai(1本, MIT)
 
 - tooling/drawio — draw.io CLIで図生成(君が v1.16.0 まで検証済み)
 
-### mizchi(48本, MIT 既定 / 一部 Apache-2.0, VENDORED.md 管理済み)
+### mizchi(67本, MIT 既定 / 一部 Apache-2.0, VENDORED.md 管理済み)
 
 実スタック直結(◎):
 - cloudflare/deploy — Workers/Pagesデプロイ
@@ -142,6 +156,13 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 - testing/playwright-cli ・ playwright-test — Playwright
 - tooling/apm-usage ・ ast-grep-practice ・ conventional-changelog ・ dep-lib-review ・ dotenvx ・ justfile ・ nix-setup ・ tech-trend-watch ・ upstream-fix-and-pin — ツール系
 
+完全ミラーで追加した19本(**未精査**、2026-07-20。うち13本は過去に削除→再取込):
+
+- 新規: formal-methods/drift-guard ・ reconciler、frontend/review-perspectives/*(5本)
+- 再取込(非スタック/個人用途として一度削除したもの): lang/gleam-practice ・ moonbit-practice ・ moonbit-js-binding ・ ts2moonbit-migration、
+  sql/sqlc-gen-moonbit-safety、cloudflare/mbt-worker-bundle ・ workers-otel-utels、k8s/crd-from-typed-schema、
+  meta/mizchi-blog-style ・ tech-article-reproducibility、tooling/chezmoi-management ・ utels-project-bootstrap
+
 ---
 
 ## 残った論点(次に向き合うもの)
@@ -152,5 +173,7 @@ agent-kit の全 skill(現在 **69本**)の棚卸しと状態管理。
 2. **「もっと良い公開資産がないか」の精査**(君の本命)。tooling/testing/backend は使うが、より優れた mizchi/mattpocock/一流の skill がないか skill-finder + waxa-eval で精査したい。特に tooling/testing から。
 3. **レビュー系14本**(backend 5 + frontend 9)は最大クラスタ。内容の強化・改善の余地あり(本人談)。精査対象。
 4. **再正規化の方針決め**: SKILL-ja.md の扱い・Agent compatibility 節・README 自動生成(gen-skill-readme.rb)を再適用するか、上流のまま運用するか。
+5. **完全ミラー追加分48本の精査**: mattpocock 実用系15(特に to-spec / to-tickets / triage は code-review・setup 系と連動)と
+   formal-methods 2本は中身を見る価値あり。deprecated / in-progress / personal / MoonBit 系は在庫として置くだけで可。
 
 ※ 上流追従の仕組み(VENDORED.md + check-vendored.sh 両上流対応)はリセット後も有効。改造ゼロの今は上流差分がそのまま取り込める。

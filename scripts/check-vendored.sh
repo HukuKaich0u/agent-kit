@@ -19,8 +19,8 @@ SHOW_DIFF="${1:-}"
 # VENDORED.md の "## <section>" セクション内から Vendored commit を抽出
 base_commit_for() {
   local section="$1"
-  awk -v sec="## $section" '
-    $0 == sec { in_sec = 1; next }
+  awk -v sec="$section" '
+    index($0, "## " sec) == 1 { in_sec = 1; next }
     in_sec && /^## / { exit }
     in_sec && /Vendored commit:/ {
       if (match($0, /[0-9a-f]{40}/)) { print substr($0, RSTART, RLENGTH); exit }
@@ -28,73 +28,49 @@ base_commit_for() {
   ' "$VENDORED"
 }
 
-# agent-kit の配置 -> 上流パス の対応(VENDORED.md の表と一致させること)
-
+# mattpocock: agent-kit の配置 -> 上流パス(VENDORED.md の表と一致させること)
 declare -a MAP_MATTPOCOCK=(
-  "skills/meta/grilling:skills/productivity/grilling"
-  "skills/meta/handoff:skills/productivity/handoff"
-  "skills/testing/tdd:skills/engineering/tdd"
   "skills/backend/codebase-design:skills/engineering/codebase-design"
   "skills/backend/domain-modeling:skills/engineering/domain-modeling"
-  "skills/tooling/diagnosing-bugs:skills/engineering/diagnosing-bugs"
-  "skills/tooling/resolving-merge-conflicts:skills/engineering/resolving-merge-conflicts"
-  "skills/tooling/git-guardrails-claude-code:skills/misc/git-guardrails-claude-code"
+  "skills/backend/improve-codebase-architecture:skills/engineering/improve-codebase-architecture"
+  "skills/meta/ask-matt:skills/engineering/ask-matt"
+  "skills/meta/grill-me:skills/productivity/grill-me"
+  "skills/meta/grill-with-docs:skills/engineering/grill-with-docs"
+  "skills/meta/grilling:skills/productivity/grilling"
+  "skills/meta/handoff:skills/productivity/handoff"
+  "skills/meta/setup-agent-kit:skills/engineering/setup-matt-pocock-skills"
+  "skills/meta/teach:skills/productivity/teach"
+  "skills/meta/writing-great-skills:skills/productivity/writing-great-skills"
+  "skills/testing/tdd:skills/engineering/tdd"
   "skills/tooling/code-review:skills/engineering/code-review"
+  "skills/tooling/diagnosing-bugs:skills/engineering/diagnosing-bugs"
+  "skills/tooling/git-guardrails-claude-code:skills/misc/git-guardrails-claude-code"
+  "skills/tooling/implement:skills/engineering/implement"
+  "skills/tooling/migrate-to-shoehorn:skills/misc/migrate-to-shoehorn"
   "skills/tooling/prototype:skills/engineering/prototype"
   "skills/tooling/research:skills/engineering/research"
-  "skills/meta/setup-agent-kit:skills/engineering/setup-matt-pocock-skills"
-)
-
-# mizchi は全 skill が「skills/ を除いたパス = 上流パス」の機械的対応
-declare -a MAP_MIZCHI=(
-  "skills/ai/review-image:ai/review-image"
-  "skills/ai/vlmkit:ai/vlmkit"
-  "skills/aws/ecs-codedeploy-blue-green:aws/ecs-codedeploy-blue-green"
-  "skills/aws/ecs-service-connect-ipv6:aws/ecs-service-connect-ipv6"
-  "skills/aws/github-oidc-scoped-role:aws/github-oidc-scoped-role"
-  "skills/aws/vault-mfa-iam:aws/vault-mfa-iam"
-  "skills/cloudflare/access-app-setup:cloudflare/access-app-setup"
-  "skills/cloudflare/deploy:cloudflare/deploy"
-  "skills/devops/actions-ci-tuning:devops/actions-ci-tuning"
-  "skills/devops/flaker-storage-cache-on-ci:devops/flaker-storage-cache-on-ci"
-  "skills/devops/gh-fix-ci:devops/gh-fix-ci"
-  "skills/devops/opentelemetry:devops/opentelemetry"
-  "skills/devops/otel-node:devops/otel-node"
-  "skills/devops/workers-cd-rollback:devops/workers-cd-rollback"
-  "skills/frontend/review-ci:frontend/review-ci"
-  "skills/frontend/review-deps:frontend/review-deps"
-  "skills/frontend/review-hygiene:frontend/review-hygiene"
-  "skills/frontend/review-performance:frontend/review-performance"
-  "skills/frontend/review-security:frontend/review-security"
-  "skills/frontend/review-state:frontend/review-state"
-  "skills/frontend/review-testing:frontend/review-testing"
-  "skills/frontend/review-triage:frontend/review-triage"
-  "skills/frontend/review-weekly:frontend/review-weekly"
-  "skills/lang/translate-programming-language:lang/translate-programming-language"
-  "skills/meta/empirical-prompt-tuning:meta/empirical-prompt-tuning"
-  "skills/meta/extract-glossary:meta/extract-glossary"
-  "skills/meta/optimizing-descriptions:meta/optimizing-descriptions"
-  "skills/meta/retrospective-codify:meta/retrospective-codify"
-  "skills/meta/skill-finder:meta/skill-finder"
-  "skills/meta/skill-selector:meta/skill-selector"
-  "skills/meta/waxa-eval:meta/waxa-eval"
-  "skills/node/pi-coding-agent:node/pi-coding-agent"
-  "skills/node/sqlite-vec:node/sqlite-vec"
-  "skills/sql/lint:sql/lint"
-  "skills/sql/plan-audit:sql/plan-audit"
-  "skills/sql/schema-audit:sql/schema-audit"
-  "skills/sql/security:sql/security"
-  "skills/testing/playwright-cli:testing/playwright-cli"
-  "skills/testing/playwright-test:testing/playwright-test"
-  "skills/tooling/apm-usage:tooling/apm-usage"
-  "skills/tooling/ast-grep-practice:tooling/ast-grep-practice"
-  "skills/tooling/conventional-changelog:tooling/conventional-changelog"
-  "skills/tooling/dep-lib-review:tooling/dep-lib-review"
-  "skills/tooling/dotenvx:tooling/dotenvx"
-  "skills/tooling/justfile:tooling/justfile"
-  "skills/tooling/nix-setup:tooling/nix-setup"
-  "skills/tooling/tech-trend-watch:tooling/tech-trend-watch"
-  "skills/tooling/upstream-fix-and-pin:tooling/upstream-fix-and-pin"
+  "skills/tooling/resolving-merge-conflicts:skills/engineering/resolving-merge-conflicts"
+  "skills/tooling/scaffold-exercises:skills/misc/scaffold-exercises"
+  "skills/tooling/setup-pre-commit:skills/misc/setup-pre-commit"
+  "skills/tooling/to-spec:skills/engineering/to-spec"
+  "skills/tooling/to-tickets:skills/engineering/to-tickets"
+  "skills/tooling/triage:skills/engineering/triage"
+  "skills/tooling/wayfinder:skills/engineering/wayfinder"
+  "skills/deprecated/design-an-interface:skills/deprecated/design-an-interface"
+  "skills/deprecated/qa:skills/deprecated/qa"
+  "skills/deprecated/request-refactor-plan:skills/deprecated/request-refactor-plan"
+  "skills/deprecated/ubiquitous-language:skills/deprecated/ubiquitous-language"
+  "skills/in-progress/batch-grill-me:skills/in-progress/batch-grill-me"
+  "skills/in-progress/claude-handoff:skills/in-progress/claude-handoff"
+  "skills/in-progress/loop-me:skills/in-progress/loop-me"
+  "skills/in-progress/setup-ts-deep-modules:skills/in-progress/setup-ts-deep-modules"
+  "skills/in-progress/to-questionnaire:skills/in-progress/to-questionnaire"
+  "skills/in-progress/wizard:skills/in-progress/wizard"
+  "skills/in-progress/writing-beats:skills/in-progress/writing-beats"
+  "skills/in-progress/writing-fragments:skills/in-progress/writing-fragments"
+  "skills/in-progress/writing-shape:skills/in-progress/writing-shape"
+  "skills/personal/edit-article:skills/personal/edit-article"
+  "skills/personal/obsidian-vault:skills/personal/obsidian-vault"
 )
 
 TMP="$(mktemp -d)"
@@ -103,8 +79,8 @@ trap 'rm -rf "$TMP"' EXIT
 TOTAL_CHANGED=0
 
 check_upstream() {
-  local name="$1" url="$2" clone_dir="$3"
-  shift 3
+  local name="$1" url="$2" clone_dir="$3" map_mode="$4"
+  shift 4
   local map=("$@")
 
   local base_commit
@@ -122,6 +98,14 @@ check_upstream() {
   local head_commit
   head_commit="$(git -C "$clone_dir" rev-parse HEAD)"
 
+  # 完全ミラー上流は「上流 HEAD の SKILL.md を持つ全ディレクトリ」を対象に自動導出
+  if [ "$map_mode" = "mirror" ]; then
+    map=()
+    while read -r rel; do
+      map+=("skills/$rel:$rel")
+    done < <(git -C "$clone_dir" ls-tree -r --name-only "$head_commit" | grep '/SKILL.md$' | sed 's|/SKILL.md$||')
+  fi
+
   echo
   echo "取り込み時: $base_commit"
   echo "上流 HEAD  : $head_commit"
@@ -132,11 +116,22 @@ check_upstream() {
   fi
   echo
 
+  # 完全ミラーの場合、上流に「新しく増えた skill」も検知したい
+  if [ "$map_mode" = "mirror" ]; then
+    for entry in "${map[@]}"; do
+      local local_path="${entry%%:*}"
+      if [ ! -d "$ROOT/$local_path" ]; then
+        echo "★ 上流に新規 skill: ${entry##*:}(ローカル未取込)"
+        TOTAL_CHANGED=$((TOTAL_CHANGED+1))
+      fi
+    done
+  fi
+
   local changed=0
   for entry in "${map[@]}"; do
     local local_path="${entry%%:*}"
     local up_path="${entry##*:}"
-    # 取り込みコミット..HEAD で該当パスに変更があったか
+    [ -d "$ROOT/$local_path" ] || continue
     local n
     n="$(git -C "$clone_dir" rev-list --count "${base_commit}..${head_commit}" -- "$up_path" 2>/dev/null || echo 0)"
     if [ "$n" -gt 0 ]; then
@@ -151,19 +146,19 @@ check_upstream() {
 
   echo
   if [ "$changed" -eq 0 ]; then
-    echo "→ vendored skill に該当する上流変更はなし(他パスの更新のみ)。"
+    echo "→ vendored skill に該当する上流変更はなし。"
     echo "  取り込み済みマークだけ更新したい場合は VENDORED.md の $name の Vendored commit を $head_commit に。"
   else
     echo "→ $changed 個の skill に上流更新あり。取り込むなら手動で cp し、VENDORED.md を更新すること。"
-    echo "  改造ありの skill は VENDORED.md の備考を確認してから上書きすること。"
+    echo "  改造ありの skill は VENDORED.md の記録を確認してから上書きすること。"
     echo "  実 diff を見るには: scripts/check-vendored.sh --diff"
   fi
   echo
   TOTAL_CHANGED=$((TOTAL_CHANGED+changed))
 }
 
-check_upstream "mattpocock/skills" "https://github.com/mattpocock/skills.git" "$TMP/mattpocock" "${MAP_MATTPOCOCK[@]}"
-check_upstream "mizchi/skills"     "https://github.com/mizchi/skills.git"     "$TMP/mizchi"     "${MAP_MIZCHI[@]}"
+check_upstream "mattpocock/skills" "https://github.com/mattpocock/skills.git" "$TMP/mattpocock" "static" "${MAP_MATTPOCOCK[@]}"
+check_upstream "mizchi/skills"     "https://github.com/mizchi/skills.git"     "$TMP/mizchi"     "mirror"
 
 echo "=============================================="
-echo "合計: $TOTAL_CHANGED 個の skill に上流更新あり"
+echo "合計: $TOTAL_CHANGED 件(上流更新 + 未取込の新規)"

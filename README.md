@@ -79,22 +79,21 @@ apm install -g HukuKaich0u/agent-kit/plugins/deep-research/skills/deep-research
 出自(取得元・ライセンス・取り込みコミット)と上流差分の確認手順は
 [`skills/VENDORED.md`](skills/VENDORED.md) に一元管理している。
 
-現在の上流は2つ:
+上流 2 repo を**完全ミラー**(全 skill を取り込む方針)している:
 
-- [mizchi/skills](https://github.com/mizchi/skills)(MIT 既定 / 一部 Apache-2.0)— 48本。
-  sql/frontend/aws/devops/meta ほか広範囲。上流と同一のカテゴリ階層で配置
-- [mattpocock/skills](https://github.com/mattpocock/skills)(MIT)— 12本。
-  grilling / handoff / tdd / codebase-design / domain-modeling / diagnosing-bugs /
-  resolving-merge-conflicts / git-guardrails-claude-code / code-review / prototype /
-  research / setup-agent-kit
+- [mizchi/skills](https://github.com/mizchi/skills)(MIT 既定 / 一部 Apache-2.0)— 67本。
+  上流と同一のカテゴリ階層(`sql/` `frontend/` `aws/` 等)で配置
+- [mattpocock/skills](https://github.com/mattpocock/skills)(MIT)— 41本。
+  `productivity` / `engineering` / `misc` は領域カテゴリに振り分け、
+  `deprecated/` `in-progress/` `personal/` は上流のステータスのまま配置
 
 ```sh
 # 例: 計画/設計を1問ずつ詰める grilling を project に追加
 apm install HukuKaich0u/agent-kit/skills/meta/grilling
 ```
 
-現在は全60本とも**上流の内容そのまま(ローカル改造なし)**。2026-07-20 に一度クリーンリセットし、
-必要なものから少しずつカスタマイズし直す方針(旧カスタム版は git 履歴 `0fd8ec3` にある)。
+現在は全108本とも**上流の内容そのまま(ローカル改造なし)**。2026-07-20 にクリーンリセットし、
+使うものから少しずつカスタマイズし直す方針(旧カスタム版は git 履歴 `0fd8ec3` にある)。
 
 各 skill の一覧と状態は [`skills/INVENTORY.md`](skills/INVENTORY.md)、
 出自・取り込みコミットの詳細は [`skills/VENDORED.md`](skills/VENDORED.md) を参照。

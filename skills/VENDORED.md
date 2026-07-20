@@ -2,91 +2,100 @@
 
 外部リポジトリから取り込んだ(vendoring した)skill の出自と同期状態を記録する。
 
-配置は agent-kit の領域カテゴリ(`skills/<領域>/`)に分散しているため、
-「どれが外部由来でどのコミットから来たか」はここで一元管理する。
+## 方針(2026-07-20 確定)
 
-## 同期の考え方
+- **完全ミラー**: 上流 2 repo の skill は全部取り込む(取捨選択しない)。
+- **上流 verbatim**: 取り込み内容は上流そのまま・ローカル改造なしを基本とし、
+  使うものから少しずつカスタマイズする。改造したらこのファイルに記録する。
+- 2026-07-20 以前のカスタム済み状態(壊れ参照修正・自作 audit スクリプト等)は
+  commit `0fd8ec3` に保全してある。再カスタム時はそこから個別に拾える:
+  `git show 0fd8ec3:skills/<path>/SKILL.md`
+- 上流差分の確認は `scripts/check-vendored.sh`(検知のみ、取り込みは手動)。
+- 例外: `skills/tools/waxa`(mizchi 由来の CLI ツール)は Deno 未導入環境のため
+  Bun 移植版を維持(上流 verbatim ではない)。
 
-- vendoring = コピー取り込み。上流が更新されても自動では入らない。
-- 上流差分を確認するには `scripts/check-vendored.sh` を使う(下記コミットと最新を比較)。
-- 取り込み後にローカルで改造した場合は、改造列と備考に書く(差分取り込み時に上書き注意)。
-
-## 2026-07-20 全リセット
-
-vendored 60本を**上流 HEAD の内容そのまま(改造なし)に全リセット**した。
-方針: クリーンな上流状態を起点に、必要になったものから少しずつカスタマイズし直す。
-
-- リセット直前のカスタム済み状態は commit `0fd8ec3` に全て残っている。
-  旧カスタムの内容一覧(どの skill に何の改造が入っていたか)も同コミットの VENDORED.md にある。
-  再カスタマイズ時はそこから個別に拾える: `git show 0fd8ec3:skills/<path>/SKILL.md`
-- 例外: `skills/tools/waxa`(mizchi 由来の CLI ツール)はリセット対象外。
-  Deno 未導入環境のため Bun 移植版を維持([[理由は INVENTORY 参照]])。
-
-リセットにより既知の「上流の壊れ参照」が復活している(存在しない skill への参照、
-mizchi/mattpocock 個人環境前提など)。何が壊れているかは
-[`INVENTORY.md`](INVENTORY.md) の「要カスタム」節を参照。
+上流の壊れ参照(存在しない skill への参照、mizchi/mattpocock 個人環境前提)は
+[`INVENTORY.md`](INVENTORY.md) の「要カスタム」節に一覧がある。
 
 ---
 
-## mattpocock/skills
-
-- Source: https://github.com/mattpocock/skills
-- License: MIT (Copyright (c) 2026 Matt Pocock)
-- Vendored commit: `9603c1cc8118d08bc1b3bf34cf714f62178dea3b`
-- Vendored date: 2026-07-20(全リセットで再取り込み。初回取り込みは 2026-07-19)
-- Upstream commit date: 2026-07-16
-- 改造: **全12本なし**(上流 verbatim)
-
-| agent-kit の配置 | 上流パス | 備考 |
-|---|---|---|
-| `skills/meta/grilling` | `skills/productivity/grilling` | 1問ずつ計画/設計を詰める |
-| `skills/meta/handoff` | `skills/productivity/handoff` | 会話を引き継ぎ文書に圧縮 |
-| `skills/testing/tdd` | `skills/engineering/tdd` | red-green-refactor |
-| `skills/backend/codebase-design` | `skills/engineering/codebase-design` | deep module 設計語彙 |
-| `skills/backend/domain-modeling` | `skills/engineering/domain-modeling` | ドメインモデル/ADR/用語集 |
-| `skills/tooling/diagnosing-bugs` | `skills/engineering/diagnosing-bugs` | 難バグ/性能劣化の診断ループ |
-| `skills/tooling/resolving-merge-conflicts` | `skills/engineering/resolving-merge-conflicts` | マージ/リベース衝突の解消 |
-| `skills/tooling/git-guardrails-claude-code` | `skills/misc/git-guardrails-claude-code` | 危険 git を hook でブロック。**Claude Code 専用** |
-| `skills/tooling/code-review` | `skills/engineering/code-review` | ⚠️ 上流のまま=`/setup-matt-pocock-skills` と `docs/agents/issue-tracker.md` 前提。要カスタム |
-| `skills/tooling/prototype` | `skills/engineering/prototype` | 使い捨てプロトタイプで設計検証 |
-| `skills/tooling/research` | `skills/engineering/research` | 軽量な一次情報調査。deep-research plugin と用途近接 |
-| `skills/meta/setup-agent-kit` | `skills/engineering/setup-matt-pocock-skills` | ⚠️ ディレクトリ名のみローカル命名。中身は上流のまま(skill 名も `setup-matt-pocock-skills`)。要カスタム |
-
----
-
-## mizchi/skills
+## mizchi/skills(67本)
 
 - Source: https://github.com/mizchi/skills
 - License: リポジトリに LICENSE ファイルは無いが、上流 README の License 節に
   「各 skill 内の `LICENSE.txt` が優先、無い skill は MIT 既定」と明記。
   `cloudflare/deploy` と `devops/gh-fix-ci` のみ Apache-2.0 の `LICENSE.txt` 同梱。
 - Vendored commit: `7a0d72866a0bb3e9ac3e2768c328b09ba2bc40c4`
-- Vendored date: 2026-07-20(全リセットで再取り込み。初回取り込みは 2026-06-28、当時の base は `d799945`)
-- 改造: **全48本なし**(上流 verbatim)
+- Vendored date: 2026-07-20(完全ミラー化。初回 import は 2026-06-28 の `d799945`)
+- 改造: **全67本なし**(上流 verbatim)
 
-**上流パスの対応**: 全48本、`skills/<カテゴリ>/<名前>` から `skills/` を除いたものが
-そのまま上流パス(例: `skills/sql/lint` ← 上流 `sql/lint`)。リネームなし。
+**上流パスの対応**: 上流の全 skill を `skills/<上流パス>` にそのまま配置(リネームなし)。
+上流 HEAD の SKILL.md を持つディレクトリ全部が対象。
 
-対象48本(カテゴリ別):
+カテゴリ別(67本):
 
-- `ai/`: review-image ・ vlmkit
-- `aws/`: ecs-codedeploy-blue-green ・ ecs-service-connect-ipv6 ・ github-oidc-scoped-role ・ vault-mfa-iam
-- `cloudflare/`: access-app-setup ・ deploy
-- `devops/`: actions-ci-tuning ・ flaker-storage-cache-on-ci ・ gh-fix-ci ・ opentelemetry ・ otel-node ・ workers-cd-rollback
-- `frontend/`: review-ci ・ review-deps ・ review-hygiene ・ review-performance ・ review-security ・ review-state ・ review-testing ・ review-triage ・ review-weekly
-- `lang/`: translate-programming-language
-- `meta/`: empirical-prompt-tuning ・ extract-glossary ・ optimizing-descriptions ・ retrospective-codify ・ skill-finder ・ skill-selector ・ waxa-eval
-- `node/`: pi-coding-agent ・ sqlite-vec
-- `sql/`: lint ・ plan-audit ・ schema-audit ・ security
-- `testing/`: playwright-cli ・ playwright-test
-- `tooling/`: apm-usage ・ ast-grep-practice ・ conventional-changelog ・ dep-lib-review ・ dotenvx ・ justfile ・ nix-setup ・ tech-trend-watch ・ upstream-fix-and-pin
+- `ai/` 2 ・ `aws/` 4 ・ `cloudflare/` 4 ・ `devops/` 6 ・ `formal-methods/` 2
+- `frontend/` 9 + `frontend/review-perspectives/` 5(入れ子構造は上流のまま)
+- `k8s/` 1 ・ `lang/` 5 ・ `meta/` 9 ・ `node/` 2 ・ `sql/` 5 ・ `testing/` 2 ・ `tooling/` 11
 
-### 過去に import して削除済みの skill(13ディレクトリ)
+※ MoonBit 系・k8s・utels・chezmoi・mizchi-blog-style 等は 2026-07 の監査で一度削除したが、
+完全ミラー方針への転換(2026-07-20)で再取り込みした。
 
-check-vendored.sh の対象外。再取り込みするなら上流の同パスから。
+---
 
-- MoonBit 系(非スタック): `lang/gleam-practice` `lang/moonbit-js-binding` `lang/moonbit-practice` `lang/ts2moonbit-migration` `sql/sqlc-gen-moonbit-safety` `cloudflare/mbt-worker-bundle`
-- mizchi 個人環境向け: `meta/mizchi-blog-style` `meta/tech-article-reproducibility` `tooling/chezmoi-management` `tooling/utels-project-bootstrap`
-- 2026-07 監査での削除: `cloudflare/workers-otel-utels`(utels 未使用)`k8s/crd-from-typed-schema`(k8s 非スタック)`frontend/review-perspectives`(perspective 層廃止、5 skill)
+## mattpocock/skills(41本)
 
-なお上流 HEAD には import 対象外の新 skill(formal-methods 系ほか)もあるが、未取り込み。
+- Source: https://github.com/mattpocock/skills
+- License: MIT (Copyright (c) 2026 Matt Pocock)
+- Vendored commit: `9603c1cc8118d08bc1b3bf34cf714f62178dea3b`
+- Vendored date: 2026-07-20(完全ミラー化。初回取り込みは 2026-07-19 の 11本)
+- Upstream commit date: 2026-07-16
+- 改造: **全41本なし**(上流 verbatim)
+
+**配置ルール**: 上流の `productivity` / `engineering` / `misc` は agent-kit の領域カテゴリに
+振り分け。上流の `deprecated` / `in-progress` / `personal` はステータスが分かるよう
+同名ディレクトリのまま(`skills/deprecated/` 等)。
+
+| agent-kit の配置 | 上流パス |
+|---|---|
+| `skills/backend/codebase-design` | `skills/engineering/codebase-design` |
+| `skills/backend/domain-modeling` | `skills/engineering/domain-modeling` |
+| `skills/backend/improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` |
+| `skills/meta/ask-matt` | `skills/engineering/ask-matt` |
+| `skills/meta/grill-me` | `skills/productivity/grill-me` |
+| `skills/meta/grill-with-docs` | `skills/engineering/grill-with-docs` |
+| `skills/meta/grilling` | `skills/productivity/grilling` |
+| `skills/meta/handoff` | `skills/productivity/handoff` |
+| `skills/meta/setup-agent-kit` | `skills/engineering/setup-matt-pocock-skills` ⚠️ dir 名のみローカル命名。中身は上流のまま |
+| `skills/meta/teach` | `skills/productivity/teach` |
+| `skills/meta/writing-great-skills` | `skills/productivity/writing-great-skills` |
+| `skills/testing/tdd` | `skills/engineering/tdd` |
+| `skills/tooling/code-review` | `skills/engineering/code-review` ⚠️ `/setup-matt-pocock-skills` 前提。要カスタム |
+| `skills/tooling/diagnosing-bugs` | `skills/engineering/diagnosing-bugs` |
+| `skills/tooling/git-guardrails-claude-code` | `skills/misc/git-guardrails-claude-code`(Claude Code 専用) |
+| `skills/tooling/implement` | `skills/engineering/implement` |
+| `skills/tooling/migrate-to-shoehorn` | `skills/misc/migrate-to-shoehorn` |
+| `skills/tooling/prototype` | `skills/engineering/prototype` |
+| `skills/tooling/research` | `skills/engineering/research` |
+| `skills/tooling/resolving-merge-conflicts` | `skills/engineering/resolving-merge-conflicts` |
+| `skills/tooling/scaffold-exercises` | `skills/misc/scaffold-exercises` |
+| `skills/tooling/setup-pre-commit` | `skills/misc/setup-pre-commit` |
+| `skills/tooling/to-spec` | `skills/engineering/to-spec` |
+| `skills/tooling/to-tickets` | `skills/engineering/to-tickets` |
+| `skills/tooling/triage` | `skills/engineering/triage` |
+| `skills/tooling/wayfinder` | `skills/engineering/wayfinder` |
+| `skills/deprecated/design-an-interface` | `skills/deprecated/design-an-interface` |
+| `skills/deprecated/qa` | `skills/deprecated/qa` |
+| `skills/deprecated/request-refactor-plan` | `skills/deprecated/request-refactor-plan` |
+| `skills/deprecated/ubiquitous-language` | `skills/deprecated/ubiquitous-language` |
+| `skills/in-progress/batch-grill-me` | `skills/in-progress/batch-grill-me` |
+| `skills/in-progress/claude-handoff` | `skills/in-progress/claude-handoff` |
+| `skills/in-progress/loop-me` | `skills/in-progress/loop-me` |
+| `skills/in-progress/setup-ts-deep-modules` | `skills/in-progress/setup-ts-deep-modules` |
+| `skills/in-progress/to-questionnaire` | `skills/in-progress/to-questionnaire` |
+| `skills/in-progress/wizard` | `skills/in-progress/wizard` |
+| `skills/in-progress/writing-beats` | `skills/in-progress/writing-beats` |
+| `skills/in-progress/writing-fragments` | `skills/in-progress/writing-fragments` |
+| `skills/in-progress/writing-shape` | `skills/in-progress/writing-shape` |
+| `skills/personal/edit-article` | `skills/personal/edit-article` |
+| `skills/personal/obsidian-vault` | `skills/personal/obsidian-vault` |
