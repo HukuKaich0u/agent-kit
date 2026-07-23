@@ -1,7 +1,9 @@
 # agent-kit — 作業ルール
 
 Claude Code / Codex で共有する agent assets を管理するリポジトリ。
-このファイルは repo で作業する agent 向けの指示。詳細は `CLAUDE.md` と同一内容。
+このファイルは repo で作業する agent 向けの指示の source of truth。
+Codex は `AGENTS.md`、Claude Code は `CLAUDE.md`(`@AGENTS.md` を import)経由で
+同じ内容を読む。ユーザー向け概要は `README.md`。
 
 ## 配布の仕組み(instructions/core)
 
