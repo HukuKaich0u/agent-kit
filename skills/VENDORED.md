@@ -143,6 +143,19 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 - Upstream commit date: 2026-07-16
 - 改造: **10本**(下記「改造記録」参照)。残り23本は上流 verbatim。
 
+### 改造記録(2026-07-25 — ask-matt の router 記述を現行 flow へ整合)
+
+2026-07-04 監査の残項目を解消。改名(`workflow-router` 等)は検討の上、
+Matt の flow 設計思想に由来することが名前から分かる価値を取って
+**現状維持**と決めた(ユーザー判断)。
+
+| skill | 改造内容 |
+|---|---|
+| `skills/meta/ask-matt` | smart zone の固定値「~120k tokens」を model 依存の説明へ置換。会話中に報告された bug / request を「草案→承認→起票→/triage」で tracker に入れる導線を追加。/implement の説明を commit・tracker 更新の承認後実行に、/improve-codebase-architecture の説明を証拠ベース設計フローに更新 |
+
+`/research`・`/teach`・`/code-review` への案内は残す(採用済みで動作する。
+残る要カスタムは品質改善であり、状態は skill-selector catalog が管理)。
+
 ### 改造記録(2026-07-25 — improve-codebase-architecture を設計特化へ再設計)
 
 上流は「自動 Explore subagent で repo を scan → CDN 依存の HTML report を
@@ -220,7 +233,7 @@ domain-modeling)と `skill-selector` catalog・`scripts/check-vendored.sh` の
 | `skills/backend/codebase-design` | `skills/engineering/codebase-design` |
 | `skills/backend/domain-modeling` | `skills/engineering/domain-modeling`(2026-07-25 に既存規約優先・承認後反映へ改造。改造記録参照) |
 | `skills/backend/improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture`(2026-07-25 に設計特化へ再設計。改造記録参照) |
-| `skills/meta/ask-matt` | `skills/engineering/ask-matt` |
+| `skills/meta/ask-matt` | `skills/engineering/ask-matt`(2026-07-24 に参照修正、2026-07-25 に router 記述を現行 flow へ整合。名前は検討の上で維持。改造記録参照) |
 | `skills/meta/grill-me` | `skills/productivity/grill-me` |
 | `skills/meta/grill-with-docs` | `skills/engineering/grill-with-docs` |
 | `skills/meta/grilling` | `skills/productivity/grilling` |

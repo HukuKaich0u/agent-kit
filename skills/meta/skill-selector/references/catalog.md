@@ -255,7 +255,7 @@ to-spec / to-tickets / triage / implement は承認境界カスタム済み(2026
 | ✅ | grill-with-docs | `meta/grill-with-docs` | grill しながら ADR・用語集を残す入口(domain-modeling と併用) |
 | ✅ | decision-interview | `meta/decision-interview` | 曖昧なアイデアを1問ずつの構造化インタビューで**ユーザー所有の明示的な意思決定**へ。decision ledger + 承認で締める。grilling が問い詰めなのに対しこちらは決定の明示化・記録 |
 | ✅ | handoff | `meta/handoff` | 会話を引き継ぎ文書に圧縮 |
-| 🎯🔧 | ask-matt | `meta/ask-matt` | 状況別に skill/flow を案内する router。名前・参照を直す要カスタム(通常導線外) |
+| 🎯 | ask-matt | `meta/ask-matt` | 状況別に skill/flow を案内する router(名前は検討の上で現状維持。固定 context 上限・会話型 issue intake 導線・改造済み skill との記述整合をカスタム済み) |
 
 ### 記事・再現性(明示起動)
 | Status | Skill | Install (`skills/<path>`) | Use when |

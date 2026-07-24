@@ -23,13 +23,13 @@ The route most work travels. You have an idea and want it built.
    - **Yes** → **`/to-spec`** (turn the approved thread into an immutable design record under `docs/specs/`), then **`/to-tickets`** to split that record into tracer-bullet work tickets, each declaring its **blocking edges**. On a local tracker that's one file per ticket under `.scratch/<feature>/issues/`; on a real tracker the edges become native blocking links, so any ticket whose blockers are done can be grabbed — kick off **`/implement`** per ticket, **clearing context between each one**.
    - **No** → **`/implement`** right here, in the same context window. If the work benefits from a short ordered breakdown first, sketch 2–5 confirmed steps in the conversation — planning output only, never tracker work or a design record — then `/implement` each step without clearing the context.
 
-   Either way, **`/implement`** builds each agreed scope by driving **`/tdd`** internally — one red-green slice at a time — then closes out by running **`/code-review`**, a two-axis review (Standards + Intent) of the diff, before committing. Reach for **`/tdd`** on its own when you just want to build a concrete behaviour test-first without a design record, and **`/code-review`** on its own whenever you want to review a branch or PR against a fixed point.
+   Either way, **`/implement`** builds each agreed scope by driving **`/tdd`** internally — one red-green slice at a time — then closes out by running **`/code-review`**, a two-axis review (Standards + Intent) of the diff, and proposes the commit and any tracker update for approval. Reach for **`/tdd`** on its own when you just want to build a concrete behaviour test-first without a design record, and **`/code-review`** on its own whenever you want to review a branch or PR against a fixed point.
 
 ### Context hygiene
 
 Keep steps 1–3 in **one unbroken context window** — don't compact or clear until after `/to-tickets` — so the grilling and its implementation plan build on the same thinking. Each tracker-backed `/implement` then starts fresh, working from its ticket; an in-conversation breakdown stays in the current context.
 
-The limit on this is the **[smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)**: the window (~120k tokens on state-of-the-art models) within which the model still reasons sharply. If a session approaches it before `/to-tickets`, don't push on degraded — `/handoff` and continue in a fresh thread.
+The limit on this is the **[smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)**: the window within which the model still reasons sharply — where it sits varies by model, but it is always well short of the advertised context limit. If a session approaches it before `/to-tickets`, don't push on degraded — `/handoff` and continue in a fresh thread.
 
 ## On-ramps
 
@@ -38,6 +38,8 @@ A starting situation that generates work, then merges onto the main flow.
 - **Bugs and requests piling up** → **`/triage`**. It moves issues through triage roles and produces agent-ready issues, which **`/implement`** later picks up.
 
   Triage is only for issues **you didn't create** — bug reports, incoming feature requests, anything that arrives raw. Tickets that `/to-tickets` produced are already agent-ready, so **don't triage them**.
+
+  A bug or request you're describing **in conversation right now** isn't on the tracker yet. Have the agent draft the issue from the conversation, approve the text, file it — then it enters through `/triage` like any other report.
 
 - **Something's broken** → **`/diagnosing-bugs`**. For the hard ones: the bug that resists a first glance, the intermittent flake, the regression that crept in between two known-good states. It refuses to theorise until it has a **tight feedback loop** — one command that already goes red on *this* bug — then fixes with a regression test. Its post-mortem hands off to **`/improve-codebase-architecture`** when the real finding is that there's no good seam to lock the bug down.
 
@@ -49,7 +51,7 @@ A starting situation that generates work, then merges onto the main flow.
 
 Not feature work — upkeep.
 
-- **`/improve-codebase-architecture`** — run whenever you have a spare moment to keep the codebase good for agents to operate in. It surfaces **deepening opportunities**; picking one _generates an idea_ you can take into the main flow at `/grill-with-docs`. It's the survey that finds the candidates; **`/codebase-design`** (below) is the bench you design the chosen one on.
+- **`/improve-codebase-architecture`** — run when review findings, commit-history hot spots, or day-to-day friction point at a module worth deepening. It turns that evidence into a short list of **deepening opportunities**; pick one and it grills the design through with you (using the **`/codebase-design`** vocabulary, below), then hands off to `/to-spec` when the work won't fit the session. It designs from evidence — for a repo-wide structural scan, run the review skills first.
 
 ## Vocabulary underneath
 
