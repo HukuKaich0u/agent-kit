@@ -7,7 +7,7 @@ type: inventory
 
 # Skills Inventory(棚卸し表)
 
-agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
+agent-kit の全 skill(現在 **82本**)の棚卸しと状態管理。
 各 skill が「何をするか・出自・環境依存・重複」を一覧化し、精査の起点にする。
 
 ## この表の使い方
@@ -20,7 +20,7 @@ agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
 - **🔗 統合候補** — 別の skill と機能が重なる。役割分担を明記するか片方に寄せる。
 - **🔎 上位互換を探す** — 現状で足りるが、より優れた公開 skill があれば差し替え検討(skill-finder + waxa-eval で評価)。
 
-出自: **mizchi 36・mattpocock 33・自作 11・Agents365-ai 1**(計81)。
+出自: **mizchi 36・mattpocock 33・自作 12・Agents365-ai 1**(計82)。
 ※ meta/empirical-prompt-tuning は旧自作版を mizchi 版で置換したため mizchi 由来にカウント。
 ※ 自作の追加(2026-07-24): meta/decision-interview、lang/go、lang/python。
   ユーザーの主要言語は Rust / Go / Python / TypeScript の4つ(全部がっつり使う)。言語 skill を4言語に揃えた。
@@ -200,6 +200,10 @@ agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
   4言語(Rust/Go/Python/TS)と実 DB スタックに合わせて強化。中身のレビュー観点は保持し追加・訂正のみ。
   Rust/Tokio・Rust ORM(SQLx/Diesel/SeaORM)を追加、DynamoDB ProjectionExpression の誤りを訂正、
   `npx madge` を承認制に、固定出力パスを会話報告へ。詳細は上の要カスタム表(backend review lens)参照。
+- **`tooling/to-tasks` を追加 → 計82本**(2026-07-25、自作12本目)。
+  design record / tracker issue を作るほどではない現session限定の小規模作業を 2–5 step の
+  ephemeral task list へ分解する軽量経路。`to-tickets` が committed design record を必須化した
+  代償として空いた中間domainを埋め、小さい作業に issue を切らせないガードを兼ねる。
 
 ---
 
