@@ -201,7 +201,7 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 
 **Signals**: 仕様固め・チケット分割・実装オーケストレーション。
 `setup-agent-environment` で work tracker・domain docs・design record規約を設定済みが前提。
-to-spec / to-tickets / triage / implement は承認境界カスタム済み(2026-07-25)。wayfinder のみ 🔧 が残る。
+to-spec / to-tickets / triage / implement / wayfinder は承認境界カスタム済み(2026-07-25)。
 
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
@@ -209,7 +209,7 @@ to-spec / to-tickets / triage / implement は承認境界カスタム済み(2026
 | ✅ | to-tickets | `tooling/to-tickets` | design recordを vertical slice の tracer-bullet work ticketへ分割(公開前承認・ready-for-agent除外条件カスタム済み。部分公開失敗の回復手順とDAG検証は検討事項) |
 | ✅ | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める(tracker 書き込みは全文提示→承認後、外部PRコードは承認+隔離worktree実行、`.out-of-scope/` は opt-in にカスタム済み) |
 | ✅ | implement | `tooling/implement` | work ticket/design recordまたはcurrent-session task listから tdd → 段階検証 → code-review をつなぐ薄い orchestrator(commit・tracker更新は提案→承認後にカスタム済み) |
-| 🔧 | wayfinder | `tooling/wayfinder` | 一 session で見通せない大規模案件を decision ticket の地図へ分解(明示起動) |
+| ✅ | wayfinder | `tooling/wayfinder` | 一 session で見通せない大規模案件を decision ticket の地図へ分解(明示起動。tracker 書き込み・subagent 起動・外部 service / credential / data 操作は提案→承認後、ticket は削除せず close / supersede、並行更新と部分失敗からの回復手順込みにカスタム済み) |
 
 ---
 

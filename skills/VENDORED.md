@@ -141,7 +141,16 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 - Vendored commit: `9603c1cc8118d08bc1b3bf34cf714f62178dea3b`
 - Vendored date: 2026-07-20(完全ミラー化。初回取り込みは 2026-07-19 の 11本)
 - Upstream commit date: 2026-07-16
-- 改造: **10本**(下記「改造記録」参照)。残り23本は上流 verbatim。
+- 改造: **11本**(下記「改造記録」参照)。残り22本は上流 verbatim。
+
+### 改造記録(2026-07-25 — wayfinder の安全化)
+
+destination / decision ticket / fog of war の設計と明示起動専用は維持したまま、
+2026-07-04 監査が挙げた安全化を適用した。
+
+| skill | 改造内容 |
+|---|---|
+| `skills/tooling/wayfinder` | 「The human owns the map」節を追加し、destination・map 本文・ticket 群と blocking edge・次に扱う frontier・resolution・map 更新の各 tracker 書き込みを提示→承認後に変更。research subagent / branch 作成を opt-in 化。外部 service・credential・権限・data 操作は ticket type を問わず個別承認。ticket の削除を廃止し close / supersede+comment で履歴保持。ticket の単位を「100K token session」から「人間が一度に理解・review できる一決定」へ変更。並行更新に対する再読込・idempotent 書き込みと、多段書き込みの部分失敗時に map へ進捗 comment を残して再開可能にする手順を追加 |
 
 ### 改造記録(2026-07-25 — ask-matt の router 記述を現行 flow へ整合)
 
@@ -252,7 +261,7 @@ domain-modeling)と `skill-selector` catalog・`scripts/check-vendored.sh` の
 | `skills/tooling/to-spec` | `skills/engineering/to-spec` |
 | `skills/tooling/to-tickets` | `skills/engineering/to-tickets` |
 | `skills/tooling/triage` | `skills/engineering/triage`(2026-07-24 に design record 軸へ、2026-07-25 に承認境界・外部 PR 隔離・`.out-of-scope/` opt-in へ改造。改造記録参照) |
-| `skills/tooling/wayfinder` | `skills/engineering/wayfinder` |
+| `skills/tooling/wayfinder` | `skills/engineering/wayfinder`(2026-07-24 に design record 軸へ、2026-07-25 に承認境界・opt-in subagent・履歴保持・部分失敗回復へ改造。改造記録参照) |
 | `skills/deprecated/qa` | `skills/deprecated/qa` ⚠️ 上流deprecated。要カスタム候補として原形を維持 |
 | `skills/in-progress/batch-grill-me` | `skills/in-progress/batch-grill-me` |
 | `skills/in-progress/claude-handoff` | `skills/in-progress/claude-handoff` |
