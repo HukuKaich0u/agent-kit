@@ -7,7 +7,8 @@ description: 'Use when iterating on a skill''s prompt with the waxa CLI (https:/
 
 Empirical evaluation loop for skill prompts, codified from real iter runs.
 This skill is the operating manual for `waxa`; the CLI itself lives in
-`tools/waxa/` (see its README for argument-level reference).
+`skills/tools/waxa/` as a Bun port (see its README for argument-level
+reference; run as `bun run src/cli.ts <...>` from that directory).
 
 `waxa` extends [microsoft/waza](https://github.com/microsoft/waza) with
 `empirical-prompt-tuning` semantics on top: forced Self-report, ledger
@@ -18,7 +19,7 @@ across iterations, four grader types, and convergence detection.
 Explicit user request only:
 
 - "evaluate this skill with waxa"
-- "iterate on `<skill>` until it converges"
+- "run a waxa eval pass on `<skill>`"
 - "add a waxa scenario for `<scenario>`"
 - "interpret these unclear-points / Self-report"
 
@@ -30,7 +31,7 @@ When NOT to use:
 
 ## The four-stage iteration pattern
 
-Repeated across the `skill-selector`, `nix-setup`, and `skill-finder` evals. Treat it as the default trajectory; it converges in 3-4 iterations when the skill is structurally sound.
+Repeated across the `skill-selector`, `skill-finder`, and `waxa-eval` evals. Treat it as the default trajectory; it converges in 3-4 passes when the skill is structurally sound.
 
 | Stage | What you fix | Typical Iter | Symptom of being on this stage |
 |---|---|---|---|
@@ -183,51 +184,63 @@ From waxa 0.2.0, eval files live **inside the skill directory**, mirroring [agen
 ├── SKILL.md
 └── evals/
     ├── eval.yaml                       # config + top-level graders + task glob
-    ├── ledger.yaml                     # iter history (created on first `iterate` run)
+    ├── ledger.yaml                     # pass history (written manually per this skill's held-back-iterate policy; `waxa iterate` also generates it, but see "iterate — held back" above)
     └── tasks/
         ├── scenario-typical.yaml       # median — passes at convergence
         └── scenario-edge.yaml          # known failure mode — exercises the rule
 ```
 
-Workspace (per-iteration runs) lands outside the skill at `<workspace-root>/results/<skill>/iteration-N/<task-id>/<with_skill|without_skill>/{output-trial-*.txt, timing.json, grading.json}` plus `benchmark.json`. `<workspace-root>` is the `.waxa.yaml` / `.waza.yaml` directory when present, otherwise the skill directory's parent. Add `results/` to `.gitignore`.
+Workspace (per-pass runs) lands outside the skill at `<workspace-root>/results/<skill>/iteration-N/<task-id>/<with_skill|without_skill>/{output-trial-*.txt, timing.json, grading.json}` plus `benchmark.json`. `<workspace-root>` is the `.waxa.yaml` / `.waza.yaml` directory when present, otherwise the skill directory's parent. Add `results/` to `.gitignore`.
 
-`waxa init` scaffolds eval.yaml and the two task templates with TODO markers; ledger.yaml is generated when iteration starts.
+`waxa init` scaffolds eval.yaml and the two task templates with TODO markers.
 
 The pre-0.2.0 monorepo layout (`<repo-root>/evals/<skill>/eval.yaml` + `<repo-root>/<skill>/SKILL.md`) is still auto-detected, so old evals keep working; new ones should use skill-local.
 
 ## Running the loop
 
+This repository runs waxa from the Bun port in `skills/tools/waxa/` — `bun run src/cli.ts <...>` from that directory. `npx @mizchi/waxa` is a network-fallback only, for environments without this repo's Bun port available.
+
 Bare minimum:
 
 ```bash
-# Scaffold the eval skeleton (run inside the skill's own dir).
-npx @mizchi/waxa init [--skill <name>] [--force]
+# (from skills/tools/waxa/)
 
-# Single eval pass.
-npx @mizchi/waxa <skill>/evals/eval.yaml
+# Scaffold the eval skeleton (run inside the skill's own dir).
+bun run src/cli.ts init [--skill <name>] [--force]
+
+# Single eval pass (the normal, sanctioned mode — one-shot with human review of the report).
+bun run src/cli.ts <skill>/evals/eval.yaml
 
 # Single task.
-npx @mizchi/waxa <skill>/evals/eval.yaml --task <task-id>
+bun run src/cli.ts <skill>/evals/eval.yaml --task <task-id>
 
 # Single eval with baseline (with_skill vs without_skill, reports Delta).
-npx @mizchi/waxa <skill>/evals/eval.yaml --baseline
-
-# Iteration loop (auto re-runs while pass rate improves; writes ledger.yaml).
-npx @mizchi/waxa iterate <skill>/evals/eval.yaml --max 4
+bun run src/cli.ts <skill>/evals/eval.yaml --baseline
 
 # Audit a skill directory (apm audit hidden-Unicode scan + waxa native
 # quality checks: frontmatter, body length, When-NOT-to-use, suspicious
 # scripts, LICENSE).
-npx @mizchi/waxa audit <skill>/ [--no-apm] [--json]
+bun run src/cli.ts audit <skill>/ [--no-apm] [--json]
 ```
 
-The npm package bundles `references/empirical-prompt-tuning.md` so the methodology is on disk wherever waxa is installed. After `npx @mizchi/waxa` first runs, the file lives at `<node_modules>/@mizchi/waxa/references/empirical-prompt-tuning.md`.
+### `iterate` — held back, do not use as the default loop
+
+`waxa iterate` (auto-rerun loop that appends to `ledger.yaml`) exists in the CLI but is **on hold** in this repository: its convergence detection classifies each unclear-point as `new` vs `reseen`, and `reseen` is currently conflated with `resolved` — a rule that keeps recurring under different surface wording will read as "already seen, not new" and silently stop counting against convergence, even though it was never actually fixed. This produces false convergence.
+
+Until that classification bug is fixed upstream or in this repo's fork, the sanctioned loop is:
+
+1. Run a **single eval pass** (`bun run src/cli.ts <skill>/evals/eval.yaml`), read the report yourself.
+2. Apply a fix based on the unclear-points, same as the `empirical-prompt-tuning` workflow.
+3. Re-run a single pass and **manually** compare against the previous run's unclear-points — do not trust `iterate`'s own `new`/`reseen` labels to decide whether something was actually fixed.
+4. Get human approval before declaring convergence. Do not let the CLI's automatic convergence output stand in for that approval.
+
+If you do run `iterate` anyway (e.g. to get the ledger scaffolding), treat its `reseen_count` as informational only, not as evidence of resolution — verify each reseen rule by hand against the current unclear-points list.
 
 ### `--baseline` — is the skill earning its keep?
 
 `--baseline` runs every task twice per trial (with_skill and without_skill), then prints a Delta line and writes both configs into `iteration-N/<task-id>/`. This is the agentskills.io-style "does the skill body actually improve over a blank-slate model?" check. Skills that add tokens / latency without moving pass rate are visible here in a way they aren't in single-config runs.
 
-Per-iteration cost (claude-opus-4-8, 3 scenarios × 2 trials): ~3-5 minutes wall time. Run iterations sequentially; do not launch parallel `waxa` processes against the same eval (they fight for the API and the lockfile). Single-task runs (`--task <id>`) are useful for confirming a small change without re-running the whole suite.
+Per-pass cost (claude-opus-4-8, 3 scenarios × 2 trials): ~3-5 minutes wall time. Run passes sequentially; do not launch parallel `waxa` processes against the same eval (they fight for the API and the lockfile). Single-task runs (`--task <id>`) are useful for confirming a small change without re-running the whole suite.
 
 `trials_per_task: 2` is the floor — a single trial cannot distinguish "the skill is unstable" from "the LLM had a bad sample." Bump to 3 only if you suspect non-determinism on a critical axis.
 
@@ -235,11 +248,12 @@ Per-iteration cost (claude-opus-4-8, 3 scenarios × 2 trials): ~3-5 minutes wall
 
 | Mistake | Fix |
 |---|---|
-| Re-running iterations without editing the skill | If the skill body did not change, the result is just a different LLM sample. Edit before re-running. |
+| Re-running passes without editing the skill | If the skill body did not change, the result is just a different LLM sample. Edit before re-running. |
 | Using only LLM graders | They are non-deterministic and slow. Pair with surface graders. |
 | Adding graders after every failure | Graders are not the safety net; the skill is. Add a grader only when an unmeasured behavior matters. |
-| Treating `executor: mock` as real | The current `tools/waxa/src/cli.ts` ignores the field; all runs go through `claude -p`. Plan budget accordingly. |
-| Iterating past 4 without re-reading the skill | If you're past iter 4 and still chasing failures, the skill body has a structural gap. Stop iterating; rewrite the section. |
+| Treating `executor: mock` as real | The current `skills/tools/waxa/src/cli.ts` ignores the field; all runs go through `claude -p`. Plan budget accordingly. |
+| Relying on `waxa iterate`'s automatic convergence output | `reseen` is conflated with `resolved` (see "iterate — held back" above); false convergence is possible. Use the one-shot loop with manual comparison and human approval instead. |
+| Past 4 manual passes without re-reading the skill | If you're past pass 4 and still chasing failures, the skill body has a structural gap. Stop patching; rewrite the section. |
 | Not committing the ledger | The ledger is the durable artifact. Future evals build on past General Fix Rules. Lose it and you lose the institutional memory. |
 
 ## Scope vs `empirical-prompt-tuning`
@@ -249,7 +263,7 @@ This skill is the **implementation guide**; `empirical-prompt-tuning` is the **m
 | Concern | waxa-eval | empirical-prompt-tuning |
 |---|---|---|
 | Methodology / first principles (bias-free executor, Self-report rationale) | (referenced) | **owns** |
-| CLI operation (`waxa run` / `iterate` / `variant` / `compare`) | **owns** | n/a |
+| CLI operation (`waxa run` / `variant` / `compare`; `iterate` held back — see above) | **owns** | n/a |
 | Scenario YAML authoring | **owns** | n/a |
 | Grader selection (text / code / self-report / llm) | **owns** | n/a |
 | Iter pattern derived from real iter loops (4-stage signature) | **owns** | n/a |
@@ -268,12 +282,11 @@ This skill is the **implementation guide**; `empirical-prompt-tuning` is the **m
 
 **Use `waxa-eval` (this skill) when:** running the eval as an external CLI process; persisting iteration history as YAML for repeatability or CI; encoding scenarios that re-run after every skill edit; gating an external skill candidate before adoption (cf. `skill-finder`).
 
-A real flow often uses both: `empirical` for the in-session Iter 0 + first dispatch to confirm direction, then `waxa-eval` for the iter loop and durable ledger.
+A real flow often uses both: `empirical` for the in-session Iter 0 + first dispatch to confirm direction, then `waxa-eval` for the one-shot CLI passes and durable ledger.
 
 ## Related
 
 - `empirical-prompt-tuning` — methodology this skill operationalizes; see scope table above for responsibility split
-- `superpowers:writing-skills` — TDD framing for skills; pairs with this skill (write skill → eval → iterate)
+- `writing-great-skills` — TDD framing for skills; pairs with this skill (write skill → eval → fix)
 - `skill-finder` — uses waxa-eval as the adoption gate for cross-source candidates
-- `tools/waxa/README.md` — CLI argument reference
-- `tools/waxa/RFC-waza.md` — upstream waza compatibility notes
+- `skills/tools/waxa/README.md` — CLI argument reference (this repo's Bun port)
