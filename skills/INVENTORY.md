@@ -188,6 +188,11 @@ agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
   - python: 型ヒント・具体的例外・mutable default 引数・dataclass/TypedDict・context manager・async 落とし穴
   skill-selector のシグナル検出(go.mod / pyproject.toml)・言語 heuristic・catalog に4言語すべて反映済み。
   **注意: 今後 review/依存監査/test/CI/lint 系 skill は4言語すべてを想定する。非スタック扱い可は MoonBit / Gleam のみ。**
+- **backend review lens 5本を4言語対応 + 出力パス修正**(2026-07-25、本数変更なし=81本)。
+  自作の backend review lens(architecture/concurrency/data-access/transactions/triage)を、
+  4言語(Rust/Go/Python/TS)と実 DB スタックに合わせて強化。中身のレビュー観点は保持し追加・訂正のみ。
+  Rust/Tokio・Rust ORM(SQLx/Diesel/SeaORM)を追加、DynamoDB ProjectionExpression の誤りを訂正、
+  `npx madge` を承認制に、固定出力パスを会話報告へ。詳細は上の要カスタム表(backend review lens)参照。
 
 ---
 
@@ -301,16 +306,20 @@ agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
   本当に必要かを含めて後で作り直す。`code-review` は古い `/setup-matt-pocock-skills` 参照を直し、
   parallel subagentをopt-inにし、correctness・tests・securityの扱い、severity・根拠・対象行、
   人間が把握できるfindings数の上限を設計する。
-- **backend review lens 4本: review-architecture ・ review-concurrency ・ review-data-access ・
-  review-transactions** — 変更コスト、process内task / batch、query効率、DB整合性に責務を分けたまま、
-  全て要カスタムで残す。共通して具体的failure・file:line・evidenceを要求し、sourceを変更せず、
-  report量を制限する設計は維持する。`architecture` は未導入の `npx madge` を暗黙取得せず、
-  既存tool優先・追加導入承認制にしてBun / TypeScript・Cargo workspaceのdependency graph確認を補う。
-  `concurrency` はRust / TokioとBunを加え、blocking task、cancellation、shutdown、bounded concurrencyを
-  runtimeの公式仕様に基づいて扱う。`data-access` はSQLx・Diesel・SeaORM・D1を加え、DynamoDBの
-  `ProjectionExpression` はresponse payloadを絞ってもitem size基準のcapacity消費を減らさない点を直す。
-  `transactions` はRustのtransaction handle、SQLx / Diesel、D1と通常SQLiteの実行環境差を補い、
-  engine / SDKの上限値・既定値は固定知識ではなく対象versionの公式仕様で確認する。
+- **backend review lens 4本 + triage: review-architecture ・ review-concurrency ・ review-data-access ・
+  review-transactions ・ review-triage** — ✅ **カスタム完了(2026-07-25)**。4言語(Rust/Go/Python/TS)対応 +
+  出力パス修正を実施(subagent 2本で分担、Opus 本体がレビュー)。
+  - 共通: 出力先の固定パス `.backend-review/report/latest/md/*.md` → 会話報告 + 依頼時 `docs/reviews/*.md`。
+  - `architecture`: 依存グラフ取得に Rust(`cargo modules`/`cargo tree` + grep fallback)を追加し4言語化。
+    `npx madge` を承認制(ネットワーク越しツール)に。axum/actix 例・workspace のクレート間 vs モジュール間循環。
+  - `concurrency`: 全項目に Rust/Tokio 追加(JoinSet/buffer_unordered、spawn_blocking、JoinHandle 破棄の
+    panic、timeout/CancellationToken、select! キャンセル安全性、Arc<Mutex> の await 跨ぎ)。`lang/rust` §6 と整合。
+    非スタックの Ruby を Rust に置換。
+  - `data-access`: N+1 表に Rust ORM(SQLx/Diesel/SeaORM)を追加。**DynamoDB ProjectionExpression の誤りを訂正**
+    (RCU/WCU は full item size で決まり projection では減らない。network/payload 理由でのみ flag)。
+  - `transactions`: Rust の illusory tx 罠(SQLx の `&mut *tx`、Diesel の別 conn)、Cloudflare D1 の
+    single-writer + 分散レイテンシ補足、engine 上限は version 確認する注記。
+  - `triage`: 出力パスを会話報告へ(stack 検出は既に4言語対応済み)。
 - **frontend review lens: review-performance ・ review-security** — 2本とも要カスタムで残す。
   `performance` はReact renderingのprofiler-first lensに絞り、100 items以上を一律virtualizeする閾値や
   inline callbackを悪、manual `memo` / `useMemo` / `useCallback`を良とする固定判定を外す。React version・
