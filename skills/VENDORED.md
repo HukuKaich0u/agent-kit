@@ -24,7 +24,8 @@ type: reference
   Bun 移植版を維持(上流 verbatim ではない)。
 
 上流の壊れ参照(存在しない skill への参照、mizchi/mattpocock 個人環境前提)は
-[`INVENTORY.md`](INVENTORY.md) の「要カスタム」節に一覧がある。
+[`meta/skill-selector/references/catalog.md`](meta/skill-selector/references/catalog.md) の
+🔧 行(Use when 列)に要点を記載する。
 
 ---
 

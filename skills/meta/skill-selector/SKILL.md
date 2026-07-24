@@ -83,7 +83,7 @@ Reverse failure: forcing a Phase 1 fit when the catalog truly has nothing suitab
 ## Maintenance of the catalog
 
 - The catalog lists **this repository's** (`HukuKaich0u/agent-kit`) own skills, not an external registry. Keep it in sync when a skill is added, removed, or renamed here — the same edit that touches `skills/` should touch `references/catalog.md`.
-- The catalog's per-row status (✅ / 🔧 / ⏸ / 🎯) is sourced from [`INVENTORY.md`](../../../INVENTORY.md). When they disagree, `INVENTORY.md` is authoritative — fix the catalog to match.
+- The catalog's per-row status (✅ / 🔧 / ⏸ / 🎯) is maintained in the catalog itself as the source of truth. When a row disagrees with the actual skill (SKILL.md, assets), verify against the skill and fix the catalog.
 - A skill discovered through Phase 2 (`skill-finder`) may be promoted into the catalog after it has been used in 2+ projects without issue and after passing its waxa eval.
 - Sanity check: `find skills -name SKILL.md` (excluding `tools/waxa/examples/`) should match the catalog's row count. A mismatch means the catalog drifted.
 

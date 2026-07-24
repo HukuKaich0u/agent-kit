@@ -26,7 +26,7 @@ Phase 2 (`skill-finder`) の仕事。
 
 ## 状態列(Status)
 
-各行の状態は [`INVENTORY.md`](../../../INVENTORY.md) の棚卸しに準拠する:
+状態はこの catalog が一次情報として管理する:
 
 | 状態 | 意味 | 提案時の扱い |
 |---|---|---|
@@ -35,7 +35,7 @@ Phase 2 (`skill-finder`) の仕事。
 | **⏸ 保留** | 通常導線に載せない(deprecated / in-progress)。実案件で試してから昇格判断 | 原則提案しない。プロジェクトが強く必要とする場合のみ散文で言及 |
 | **🎯 明示起動** | `disable-model-invocation` またはユーザーが明示起動する前提の meta skill | 自動提案しない。ユーザーが名指しした時だけ |
 
-**要カスタムの詳細**(何が壊れているか)は `INVENTORY.md` の「要カスタム」節が一次情報。
+**要カスタムの詳細**(何が壊れているか)は各行の Use when 列に要点を書く。
 catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md・asset・依存を確認する。
 
 デフォルトは**少なく**。各 skill は毎会話 context を消費する。近く繰り返す作業に必要な
@@ -200,14 +200,15 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 ## 実装フロー(design record → ticket → 実装 → review)
 
 **Signals**: 仕様固め・チケット分割・実装オーケストレーション。
-`setup-agent-kit` で work tracker・domain docs・design record規約を設定済みが前提。全て 🔧 要カスタム(承認境界を直す)。
+`setup-agent-kit` で work tracker・domain docs・design record規約を設定済みが前提。
+to-spec / to-tickets は承認境界カスタム済み(2026-07-25)。triage / implement は要カスタムが残る。
 
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| 🔧 | to-spec | `tooling/to-spec` | 合意済み会話を不変のdesign recordとして `docs/specs/` へ固定 |
-| 🔧 | to-tickets | `tooling/to-tickets` | design recordを vertical slice の tracer-bullet work ticketへ分割 |
-| 🔧 | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める |
-| 🔧 | implement | `tooling/implement` | work ticket/design recordまたはcurrent-session task listから tdd → 段階検証 → code-review をつなぐ薄い orchestrator |
+| ✅ | to-spec | `tooling/to-spec` | 合意済み会話を不変のdesign recordとして `docs/specs/` へ固定(承認gate・commit手順カスタム済み) |
+| ✅ | to-tickets | `tooling/to-tickets` | design recordを vertical slice の tracer-bullet work ticketへ分割(公開前承認・ready-for-agent除外条件カスタム済み。部分公開失敗の回復手順とDAG検証は検討事項) |
+| 🔧 | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める。外部PRを隔離なしで現worktreeへcheckout・実行する、tracker変更前の包括承認なし、`.out-of-scope/` が opt-in でない点を直す要カスタム |
+| 🔧 | implement | `tooling/implement` | work ticket/design recordまたはcurrent-session task listから tdd → 段階検証 → code-review をつなぐ薄い orchestrator。commit・tracker更新を明示承認後にする要カスタム |
 | 🔧 | wayfinder | `tooling/wayfinder` | 一 session で見通せない大規模案件を decision ticket の地図へ分解(明示起動) |
 
 ---
@@ -309,7 +310,7 @@ waxa eval gate を担う。
 - ここに行がある = **このリポジトリに実在する** skill である。外部候補は Phase 2 の
   `skill-finder` を通し、複数 project での実利用と waxa eval 通過後にだけ昇格する。
 - skill を追加・削除・改名したら、同じ編集でこの catalog の行も更新する。
-- 状態(✅/🔧/⏸/🎯)は `INVENTORY.md` の棚卸しを一次情報とする。乖離を見つけたら
-  `INVENTORY.md` を正として直す。
+- 状態(✅/🔧/⏸/🎯)はこの catalog が一次情報。実体(SKILL.md・asset)と乖離を
+  見つけたら、実体を確認したうえでこの catalog を直す。
 - `find skills -name SKILL.md` の結果とこの表の行数が一致するのが健全な状態
   (`tools/waxa/examples/` の fixture skill は対象外)。
