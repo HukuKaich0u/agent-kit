@@ -141,7 +141,20 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 - Vendored commit: `9603c1cc8118d08bc1b3bf34cf714f62178dea3b`
 - Vendored date: 2026-07-20(完全ミラー化。初回取り込みは 2026-07-19 の 11本)
 - Upstream commit date: 2026-07-16
-- 改造: **9本**(下記「改造記録」参照)。残り24本は上流 verbatim。
+- 改造: **10本**(下記「改造記録」参照)。残り23本は上流 verbatim。
+
+### 改造記録(2026-07-25 — improve-codebase-architecture を設計特化へ再設計)
+
+上流は「自動 Explore subagent で repo を scan → CDN 依存の HTML report を
+温存 dir に書いて GUI で自動起動」する独立 scanner だったが、repo-wide の
+構造 scan は `backend/review-architecture` の役割と重複する。証拠
+(review findings・ユーザー指名の pain point・作業中の friction)を入力に、
+Markdown で3〜5候補を会話内提示 → 選ばれた一候補を `codebase-design` +
+`grilling` で設計 → `/to-spec` へ渡す役割に絞った。
+
+| skill | 改造内容 |
+|---|---|
+| `skills/backend/improve-codebase-architecture` | 自動 Explore subagent・HTML report(HTML-REPORT.md ごと削除)・GUI 自動起動を廃止。候補提示を Markdown 3〜5件に制限。codebase-design 用語の強制(don't drift)を project 語彙優先の推奨へ緩和。domain docs 変更は提案→承認後、design-it-twice subagent は承認制に。手順末尾に `/to-spec` への hand off を追加 |
 
 ### 改造記録(2026-07-25 — triage / implement の承認境界と外部 PR 隔離)
 
@@ -206,7 +219,7 @@ domain-modeling)と `skill-selector` catalog・`scripts/check-vendored.sh` の
 |---|---|
 | `skills/backend/codebase-design` | `skills/engineering/codebase-design` |
 | `skills/backend/domain-modeling` | `skills/engineering/domain-modeling`(2026-07-25 に既存規約優先・承認後反映へ改造。改造記録参照) |
-| `skills/backend/improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` |
+| `skills/backend/improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture`(2026-07-25 に設計特化へ再設計。改造記録参照) |
 | `skills/meta/ask-matt` | `skills/engineering/ask-matt` |
 | `skills/meta/grill-me` | `skills/productivity/grill-me` |
 | `skills/meta/grill-with-docs` | `skills/engineering/grill-with-docs` |
