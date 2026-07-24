@@ -5,7 +5,7 @@ description: Evaluate the reproducibility of technical articles. Dispatch a suba
 
 # Tech Article Reproducibility
 
-Measure the quality of a technical article from the angle of "can a reader reproduce the same thing on their machine?" This is an independent axis from prose-style evaluation (mizchi-blog-style) or logical evaluation. The premise: **the most important thing about a technical article is whether a reader can reproduce it on their own machine.**
+Measure the quality of a technical article from the angle of "can a reader reproduce the same thing on their machine?" This is an independent axis from prose-style evaluation or logical evaluation. The premise: **the most important thing about a technical article is whether a reader can reproduce it on their own machine.**
 
 ## When to use
 
@@ -57,7 +57,7 @@ You are going to read this article and try to reproduce the same thing in your l
 
 ## Evaluation axes (10 reproducibility axes)
 Score each axis 0–2. Refer to the rubric in the `tech-article-reproducibility` skill:
-/Users/mz/.claude/skills/tech-article-reproducibility/SKILL.md
+~/.claude/skills/tech-article-reproducibility/SKILL.md
 
 1. Environment prerequisites stated
 2. Code completeness
@@ -94,9 +94,8 @@ Score each axis 0–2. Refer to the rubric in the `tech-article-reproducibility`
 - **The evaluator's background knowledge is too high**: if you don't explicitly tell the subagent to play a "beginner role," it will judge "enough information" from an expert's viewpoint. Emphasize "first-time reader" in the prompt
 - **Ignoring link health**: links that are alive at publication time can break a year later. Separately check whether reproduction is possible using only **live** links
 - **Inlining all sample code**: reproducibility goes up, but the article bloats. A hybrid approach that combines inline code with a link to the repository is realistic
-- **Reproducibility ≠ prose quality**: an article can be highly reproducible yet hard to read. Combine with `mizchi-blog-style` and similar to measure both axes
+- **Reproducibility ≠ prose quality**: an article can be highly reproducible yet hard to read. Combine with a separate prose-style evaluation to measure both axes
 
 ## Related
 
 - `empirical-prompt-tuning` — meta-skill for subagent dispatch + iterative improvement
-- `mizchi-blog-style` — evaluation on the prose-style axis (independent from this skill)

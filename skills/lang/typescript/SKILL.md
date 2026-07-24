@@ -85,8 +85,7 @@ state / performance）が目的なら、専用の `frontend-review-*` skill に�
 - 型は `@cloudflare/workers-types`(または `wrangler types` 生成の `Env`)を使う。`process.env` ではなく
   ハンドラ引数の `env` からバインディングを取る。
 - Node 組み込みAPIは限定的。`nodejs_compat` フラグの要否を確認し、fs 等は前提にしない。
-- ルーティング/型は Hono などが定番。OTel は fetch 境界で計装(`devops/opentelemetry` 参照)、
-  デプロイは `cloudflare-deploy` を参照。
+- ルーティング/型は Hono などが定番。OTel は fetch 境界で計装(`devops/opentelemetry` 参照)。
 
 ### React / TypeScript フロントエンド
 

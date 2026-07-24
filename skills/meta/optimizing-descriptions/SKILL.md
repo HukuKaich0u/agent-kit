@@ -1,13 +1,13 @@
 ---
 name: optimizing-descriptions
-description: 'Meta-skill for auditing and rewriting SKILL.md `description` fields per the agentskills.io optimizing-descriptions framework, layered with mizchi''s two-track trigger policy (Meta = explicit-invoke-only, Project = pushy auto-trigger). Invoke ONLY when the user explicitly asks to "optimize a skill description," "audit descriptions," or "rewrite descriptions per agentskills." Do NOT auto-invoke after every SKILL.md edit; description tuning is a deliberate batch, not a per-edit reflex.'
+description: 'Meta-skill for auditing and rewriting SKILL.md `description` fields per the agentskills.io optimizing-descriptions framework, layered with a two-track trigger policy (Meta = explicit-invoke-only, Project = pushy auto-trigger). Invoke ONLY when the user explicitly asks to "optimize a skill description," "audit descriptions," or "rewrite descriptions per agentskills." Do NOT auto-invoke after every SKILL.md edit; description tuning is a deliberate batch, not a per-edit reflex.'
 ---
 
 # Optimizing Skill Descriptions
 
-Operational guide for auditing and rewriting SKILL.md `description` fields so they trigger the way mizchi wants them to.
+Operational guide for auditing and rewriting SKILL.md `description` fields so they trigger the way this repository's authors want them to.
 
-The upstream reference is [agentskills.io/skill-creation/optimizing-descriptions](https://agentskills.io/skill-creation/optimizing-descriptions). This skill keeps the framework intact and adds the mizchi-specific two-track policy on top.
+The upstream reference is [agentskills.io/skill-creation/optimizing-descriptions](https://agentskills.io/skill-creation/optimizing-descriptions). This skill keeps the framework intact and adds this repository's two-track policy on top.
 
 ## Why this exists
 
@@ -25,27 +25,27 @@ Meta-skill, explicit invocation only. Triggers:
 - "optimize / audit / rewrite this skill's description"
 - "audit descriptions per agentskills"
 - "tune trigger accuracy"
-- "go through mizchi/skills and fix descriptions"
+- "go through the skill catalog and fix descriptions"
 
 Do NOT use for:
 
 - Single-skill ad-hoc edits during normal skill authoring.
-- Newly written skills that haven't been used yet (write the description as part of `superpowers:writing-skills`; tune only after observed mistriggering).
+- Newly written skills that haven't been used yet (write the description as part of `writing-great-skills`; tune only after observed mistriggering).
 
 ## Two-track policy
 
-mizchi's skills split into two categories and need **different** description shapes. Picking the wrong one is the most common audit miss.
+This repository's skills split into two categories and need **different** description shapes. Picking the wrong one is the most common audit miss.
 
 | Track | Trigger policy | Description shape | Examples |
 |---|---|---|---|
-| **Project** | Pushy — auto-trigger desirable | `Use when ... — [symptom keywords]. Trigger on [file shapes] even if user does not name [domain].` | `playwright-test`, `cloudflare-deploy`, `gh-fix-ci`, `node-sqlite-vec`, `aws-vault-mfa-iam` |
-| **Meta** | Under-trigger — explicit invoke only | `Invoke ONLY when the user explicitly asks ... Do NOT auto-invoke on [common ambient signals].` | `skill-selector`, `skill-finder`, `waxa-eval`, `apm-usage`, `empirical-prompt-tuning`, `retrospective-codify`, `chezmoi-management`, this skill |
+| **Project** | Pushy — auto-trigger desirable | `Use when ... — [symptom keywords]. Trigger on [file shapes] even if user does not name [domain].` | `playwright-test`, `gh-fix-ci`, `actions-ci-tuning`, `otel-node`, `ast-grep-practice` |
+| **Meta** | Under-trigger — explicit invoke only | `Invoke ONLY when the user explicitly asks ... Do NOT auto-invoke on [common ambient signals].` | `skill-selector`, `skill-finder`, `waxa-eval`, `apm-usage`, `empirical-prompt-tuning`, `retrospective-codify`, this skill |
 
 How to classify a skill you're auditing:
 
 - Body contains "Meta-skill" / "explicit invocation" / "明示 invoke" → **Meta**.
 - Body is "best practices for X" / "reference for Y" / "how to use Z" → **Project**.
-- Persona / chat-only skills (e.g. `chloe-chat`) follow the Meta shape but with "Activate during ..." phrasing.
+- Persona / chat-only skills (e.g. `ask-matt`) follow the Meta shape but with "Activate during ..." phrasing.
 
 ## Audit checklist
 
@@ -58,7 +58,7 @@ How to classify a skill you're auditing:
 
 ### Project-track additional
 
-- [ ] Symptom / surface keywords listed: file names (`.gleam`, `gleam.toml`), error strings (`network is unreachable`, `InvalidClientTokenId`), commands (`pi.registerTool`, `apm install`).
+- [ ] Symptom / surface keywords listed: file names (`.rs`, `Cargo.toml`), error strings (`network is unreachable`, `InvalidClientTokenId`), commands (`apm install`, `waxa audit`).
 - [ ] Pushy phrasing — `even if user doesn't name <domain>` / `Trigger on <symptom> even when <tool> isn't mentioned`. Captures cases where the user describes the problem without naming the technology.
 
 ### Meta-track additional
@@ -69,29 +69,19 @@ How to classify a skill you're auditing:
 
 ## Common rewrite patterns
 
-Distilled from a single-pass audit of mizchi/skills (12 rewrites, 2026-05-12).
+Distilled from a single-pass audit of this repository's skill catalog.
 
 ### Project rewrites
 
 ```
 # Before: passive, no trigger
-Reference for the dotenvx environment variable management tool.
+Reference for the otel-node instrumentation setup.
 
 # After: imperative + symptom + pushy
-Use when working with the dotenvx env-var tool — encrypting .env, juggling
-.env.production / .env.staging, committing .env.vault / .env.keys, wiring
-into GitHub Actions. Trigger on `.env.vault` / `.env.keys` symptoms even
-when the user does not say "dotenvx".
-```
-
-```
-# Before: best-practices opener, no trigger
-Best practices for building and reviewing Gleam projects on the Erlang target.
-
-# After: imperative + file shapes + BEAM symptoms
-Use when writing or reviewing Gleam on the Erlang target — Wisp + Mist HTTP
-services, OTP processes, gleeunit testing. Trigger on `gleam.toml`,
-`.gleam` files, or Erlang/BEAM symptoms even when "Gleam" isn't named.
+Use when instrumenting a Node.js service with OpenTelemetry — wiring the
+SDK, exporters, and auto-instrumentation, debugging missing spans or
+broken trace context propagation. Trigger on `@opentelemetry/*` deps or
+OTel Collector symptoms even when the user does not say "OpenTelemetry".
 ```
 
 ```
@@ -124,18 +114,16 @@ auto-invoke at every task completion.
 
 ```
 # Before: "Consult when touching" auto-triggers on path matches
-mizchi's chezmoi dotfiles operations: source location, diff/apply flow,
-skill addition, the APM vs chezmoi boundary, pre-commit. Consult when
-touching ~/.claude/, ~/.config/, or ~/.zshrc, or initializing a new
-machine.
+apm.yml syntax, install / uninstall / update commands, target detection,
+lockfile workflow. Consult when touching apm.yml or running an apm
+command.
 
 # After: explicit-intent + Do NOT auto-invoke clause
-Meta-skill for mizchi's chezmoi dotfiles. Invoke ONLY when the user
-explicitly asks to manage / diff / apply chezmoi sources, add a skill
-to dotfiles, audit the APM vs chezmoi boundary, or initialize a new
-machine. Do NOT auto-invoke when the task only happens to touch a path
-under ~/.claude/, ~/.config/, or ~/.zshrc — consult only on explicit
-dotfile-management intent.
+Meta-skill for APM (Agent Package Manager). Invoke ONLY when the user
+mentions APM by name, asks to author or audit an apm.yml, or runs into
+an unfamiliar APM command / error. Do NOT auto-invoke merely because a
+project happens to have skills installed via APM — routine usage needs
+only general APM knowledge.
 ```
 
 ## Workflow
@@ -163,7 +151,7 @@ dotfile-management intent.
 
 5. **Verify with `waxa audit <skill>`** — picks up surface frontmatter issues (length, name shape, trigger-condition shape). Errors must be zero; warnings about body / LICENSE are out of scope here.
 
-6. **Mirror** to `~/.claude/skills/<name>/SKILL.md` (mizchi propagation convention — running session needs the update without waiting for `apm install -g --update`).
+6. **Propagate** via `apm update` (or `just sync`) so the running session's `~/.claude/rules/` / installed skills reflect the edit — do not hand-edit the installed copy directly.
 
 7. **Commit as one** with a per-skill summary in the message. One audit pass = one commit, even when it touches 10+ skills.
 
@@ -182,7 +170,7 @@ If you do run the empirical step by hand, follow agentskills.io's specifics:
 
 | Mistake | Fix |
 |---|---|
-| Adding specific keywords from failed-trigger queries verbatim | Overfitting. Generalize to the category (`.gleam files` ≫ `gleam.toml exists`). |
+| Adding specific keywords from failed-trigger queries verbatim | Overfitting. Generalize to the category (`.rs files` ≫ `Cargo.toml exists`). |
 | Writing the description in terms of internal implementation | Rewrite from user intent. "What is the user trying to do?" |
 | Meta skill with `Use after X` / `Consult when X` | Auto-triggers on ambient signals. Rewrite to `Invoke ONLY when explicitly asked ... Do NOT auto-invoke on X`. |
 | Project skill with `ONLY when the user explicitly says ...` | Under-triggers. Make it pushy: `Use when ... Trigger on [symptoms] even if X not named.` |
@@ -193,7 +181,7 @@ If you do run the empirical step by hand, follow agentskills.io's specifics:
 ## Related
 
 - `agentskills.io/skill-creation/optimizing-descriptions` — upstream methodology document (the framework this skill operationalizes).
-- `superpowers:writing-skills` — when creating a new skill from scratch; description is one of several components. Use this skill (`optimizing-descriptions`) only after the skill exists and has been observed.
+- `writing-great-skills` — when creating a new skill from scratch; description is one of several components. Use this skill (`optimizing-descriptions`) only after the skill exists and has been observed.
 - `waxa-eval` — for measuring trigger accuracy empirically (when `waxa trigger` lands).
 - `waxa audit <skill>` — picks up the surface frontmatter issues (length, name shape, basic trigger-condition phrasing) that this audit also flags; useful as a fast pre-check.
 - `skill-finder` — the rubric there includes "frontmatter-health" which overlaps with this skill's universal checklist; skill-finder uses `optimizing-descriptions` patterns implicitly when evaluating an external skill candidate.

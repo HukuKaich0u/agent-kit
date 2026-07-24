@@ -100,7 +100,7 @@ See the `ast-grep-practice` skill. Add YAML under the `rules/` directory and alw
 Always attach the reason in parentheses (so that your future self can judge edge cases).
 
 ### New skill
-Follow the minimal template from `writing-skills` (superpowers):
+Follow the minimal template from `writing-great-skills`:
 ```markdown
 ---
 name: <kebab-case>
@@ -146,11 +146,11 @@ message: Set/Map のサイズは .size プロパティを使う。
 
 ### Example 3: Codify as a new skill (procedure + judgment involved)
 
-- First attempt: To call a C library from MoonBit, tried several approaches and got stuck on the placement of FFI declarations and stubs.
-- Final solution: The combination of an `extern "c"` declaration + a stub using `moonbit.h` + `native-stub` / `link.native` settings in `moon.pkg.json`.
-- Insight: It does not fit in a single step; you need to understand the three layers — declaration, stub, and build config — together.
+- First attempt: In Rust, tried several signatures for a function returning borrowed data and got stuck on lifetime elision vs explicit lifetime parameters.
+- Final solution: The combination of choosing the right ownership shape at the function boundary + an explicit lifetime parameter only where elision rules don't apply.
+- Insight: It does not fit in a single step; you need to understand ownership, borrowing, and lifetime annotation together.
 
--> Carve out the procedure and templates as a new skill `moonbit-c-binding` (since it already exists, this example is the case of choosing "append to existing" via the dedup check).
+-> Since a `rust` skill already exists covering ownership-in-function-signatures, this example is the case of choosing "append to existing" via the dedup check, rather than creating a new skill.
 
 ## Red flags (watch out for rationalizations)
 
@@ -246,6 +246,6 @@ Duplicate detected (no proposal needed):
 
 ## Related skills
 
-- `superpowers:writing-skills` — template and TDD flow for writing a new skill
+- `writing-great-skills` — template and TDD flow for writing a new skill
 - `ast-grep-practice` — how to write and test when codifying as a lint rule
 - `update-config` — when changes to settings.json / permissions are required

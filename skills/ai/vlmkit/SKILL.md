@@ -3,7 +3,7 @@ name: vlmkit
 description: Entry-point for the `@mizchi/vlmkit` toolkit — VLM-driven frontend kit covering visual regression (snapshot / diff / regression-watch), markup synthesis from screenshots, design-token / theme / a11y / i18n audits, and a 2-stage VLM + LLM CSS auto-repair loop. Use when a coding agent has edited HTML/CSS and needs to know whether the visible output changed, where it changed, and which CSS properties drove the change — or when the task is markup-from-image / token / theme audit / fix-loop driven by VLM. This skill orients you to the 5 detailed sub-skills (vrt-visual-diff / vrt-migration-eval / vrt-markup-synth / vrt-regression-watch / vrt-css-fix-loop) and the verb-group CLI; pick the matching sub-skill once the task shape is clear.
 ---
 
-# vrt
+# vlmkit
 
 `vlmkit` is a TypeScript visual-regression toolkit built on Playwright +
 pixelmatch. Beyond raw pixel diffs, it surfaces **agent-friendly
@@ -47,8 +47,8 @@ Playwright Chromium, optional API keys, and installed sub-skills in
 one pass. Two invocation forms by setup phase:
 
 - **Pre-install (no apm yet)**: one-shot via curl —
-  `bash <(curl -sSL https://raw.githubusercontent.com/mizchi/skills/main/vlmkit/scripts/doctor.sh)`
-- **Post-install (`apm install -g mizchi/skills/vlmkit/vlmkit` done)**: local
+  `bash <(curl -sSL https://raw.githubusercontent.com/HukuKaich0u/agent-kit/main/skills/ai/vlmkit/scripts/doctor.sh)`
+- **Post-install (`apm install -g HukuKaich0u/agent-kit/skills/ai/vlmkit` done)**: local
   copy — `bash ~/.claude/skills/vlmkit/scripts/doctor.sh`
 
 Severity rules: only **Node 24+** and **Playwright Chromium** are
@@ -126,10 +126,11 @@ one-line hint and forward.
 
 ## Sub-skill routing
 
-**Two repos, by design**: this orient skill lives in
-[`mizchi/skills`](https://github.com/mizchi/skills) (general-purpose
-skills); the five vrt-specific sub-skills live in
-[`mizchi/vlmkit/vlmkit`](https://github.com/mizchi/vrt) under
+**Two repos, by design**: this orient skill is vendored into
+[`HukuKaich0u/agent-kit`](https://github.com/HukuKaich0u/agent-kit)
+(this repo's general-purpose skill catalog); the five vrt-specific
+sub-skills are not vendored here and live upstream in
+[`mizchi/vlmkit`](https://github.com/mizchi/vlmkit) under
 `.claude/skills/`. The two `apm install` paths below look different
 because they target different repos — that is intentional, not a typo.
 
