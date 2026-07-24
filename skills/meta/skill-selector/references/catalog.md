@@ -1,3 +1,10 @@
+---
+created: 2026-07-25
+updated: 2026-07-25
+author: Koki Aoyagi
+type: catalog
+---
+
 # Curated skill catalog (Phase 1)
 
 `skill-selector` Phase 1 の一次カタログ。**このリポジトリ (`HukuKaich0u/agent-kit`) が
@@ -175,7 +182,7 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 | ✅ | drawio | `tooling/drawio` | draw.io CLI で図生成(v1.19.0: SVG実描画lint・typography・tint ladder・凡例・表・60ノード級autolayoutまで検証済み) |
 | ✅ | git-guardrails-claude-code | `tooling/git-guardrails-claude-code` | 危険 git 操作を hook でブロック(**Claude Code 専用**) |
 | 🔧 | research | `tooling/research` | 軽量な一次情報調査。重量級は `deep-research` plugin と分担する要カスタム |
-| 🔧 | code-review | `tooling/code-review` | 固定点からの差分を Standards / Spec 軸で review。Spec 軸の残りカスタムは継続 |
+| 🔧 | code-review | `tooling/code-review` | 固定点からの差分を Standards / Intent 軸で review。design recordとticketをIntentとして照合 |
 | 🔧 | ast-grep-practice | `tooling/ast-grep-practice` | project 固有の構造規則・安全な migration。ast-grep 0.44.0 で全実例を検証する要カスタム |
 | 🔧 | justfile | `tooling/justfile` | 既存 justfile の理解・安全な編集。pkfire 優先や危険例を外す要カスタム |
 | 🔧 | conventional-changelog | `tooling/conventional-changelog` | release 方式の比較入口。存在しない `npm-release` 参照等を外す要カスタム |
@@ -190,17 +197,17 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 
 ---
 
-## 実装フロー(spec → ticket → 実装 → review)
+## 実装フロー(design record → ticket → 実装 → review)
 
 **Signals**: 仕様固め・チケット分割・実装オーケストレーション。
-`setup-agent-kit` で issue tracker を設定済みが前提。全て 🔧 要カスタム(承認境界を直す)。
+`setup-agent-kit` で work tracker・domain docs・design record規約を設定済みが前提。全て 🔧 要カスタム(承認境界を直す)。
 
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| 🔧 | to-spec | `tooling/to-spec` | grilling で合意した会話を仕様へ固定し tracker へ公開 |
-| 🔧 | to-tickets | `tooling/to-tickets` | plan/spec を vertical slice の tracer-bullet ticket へ分割 |
+| 🔧 | to-spec | `tooling/to-spec` | 合意済み会話を不変のdesign recordとして `docs/specs/` へ固定 |
+| 🔧 | to-tickets | `tooling/to-tickets` | design recordを vertical slice の tracer-bullet work ticketへ分割 |
 | 🔧 | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める |
-| 🔧 | implement | `tooling/implement` | spec/ticket から tdd → 段階検証 → code-review をつなぐ薄い orchestrator |
+| 🔧 | implement | `tooling/implement` | design record/ticket から tdd → 段階検証 → code-review をつなぐ薄い orchestrator |
 | 🔧 | wayfinder | `tooling/wayfinder` | 一 session で見通せない大規模案件を decision ticket の地図へ分解(明示起動) |
 
 ---
@@ -223,7 +230,7 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 ### skill 運用の基盤
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| 🎯 | setup-agent-kit | `meta/setup-agent-kit` | repo ごとに issue tracker / triage labels / domain docs を scaffold(engineering flow の前に一度) |
+| 🎯 | setup-agent-kit | `meta/setup-agent-kit` | repo ごとに work tracker / triage labels / domain docs / design record規約を scaffold(engineering flow の前に一度) |
 | 🎯🔧 | skill-selector | `meta/skill-selector` | この catalog から project skill を選ぶ入口(= この skill 自身) |
 | 🎯🔧 | skill-finder | `meta/skill-finder` | catalog に無いものを外部探索(Phase 2)。安全確認 + waxa eval gate |
 

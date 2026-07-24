@@ -1,5 +1,5 @@
 interface:
   display_name: "Setup agent-kit Skills"
-  short_description: "Configure a repo for the agent-kit skills"
+  short_description: "Configure tracker, docs, and record policy"
 policy:
   allow_implicit_invocation: false

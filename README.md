@@ -92,7 +92,7 @@ apm install -g HukuKaich0u/agent-kit/plugins/deep-research/skills/deep-research
 apm install HukuKaich0u/agent-kit/skills/meta/grilling
 ```
 
-現在の vendored skill 69本は、`SKILL.md` 本体がすべて上流そのまま。隣接する `README.md` は
+現在の vendored skill 69本のうち、改造記録に載るものを除く `SKILL.md` 本体は上流そのまま。隣接する `README.md` は
 agent-kit用のinstall案内として生成している。要カスタム候補は中身を吟味してから個別に変更する。
 使うものから少しずつカスタマイズする方針で、旧カスタム版は git 履歴 `0fd8ec3` にある。
 

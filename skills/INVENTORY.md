@@ -1,3 +1,10 @@
+---
+created: 2026-07-25
+updated: 2026-07-25
+author: Koki Aoyagi
+type: inventory
+---
+
 # Skills Inventory(棚卸し表)
 
 agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
@@ -212,7 +219,7 @@ agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
 | meta/setup-agent-kit | ✅ **解消済み(2026-07-24)**。`name` を `setup-agent-kit` へ統一、参照側6skillの呼び出しも修正 |
 | meta/skill-selector | ✅ **解消済み(2026-07-24)**。`catalog.md` を現存78本の一次catalogへ全面再構築。SKILL.md/evals の壊れ参照も一掃 |
 | meta/skill-finder | ✅ **解消済み(2026-07-24)**。waxa を Bun 版へ、自動iterate停止、superpowers/chezmoi/nix-setup 参照を修正 |
-| tooling/code-review | 🔧 **部分解消**。`/setup-matt-pocock-skills` → `/setup-agent-kit` は修正済み。残: Spec軸の parallel subagent opt-in化・severity/根拠/対象行・findings上限の設計 |
+| tooling/code-review | 🔧 **部分解消**。`/setup-matt-pocock-skills` → `/setup-agent-kit` と、design record / ticketを読むIntent軸は修正済み。残: parallel subagent opt-in化・severity/根拠/対象行・findings上限の設計 |
 | meta/waxa-eval | 🔧 **部分解消(2026-07-24)**。自動 `iterate` を使用停止(reseen≠resolved 明記)、Bun 版 `bun run src/cli.ts` へ、nix-setup 参照除去。残: ledger / convergence の運用を実 eval で回して確認 |
 | frontend/review-* 8本 | ✅ **自立化完了(2026-07-24)**。欠落 `scripts/audit-*.sh`・checklist・phase・KPI パス参照を除去し、単発手動レビュー(agent が直接コードを読む)へ。旧自作 `.mjs`(0fd8ec3)は回収せず、agent 直読み方式を採用 |
 
@@ -299,7 +306,7 @@ agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
   反映する。ADRをhard-to-reverse・surprising・real trade-offに限定する原則は残す。2本とも要カスタム。
 - **review入口クラスタ: backend/review-triage ・ frontend/review-triage ・ tooling/code-review** —
   一旦3本とも削除せず要カスタムで残す。backend / frontendのtriageはrepo全体を分類して適用するdomain lensを
-  選ぶ入口、`code-review` は固定点からの差分をStandards / Spec軸で見る入口として分担する。
+  選ぶ入口、`code-review` は固定点からの差分をStandards / Intent軸で見る入口として分担する。
   `backend/review-triage` はDynamoDB・D1・Bun・Rust workspace・Cloudflare Workers等の実stack検出を補い、
   repo全体とdiff reviewのscopeを明示する。`frontend/review-triage` は欠落した `audit-triage.sh`、
   app classification / known issues checklist、phase文書、report構造を、手動domain reviewの入口として
@@ -365,20 +372,18 @@ agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
   `0fd8ec3` から設計材料として回収できる。`schema-audit` のdrop candidateはcatalog外queryとproduction usageを
   確認する人間向けsignalに限定し、N+1はRust / TypeScriptのASTまたは実際のquery layerに合わせて作り直す。
   engineと導入projectが決まるまでは通常導線に載せない要カスタム候補。
-- **tooling/implement** — spec / ticketから `tdd`、段階的検証、`code-review` をつなぐ薄いorchestratorとして
+- **tooling/implement** — design record / ticketから `tdd`、段階的検証、`code-review` をつなぐ薄いorchestratorとして
   残す。一度に一つの合意済みscope、開始時のbase commitと既存変更の保全、狭いtestから広いtestへの展開、
   review findings修正後の再検証、理解可能なvertical sliceを原則にする。実装・検証・review結果を提示し、
   commitとtracker更新は明示承認後に行うよう直す。`code-review` 修正後に使う高優先度候補。
-- **tooling/to-spec** — `grilling` で合意した会話を別sessionでも使える仕様へ固定する境界として残す。
-  会話・repo・ADRに根拠がある事項だけを抽出し、未知を補完せずopen questionsへ分離する。criticalな未解決事項は
-  公開せず `grilling` へ戻し、user storyの量ではなく簡潔なdesired behavior / acceptance criteria / out of scopeを
-  重視する。草案とtracker変更を提示して承認後に公開し、`ready-for-agent` は後段の `to-tickets` が作る
-  実装ticketにだけ付けるよう直す。`setup-agent-kit` 修正後に使う高優先度候補。
-- **tooling/to-tickets** — vertical slice、blocking graph、expand–contract、公開前承認という中核設計は
-  そのまま残す。関係する境界だけを通るslice、人間がreview可能なscope、spec acceptance criteriaのcoverage、
-  scope外ticketの禁止、DAG / frontier検証、把握困難な件数のphase分割を加える。完全なissue本文・label・project・
+- **tooling/to-spec** — `grilling` で合意した会話を、`docs/specs/YYYY-MM-DD-<slug>.md` の不変design recordへ
+  固定する境界として残す。current truthを担わせず、承認後に一度だけ作成する。恒久的な判断はADRへ、実行可能な
+  acceptance criteriaは後段ticketのcode / testへ分離する。方向転換時は既存recordを編集せずre-grillして
+  successorを作る。`ready-for-agent` を付けずtrackerへ公開しない高優先度カスタムとして実装済み。
+- **tooling/to-tickets** — approved design recordだけを入力に、vertical slice・blocking graph・expand–contractで
+  work ticketへ分解する。ticketは不変recordのパスを参照し、parent spec issueを作らない。完全なissue本文・label・
   blocking関係を承認後に公開し、human / secret / 外部操作が必要なticketは `ready-for-agent` にしない。
-  部分的な公開失敗で重複を作らない回復手順と、承認済みparent linkageも補う軽度カスタム候補。
+  部分的な公開失敗で重複を作らない回復手順とDAG検証は追加検討事項。
 - **tooling/triage** — 将来カスタマイズする会話型QAから渡されるものを含む既存issue / PRを、検証・
   maintainer判断・agent briefを経て次のstateへ進める中核は残す。tracker変更前に完全な操作内容を承認し、
   外部PRは現在のworktreeへcheckoutせず、untrusted code実行には隔離と明示承認を要求する。
@@ -646,7 +651,7 @@ agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
    そのままコピーせず「本当に要るか」を見てから当てる。
    - ✅ 済(2026-07-24): setup-agent-kit(名統一)・skill-selector(catalog再構築)・skill-finder(agent-kit整合)。
    - 次の優先候補: **apm-usage**(APM 0.26.0準拠。selector/finder が委譲する先)、**waxa-eval**(自動iterate誤収束バグの本丸)、
-     **code-review の Spec軸残り**、frontend audit スクリプト。
+     **code-review の Intent軸残り**、frontend audit スクリプト。
 2. **「もっと良い公開資産がないか」の精査**(君の本命)。tooling/testing/backend は使うが、より優れた mizchi/mattpocock/一流の skill がないか skill-finder + waxa-eval で精査したい。特に tooling/testing から。
 3. **domain review系14本**(backend 5 + frontend 8 + tooling/code-review)は最大クラスタ。
    frontend 8本は手動起動で残したが、欠落asset参照を外すか旧自作auditを必要な分だけ回収する精査が必要。

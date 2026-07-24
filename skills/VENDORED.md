@@ -1,7 +1,7 @@
 ---
 created: 2026-07-20
-updated: 2026-07-24
-author: Codex
+updated: 2026-07-25
+author: Koki Aoyagi
 type: reference
 ---
 
@@ -149,13 +149,13 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 
 | skill | 改造内容 |
 |---|---|
-| `skills/meta/setup-agent-kit` | frontmatter `name` を `setup-agent-kit` に、タイトルと `agents/openai.yaml` の `display_name` を agent-kit 用に変更。issue tracker 説明から通常導線外の `qa` 参照を除去。README は `gen-skill-readme.rb` で再生成 |
-| `skills/tooling/code-review` | `/setup-matt-pocock-skills` → `/setup-agent-kit` |
-| `skills/tooling/to-spec` | 同上 |
-| `skills/tooling/to-tickets` | 同上(2箇所) |
+| `skills/meta/setup-agent-kit` | frontmatter `name` を `setup-agent-kit` に、タイトルと `agents/openai.yaml` の `display_name` を agent-kit 用に変更。work tracker・domain docsに加え、不変design record規約をrepo設定へ追加。README は `gen-skill-readme.rb` で再生成 |
+| `skills/tooling/code-review` | `/setup-matt-pocock-skills` → `/setup-agent-kit`。tracker issue / PRDを現在仕様とみなさず、design recordとwork ticketをIntent軸としてreviewするよう再設計 |
+| `skills/tooling/to-spec` | tracker公開型PRDを廃止し、承認済み会話から `docs/specs/YYYY-MM-DD-<slug>.md` の不変design recordを一度だけ作成するworkflowへ再設計 |
+| `skills/tooling/to-tickets` | 不変design recordを入力に、参照パス付きのwork ticketだけをconfigured trackerへ公開するworkflowへ再設計 |
 | `skills/tooling/triage` | 同上 |
 | `skills/tooling/wayfinder` | 同上 |
-| `skills/meta/ask-matt` | 同上(ask-matt 自体のリネーム・再設計は別途要カスタム) |
+| `skills/meta/ask-matt` | `/setup-matt-pocock-skills` → `/setup-agent-kit`。main flowを不変design record → work ticketへ更新(ask-matt自体のリネームは未着手) |
 
 **配置ルール**: 上流の `productivity` / `engineering` / `misc` は agent-kit の領域カテゴリに
 振り分け。上流の `deprecated` / `in-progress` / `personal` はステータスが分かるよう

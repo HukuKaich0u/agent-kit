@@ -1,75 +1,74 @@
 ---
 name: to-spec
-description: Turn the current conversation into a spec and publish it to the project issue tracker — no interview, just synthesis of what you've already discussed.
+description: Turn an approved design conversation into one immutable, date-stamped design record in docs/specs. Use after grilling or wayfinding when a multi-session build needs a durable account of the decisions made; do not use to create a current implementation specification or tracker issue.
 disable-model-invocation: true
 ---
 
-This skill takes the current conversation context and codebase understanding and produces a spec (you may know this document as a PRD). Do NOT interview the user — just synthesize what you already know.
+# To Spec
 
-The issue tracker and triage label vocabulary should have been provided to you — run `/setup-agent-kit` if not.
+Turn the current conversation and codebase understanding into an immutable **design record**. A design record captures what was agreed at one point in time; it is not a living specification.
+
+Current truth lives in code, tests, ADRs, and the domain glossary. Do not publish this record to an issue tracker, apply tracker labels, or update it after it is written.
+
+The design-record convention should be available at `docs/agents/design-records.md`. Run `/setup-agent-kit` if it is missing.
 
 ## Process
 
-1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the project's domain glossary vocabulary throughout the spec, and respect any ADRs in the area you're touching.
+1. Explore the relevant codebase area if needed. Use the project's glossary vocabulary and respect applicable ADRs. Capture only facts supported by the conversation, codebase, or ADRs; do not fill gaps with plausible detail.
 
-2. Sketch out the seams at which you're going to test the feature. Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can. The fewer seams across the codebase, the better - the ideal number is one.
+2. Identify decisions that must remain true beyond this feature. If a decision is hard to reverse, surprising without context, and the result of a real trade-off, present it as an ADR candidate. Keep it out of the design record's implementation narrative and use `/domain-modeling` to record it when approved.
 
-Check with the user that these seams match their expectations.
+3. Sketch the highest practical test seam and the acceptance evidence each future ticket must produce. Prefer existing seams. If a critical decision or acceptance condition remains unresolved, return to `/grilling`; do not write a record.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+4. Present the complete draft and proposed path below. This is the approval gate. Do not write a file until the user confirms the draft is the agreed point-in-time record.
 
-<spec-template>
+5. On approval, create exactly one new file at `docs/specs/YYYY-MM-DD-<slug>.md`:
 
-## Problem Statement
+   - Use today's date and a concise slug.
+   - Set `author` to `git config user.name`; ask if it is unavailable or not a human name.
+   - Set `based_on_revision` to `git rev-parse HEAD` when available; otherwise omit that field.
+   - Write the historical-record notice verbatim.
+   - Never amend, overwrite, or regenerate this file. If direction changes after approval, re-grill and create a new record that names this path under `## Supersedes`.
 
-The problem that the user is facing, from the user's perspective.
+6. Stage only the new record and commit it as a standalone commit according to the repository's commit policy. If the repository requires approval before committing, request it; do not hand an uncommitted record to `/to-tickets`.
 
-## Solution
+7. Hand the committed path to `/to-tickets` for implementation planning. The tickets own actionable acceptance criteria; the design record stays a dead historical record.
 
-The solution to the problem, from the user's perspective.
+<design-record-template>
+---
+created: <YYYY-MM-DD>
+author: <git config user.name>
+type: design-record
+based_on_revision: <git revision, when available>
+---
 
-## User Stories
+# <Title>
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+> **Historical design record.** This captures the design agreed on <YYYY-MM-DD>.
+> Do not update it. Current truth lives in code, tests, ADRs, and the domain glossary.
+> Re-grill and create a new record if the direction changes.
 
-1. As an <actor>, I want a <feature>, so that <benefit>
+## Problem and intended outcome
 
-<user-story-example>
-1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
-</user-story-example>
+The user-facing problem, the intended outcome, and how the outcome will be recognised.
 
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+## Scope and non-goals
 
-## Implementation Decisions
+What this decision covers and deliberately excludes.
 
-A list of implementation decisions that were made. This can include:
+## Decisions and rationale
 
-- The modules that will be built/modified
-- The interfaces of those modules that will be modified
-- Technical clarifications from the developer
-- Architectural decisions
-- Schema changes
-- API contracts
-- Specific interactions
+The choices agreed in this conversation, their trade-offs, and any rejected alternatives worth remembering. Do not include volatile file paths, code snippets, or a predicted final implementation structure.
 
-Do NOT include specific file paths or code snippets. They may end up being outdated very quickly.
+## Ticketing evidence
 
-Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
+The observable acceptance evidence that `/to-tickets` must distribute across implementation tickets. Permanent behaviour belongs in code and tests, not in this record.
 
-## Testing Decisions
+## Assumptions and deferred matters
 
-A list of testing decisions that were made. Include:
+Non-critical assumptions accepted for this design and matters deliberately left for later.
 
-- A description of what makes a good test (only test external behavior, not implementation details)
-- Which modules will be tested
-- Prior art for the tests (i.e. similar types of tests in the codebase)
+## Supersedes
 
-## Out of Scope
-
-A description of the things that are out of scope for this spec.
-
-## Further Notes
-
-Any further notes about the feature.
-
-</spec-template>
+Optional paths to earlier design records this record replaces. A new record names its predecessors; never edit a predecessor to add a successor.
+</design-record-template>
