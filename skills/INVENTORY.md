@@ -1,6 +1,6 @@
 # Skills Inventory(棚卸し表)
 
-agent-kit の全 skill(現在 **79本**)の棚卸しと状態管理。
+agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
 各 skill が「何をするか・出自・環境依存・重複」を一覧化し、精査の起点にする。
 
 ## この表の使い方
@@ -13,9 +13,10 @@ agent-kit の全 skill(現在 **79本**)の棚卸しと状態管理。
 - **🔗 統合候補** — 別の skill と機能が重なる。役割分担を明記するか片方に寄せる。
 - **🔎 上位互換を探す** — 現状で足りるが、より優れた公開 skill があれば差し替え検討(skill-finder + waxa-eval で評価)。
 
-出自: **mizchi 36・mattpocock 33・自作 9・Agents365-ai 1**(計79)。
+出自: **mizchi 36・mattpocock 33・自作 11・Agents365-ai 1**(計81)。
 ※ meta/empirical-prompt-tuning は旧自作版を mizchi 版で置換したため mizchi 由来にカウント。
-※ 自作 9本目 = meta/decision-interview(2026-07-24 追加)。
+※ 自作の追加(2026-07-24): meta/decision-interview、lang/go、lang/python。
+  ユーザーの主要言語は Rust / Go / Python / TypeScript の4つ(全部がっつり使う)。言語 skill を4言語に揃えた。
 
 ## 2026-07-20 に確定した変更
 
@@ -179,6 +180,14 @@ agent-kit の全 skill(現在 **79本**)の棚卸しと状態管理。
   曖昧なアイデアを1問ずつの構造化インタビューでユーザー所有の明示的な意思決定へ変える自作 skill。
   decision ledger(confirmed/open/assumptions/deferred)を保ち承認で締める。`grilling`(問い詰め)や
   in-progress の `to-questionnaire`(他者向け質問票)とは別の役割。catalog の grill 系に追加済み。
+- **`lang/go`・`lang/python` を追加 → 計81本**(2026-07-24、自作10・11本目)。
+  ユーザーの主要言語が **Rust / Go / Python / TypeScript の4つ(全部がっつり使う)**と判明したため、
+  言語 skill を rust/typescript の2本から4本に揃えた。`lang/rust` と同じ構造(番号付き節・
+  「AIがよく間違う」表・ツールゲート・日本語本文+コード例)で翻案。
+  - go: error wrap・goroutine リーク防止・context 伝播・interface 設計(accept interfaces, return structs)・nil の落とし穴
+  - python: 型ヒント・具体的例外・mutable default 引数・dataclass/TypedDict・context manager・async 落とし穴
+  skill-selector のシグナル検出(go.mod / pyproject.toml)・言語 heuristic・catalog に4言語すべて反映済み。
+  **注意: 今後 review/依存監査/test/CI/lint 系 skill は4言語すべてを想定する。非スタック扱い可は MoonBit / Gleam のみ。**
 
 ---
 
@@ -542,7 +551,7 @@ agent-kit の全 skill(現在 **79本**)の棚卸しと状態管理。
 
 判断不要でそのまま使えるもの。出自ごとにまとめた。
 
-### 自作(9本)— 一番信頼できる、君が書いたもの
+### 自作(11本)— 一番信頼できる、君が書いたもの
 
 - backend/review-architecture — BE構造・依存方向・境界漏れをレビュー
 - backend/review-concurrency — 非同期/並行処理の危険パターン
@@ -552,6 +561,8 @@ agent-kit の全 skill(現在 **79本**)の棚卸しと状態管理。
 - db/migration-safety — DB移行の安全性分類(◎ PG/RDS/SQLite/DynamoDB全対応)
 - lang/rust — Rustベストプラクティス
 - lang/typescript — TypeScriptベストプラクティス
+- lang/go — Goベストプラクティス(2026-07-24 追加。error wrap・goroutineリーク・context・interface設計・nil)
+- lang/python — Pythonベストプラクティス(2026-07-24 追加。型ヒント・具体的例外・mutable default・dataclass・async)
 - meta/decision-interview — 曖昧なアイデアを1問ずつの構造化インタビューでユーザー所有の明示的決定へ(2026-07-24 追加。grilling=問い詰めと違い決定の明示化・記録)
 
 ※ meta/empirical-prompt-tuning は旧自作版があったが mizchi 版で置換済み(mizchi の項に移動)

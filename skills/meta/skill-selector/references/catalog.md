@@ -53,6 +53,20 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 |---|---|---|---|
 | ✅ | rust | `lang/rust` | Rust を書く / レビューする — error handling・borrow checker・ownership・iterator vs loop・async の落とし穴 |
 
+### Go
+**Signals**: `go.mod`, `go.sum`, `*.go`
+
+| Status | Skill | Install (`skills/<path>`) | Use when |
+|---|---|---|---|
+| ✅ | go | `lang/go` | Go を書く / レビューする — error wrap・goroutine リーク防止・context 伝播・interface 設計・nil の落とし穴 |
+
+### Python
+**Signals**: `pyproject.toml`, `requirements.txt`, `setup.py`, `*.py`
+
+| Status | Skill | Install (`skills/<path>`) | Use when |
+|---|---|---|---|
+| ✅ | python | `lang/python` | Python を書く / レビューする — 型ヒント・具体的例外・mutable default・dataclass・context manager・async 落とし穴 |
+
 ### 言語間移植
 **Signals**: あるランタイム/言語から別へポートする作業
 

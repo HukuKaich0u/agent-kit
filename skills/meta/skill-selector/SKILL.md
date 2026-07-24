@@ -33,12 +33,12 @@ Workflow:
 
 1. Read `references/catalog.md`.
 2. Identify project signals from three sources:
-   - **Repo files**: `package.json` / `tsconfig.json` (TypeScript / Node), `Cargo.toml` (Rust), `.github/workflows/` (CI), `playwright.config.*` (Playwright), `*.sql` / `sqlc.yaml` (SQL catalog), schema migration files (DB).
+   - **Repo files**: `package.json` / `tsconfig.json` (TypeScript / Node), `Cargo.toml` (Rust), `go.mod` (Go), `pyproject.toml` / `requirements.txt` / `setup.py` (Python), `.github/workflows/` (CI), `playwright.config.*` (Playwright), `*.sql` / `sqlc.yaml` (SQL catalog), schema migration files (DB).
    - **Stated user intent**: in-message cues like "we plan to deploy to X", "we publish a small npm utility eventually".
    - **CLAUDE.md mandates**: persistent rules in user-level `~/.claude/CLAUDE.md` or project-level `CLAUDE.md` (e.g., "task runner: justfile", "lint: ast-grep") count as signals even when the scenario text is silent. When mandate and stated intent disagree, surface the conflict to the user before installing. In the proposal, label mandate-driven rows explicitly (e.g., `# from ~/.claude/CLAUDE.md: task runner = justfile`) so a reviewer doesn't mistake them for padding.
 3. Confirm with the user before installing — propose, let them subtract. Default to fewer skills, not more. Each skill consumes context every conversation.
    - **Non-interactive contexts** (subagent dispatch, scripted automation, batch runs): emit the proposal as the deliverable and stop. The caller subtracts. Do not stall waiting for a confirmation that will not come.
-   - **Active-in-language heuristic**: if the user is actively writing code in a language that has a language skill in the catalog (`typescript`, `rust`), include it. If they only consume a single binding or dependency written in that language, hold off.
+   - **Active-in-language heuristic**: if the user is actively writing code in a language that has a language skill in the catalog (`typescript`, `rust`, `go`, `python`), include it. If they only consume a single binding or dependency written in that language, hold off.
    - **Platform-name caveat**: when a catalog row's description names a specific CI provider / runtime / cloud:
      - **Project platform matches**: adopt as-is. Do not re-read the underlying SKILL.md; the catalog row already answered the question.
      - **Project platform differs**: read the underlying SKILL.md before deciding. The core capability may still apply — install for that core, note "integration glue N/A." Skipping for platform mismatch alone is wrong.
