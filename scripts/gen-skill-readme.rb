@@ -37,6 +37,7 @@ def tracked_skill_dirs(root)
 
   stdout.split("\0").reject(&:empty?)
         .reject { |p| p.include?("/examples/") }
+        .select { |p| File.file?(File.join(root, p)) }
         .map { |p| File.dirname(p) }
         .sort
 end

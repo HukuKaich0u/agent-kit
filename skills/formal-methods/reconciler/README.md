@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install mizchi/skills/formal-methods/reconciler
+apm install HukuKaich0u/agent-kit/skills/formal-methods/reconciler
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - mizchi/skills/formal-methods/reconciler
+    - HukuKaich0u/agent-kit/skills/formal-methods/reconciler
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add mizchi/skills --skill formal-methods-reconciler
+npx skills add HukuKaich0u/agent-kit --skill formal-methods-reconciler
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit mizchi/skills/formal-methods/reconciler ~/.claude/skills/formal-methods-reconciler
+npx degit HukuKaich0u/agent-kit/skills/formal-methods/reconciler ~/.claude/skills/formal-methods-reconciler
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

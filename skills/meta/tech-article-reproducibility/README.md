@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install mizchi/skills/meta/tech-article-reproducibility
+apm install HukuKaich0u/agent-kit/skills/meta/tech-article-reproducibility
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - mizchi/skills/meta/tech-article-reproducibility
+    - HukuKaich0u/agent-kit/skills/meta/tech-article-reproducibility
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add mizchi/skills --skill tech-article-reproducibility
+npx skills add HukuKaich0u/agent-kit --skill tech-article-reproducibility
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit mizchi/skills/meta/tech-article-reproducibility ~/.claude/skills/tech-article-reproducibility
+npx degit HukuKaich0u/agent-kit/skills/meta/tech-article-reproducibility ~/.claude/skills/tech-article-reproducibility
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.

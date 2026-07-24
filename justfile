@@ -18,9 +18,20 @@ update:
 codex:
     ./scripts/gen-codex-agents.sh
 
-# 生成物(codex AGENTS.md)が instructions/core と一致するか検証
-check:
+# 各 SKILL.md 隣の README.md を frontmatter から生成/更新
+skill-readme:
+    ruby ./scripts/gen-skill-readme.rb
+
+# 生成物(codex AGENTS.md + skill README)が最新か検証
+check: check-codex check-skill-readme
+
+# codex AGENTS.md が instructions/core と一致するか検証
+check-codex:
     ./scripts/gen-codex-agents.sh --check
+
+# skill README が frontmatter と一致するか検証
+check-skill-readme:
+    ruby ./scripts/gen-skill-readme.rb --check
 
 # vendored skill の上流差分をチェック
 check-vendored *ARGS:

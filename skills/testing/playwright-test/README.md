@@ -8,7 +8,7 @@
 ### APM (recommended)
 
 ```bash
-apm install mizchi/skills/testing/playwright-test
+apm install HukuKaich0u/agent-kit/skills/testing/playwright-test
 ```
 
 Or declare it in `apm.yml` for a reproducible setup:
@@ -16,7 +16,7 @@ Or declare it in `apm.yml` for a reproducible setup:
 ```yaml
 dependencies:
   apm:
-    - mizchi/skills/testing/playwright-test
+    - HukuKaich0u/agent-kit/skills/testing/playwright-test
 ```
 
 then run `apm install`.
@@ -31,13 +31,13 @@ With the [`skills`](https://github.com/vercel-labs/skills) CLI (installs into
 every detected agent's skills directory):
 
 ```bash
-npx skills add mizchi/skills --skill playwright-test
+npx skills add HukuKaich0u/agent-kit --skill playwright-test
 ```
 
 Or copy the folder in directly:
 
 ```bash
-npx degit mizchi/skills/testing/playwright-test ~/.claude/skills/playwright-test
+npx degit HukuKaich0u/agent-kit/skills/testing/playwright-test ~/.claude/skills/playwright-test
 ```
 
 See [SKILL.md](./SKILL.md) for what this skill does and when to use it.
