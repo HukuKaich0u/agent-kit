@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-# codex 向けに instructions/core を結合して AGENTS.md を生成する。
+# codex 向けに instructions を結合して AGENTS.md を生成する。
 #
 # apm は user スコープで codex に instructions primitive を配布できない
 # (0.26 時点で codex は "partially supported"。skills 等は配布するが
 # instructions は claude の ~/.claude/rules/ にしか統合されない)。
-# その回避策として、instructions/core を唯一のソースに codex の
+# その回避策として、instructions を唯一のソースに codex の
 # グローバル AGENTS.md (~/.codex/AGENTS.md) を生成する。
 #
 #   scripts/gen-codex-agents.sh              # ~/.codex/AGENTS.md に書き出す
@@ -18,7 +18,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-SRC_DIR="$ROOT/instructions/core/.apm/instructions"
+SRC_DIR="$ROOT/instructions/.apm/instructions"
 OUT="${CODEX_AGENTS_PATH:-$HOME/.codex/AGENTS.md}"
 MODE="write"
 
@@ -60,13 +60,13 @@ render() {
 
 <!--
   このファイルは scripts/gen-codex-agents.sh が自動生成する。手動で編集しない。
-  ソースは agent-kit の instructions/core/.apm/instructions/*.instructions.md。
+  ソースは agent-kit の instructions/.apm/instructions/*.instructions.md。
   内容を変えるときはソースを編集し、scripts/gen-codex-agents.sh を再実行する。
   (codex は apm の user スコープ instructions 配布に非対応のための回避策)
 -->
 
-Claude と共有する core instructions。各セクションは agent-kit の
-instructions/core に対応する。
+Claude と共有する instructions。各セクションは agent-kit の
+instructions に対応する。
 HEADER
 
   # ファイル名順で安定させる(glob なので追加分も自動で入る)
@@ -90,7 +90,7 @@ case "$MODE" in
     if diff -q <(render) "$OUT" >/dev/null; then
       echo "up to date: $OUT"
     else
-      echo "stale: $OUT differs from instructions/core (regenerate)" >&2
+      echo "stale: $OUT differs from instructions (regenerate)" >&2
       exit 1
     fi
     ;;

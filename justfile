@@ -1,12 +1,12 @@
 # agent-kit タスクランナー
 #
-# instructions/core を変更したら `just sync` で両ランタイムへ反映する。
+# instructions を変更したら `just sync` で両ランタイムへ反映する。
 # レシピ一覧: `just`(= just --list)
 
 _default:
     @just --list
 
-# instructions/core の変更を両ランタイムへ反映
+# instructions の変更を両ランタイムへ反映
 sync:
     cd ~/.apm && apm update --yes
     ./scripts/gen-codex-agents.sh

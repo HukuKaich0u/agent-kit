@@ -15,14 +15,14 @@ agent-kit のタスクランナーは [`justfile`](../justfile)。
 
 | コマンド | 用途 |
 | --- | --- |
-| `just sync` | core instructions をClaudeとCodexへ反映する |
+| `just sync` | instructionsをClaudeとCodexへ反映する |
 | `just skill-readme` | 各skillのREADMEを生成・更新する |
 | `just check` | 生成物が最新か検証する |
 | `just check-vendored` | vendored skillの上流更新を調べる |
 
 ## `just sync`
 
-`instructions/core`を変更したあと、ClaudeとCodexの両方へ反映する。
+`instructions`を変更したあと、ClaudeとCodexの両方へ反映する。
 
 内部では次を順番に実行する。
 

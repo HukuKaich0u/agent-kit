@@ -5,20 +5,20 @@ Claude Code / Codex で共有する agent assets を管理するリポジトリ�
 Codex は `AGENTS.md`、Claude Code は `CLAUDE.md`(`@AGENTS.md` を import)経由で
 同じ内容を読む。ユーザー向け概要は `README.md`。
 
-## 配布の仕組み(instructions/core)
+## 配布の仕組み(instructions)
 
-`instructions/core/.apm/instructions/*.instructions.md` が core instructions の
+`instructions/.apm/instructions/*.instructions.md` が共有 instructions の
 source of truth。ここを編集したら各ランタイムへの反映が要る:
 
 - **Claude**: `apm install` / `apm update` で `~/.claude/rules/` に反映される。
 - **Codex**: apm は user スコープで codex に instructions primitive を配布できない
   (0.26 時点。skills 等は配布するが instructions は `~/.claude/rules/` にしか統合されない)。
-  そのため `scripts/gen-codex-agents.sh` が instructions/core を結合して
+  そのため `scripts/gen-codex-agents.sh` が instructions を結合して
   codex 向け `~/.codex/AGENTS.md` を生成する。
 
 **両ランタイムへの反映はユーザーが手で実行する。**`just sync` で一括反映できる
 (= `apm update --yes` + `gen-codex-agents.sh`)。agent が勝手に実行するものではない。
-agent の責務は instructions/core と `scripts/gen-codex-agents.sh` を正しく保つところまで。
+agent の責務は instructions と `scripts/gen-codex-agents.sh` を正しく保つところまで。
 
 - `gen-codex-agents.sh` は instructions を glob で拾うので、ファイルの追加・削除に
   自動追従する。instruction を増減しても スクリプト側の修正は不要。
@@ -27,6 +27,6 @@ agent の責務は instructions/core と `scripts/gen-codex-agents.sh` を正し
 
 ## commit 規約
 
-- source of truth は `instructions/core/.apm/instructions/*`。`~/.claude/rules/` に直書きしない(apm 管理)。
+- source of truth は `instructions/.apm/instructions/*`。`~/.claude/rules/` に直書きしない(apm 管理)。
 - commit format は `git-commit` instruction に従う(`type(scope): 日本語で簡潔に説明`)。
 - 無関係な変更を混ぜず、内容ごとに commit を切り分ける。

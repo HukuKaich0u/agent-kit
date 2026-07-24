@@ -6,10 +6,10 @@
 
 ### グローバル assets
 
-共有の core instructions をユーザースコープの APM manifest に追加する場合:
+共有instructionsをユーザースコープのAPM manifestに追加する場合:
 
 ```sh
-apm install -g HukuKaich0u/agent-kit/instructions/core
+apm install -g HukuKaich0u/agent-kit/instructions
 ```
 
 これで `~/.apm/apm.yml` が更新され、解決結果の pin は
@@ -31,7 +31,14 @@ targets:
   - codex
 dependencies:
   apm:
-    - HukuKaich0u/agent-kit/instructions/core
+    - HukuKaich0u/agent-kit/instructions
+```
+
+旧`instructions/core`から移行する場合:
+
+```sh
+apm uninstall -g HukuKaich0u/agent-kit/instructions/core
+apm install -g HukuKaich0u/agent-kit/instructions
 ```
 
 ### プロジェクト assets
@@ -39,7 +46,7 @@ dependencies:
 現在のリポジトリに依存を追加する場合:
 
 ```sh
-apm install HukuKaich0u/agent-kit/instructions/core
+apm install HukuKaich0u/agent-kit/instructions
 ```
 
 または、プロジェクトの `apm.yml` に直接書きます。
@@ -47,7 +54,7 @@ apm install HukuKaich0u/agent-kit/instructions/core
 ```yaml
 dependencies:
   apm:
-    - HukuKaich0u/agent-kit/instructions/core
+    - HukuKaich0u/agent-kit/instructions
 ```
 
 その後に次を実行します。
@@ -64,7 +71,7 @@ apm install
 
 ## パス
 
-- `instructions/core`: Claude / Codex で共通利用する instructions
+- `instructions`: Claude / Codex で共通利用する instructions
 - `skills/`: 必要なものだけ選んで導入する local skills
 - `plugins/deep-research`: deep research plugin(引用付きレポートを生成する CLI orchestrator + Skill)。skill は自己完結で、Claude Code / Codex のどちらでも使える (要 codex CLI ≥ 0.142.5)
 
