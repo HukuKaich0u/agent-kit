@@ -144,7 +144,7 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
 | 🔧 | actions-ci-tuning | `devops/actions-ci-tuning` | GitHub Actions の監査・高速化。Bun 検出・変更前承認を追加する要カスタム |
-| 🔧 | gh-fix-ci | `devops/gh-fix-ci` | 失敗した PR checks の診断・修正。存在しない `create-plan` 参照を外す要カスタム |
+| 🔧 | gh-fix-ci | `devops/gh-fix-ci` | 失敗した PR checks の診断・修正。read-only 調査を先行し修正は承認後の境界を維持する要カスタム |
 | 🔧 | opentelemetry | `devops/opentelemetry` | platform 非依存の OTel 設計 reference。SDK 2.x・削除済み Workers 版参照を直す要カスタム |
 
 ---

@@ -134,8 +134,8 @@ ls -1 .claude/skills/
 APM では `skill name` はディレクトリ名と一致し、install 時にそれが target の `skills/<name>/` に展開される。他の skill と名前衝突すると install 時に後勝ちで上書きされる。
 
 - 汎用名（`test`, `utils`, `helper`）は避ける
-- scope prefix を付ける（`mizchi-empirical-tuning` 等）か、リッチな説明的名前にする
-- 既存の有名 skill 名（`moonbit-practice`, `ast-grep` 等）を避ける
+- scope prefix を付ける（`myorg-empirical-tuning` 等）か、リッチな説明的名前にする
+- 既存の有名 skill 名（`ast-grep`, `playwright-test` 等）と衝突しない名前にする
 
 ## 公開チェックリスト
 
