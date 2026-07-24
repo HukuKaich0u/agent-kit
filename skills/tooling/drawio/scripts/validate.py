@@ -27,9 +27,14 @@ Layout (warnings — the overlap/readability class of bugs):
     points or waypoints (they render stacked)
   - labeled edges without labelBackgroundColor (unreadable where they cross
     other edges/shapes)
-  - bottom-center exits/entries on bottom-labeled icons (the line strikes the
-    label text — the #1 "text under a line" bug)
-  - edge corridors passing through external (below-icon) label zones
+  - pinned bottom ports landing inside a bottom-labeled icon's label span
+    (exact, width-estimated — the #1 "text under a line" bug)
+  - edge corridors passing through UNRELATED cells' external (below-icon)
+    label zones. Own-endpoint labels are exempt: the corridor is a
+    straight-line proxy and an orthogonal route from a side port detours
+    where the proxy cuts the corner — renderlint.py checks the rendered
+    truth. When a corridor warning here contradicts a clean renderlint run,
+    trust renderlint (that is the documented false-positive escape).
   - arrowheads landing on a bend (final segment <20px; checked when waypoints
     + a pinned entry make the path exact)
 
@@ -528,24 +533,22 @@ def check_page(diagram):
                              f"the text; use a side port (X=0 or 1, Y=0.5) or "
                              f"shorten/wrap the label with &#xa;")
 
-    # --- edge corridors through external label zones ---
+    # --- edge corridors through external label zones (UNRELATED cells only).
+    # The edge's own endpoint labels are excluded on principle: an orthogonal
+    # edge from a side port moves AWAY laterally before turning, so the
+    # straight-line proxy cutting through its own below-icon label is exactly
+    # the case where the real router detours — a systematic false positive.
+    # The own-label strike case is fully owned by the exact port-span check
+    # above; renderlint.py verifies the rendered route either way. ---
     for e in edges:
         st = style_of(e)
         pts = edge_polyline(e, ids, st)
         if not pts:
             continue
-        pinned_exit = "exitX" in st and "exitY" in st
-        pinned_entry = "entryX" in st and "entryY" in st
         lhit = set()
         for k in range(len(pts) - 1):
             for lcid, lr in ext:
-                if lcid in lhit:
-                    continue
-                # own endpoints only when the endpoint is pinned (else the
-                # center-based corridor proxy would false-positive)
-                if lcid == e.get("source") and not pinned_exit:
-                    continue
-                if lcid == e.get("target") and not pinned_entry:
+                if lcid in lhit or lcid == e.get("source") or lcid == e.get("target"):
                     continue
                 if seg_hits_rect(pts[k], pts[k + 1], lr, shrink=1.0):
                     lhit.add(lcid)
