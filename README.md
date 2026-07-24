@@ -34,13 +34,6 @@ dependencies:
     - HukuKaich0u/agent-kit/instructions
 ```
 
-旧`instructions/core`から移行する場合:
-
-```sh
-apm uninstall -g HukuKaich0u/agent-kit/instructions/core
-apm install -g HukuKaich0u/agent-kit/instructions
-```
-
 ### プロジェクト assets
 
 現在のリポジトリに依存を追加する場合:
