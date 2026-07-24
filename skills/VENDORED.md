@@ -131,7 +131,22 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 - Vendored commit: `9603c1cc8118d08bc1b3bf34cf714f62178dea3b`
 - Vendored date: 2026-07-20(完全ミラー化。初回取り込みは 2026-07-19 の 11本)
 - Upstream commit date: 2026-07-16
-- 改造: **全33本なし**(上流 verbatim)
+- 改造: **7本**(下記「改造記録」参照)。残り26本は上流 verbatim。
+
+### 改造記録(2026-07-24 — 配布基盤の壊れ参照修正)
+
+上流 `setup-matt-pocock-skills` の skill 名を agent-kit 用に `setup-agent-kit` へ統一し、
+それを参照する skill の `/setup-matt-pocock-skills` 呼び出しを `/setup-agent-kit` に直した。
+
+| skill | 改造内容 |
+|---|---|
+| `skills/meta/setup-agent-kit` | frontmatter `name` を `setup-agent-kit` に、タイトルと `agents/openai.yaml` の `display_name` を agent-kit 用に変更。issue tracker 説明から通常導線外の `qa` 参照を除去。README は `gen-skill-readme.rb` で再生成 |
+| `skills/tooling/code-review` | `/setup-matt-pocock-skills` → `/setup-agent-kit` |
+| `skills/tooling/to-spec` | 同上 |
+| `skills/tooling/to-tickets` | 同上(2箇所) |
+| `skills/tooling/triage` | 同上 |
+| `skills/tooling/wayfinder` | 同上 |
+| `skills/meta/ask-matt` | 同上(ask-matt 自体のリネーム・再設計は別途要カスタム) |
 
 **配置ルール**: 上流の `productivity` / `engineering` / `misc` は agent-kit の領域カテゴリに
 振り分け。上流の `deprecated` / `in-progress` / `personal` はステータスが分かるよう
@@ -147,11 +162,11 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 | `skills/meta/grill-with-docs` | `skills/engineering/grill-with-docs` |
 | `skills/meta/grilling` | `skills/productivity/grilling` |
 | `skills/meta/handoff` | `skills/productivity/handoff` |
-| `skills/meta/setup-agent-kit` | `skills/engineering/setup-matt-pocock-skills` ⚠️ dir名のみローカル命名。中身は上流のまま |
+| `skills/meta/setup-agent-kit` | `skills/engineering/setup-matt-pocock-skills`(2026-07-24 に skill 名・文言を agent-kit 用へ改造。改造記録参照) |
 | `skills/meta/teach` | `skills/productivity/teach` |
 | `skills/meta/writing-great-skills` | `skills/productivity/writing-great-skills` |
 | `skills/testing/tdd` | `skills/engineering/tdd` |
-| `skills/tooling/code-review` | `skills/engineering/code-review` ⚠️ `/setup-matt-pocock-skills` 前提。要カスタム |
+| `skills/tooling/code-review` | `skills/engineering/code-review`(2026-07-24 に `/setup-agent-kit` 参照へ修正。Spec軸の残りカスタムは継続) |
 | `skills/tooling/diagnosing-bugs` | `skills/engineering/diagnosing-bugs` |
 | `skills/tooling/git-guardrails-claude-code` | `skills/misc/git-guardrails-claude-code`(Claude Code 専用) |
 | `skills/tooling/implement` | `skills/engineering/implement` |
