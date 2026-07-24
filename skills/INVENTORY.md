@@ -604,7 +604,7 @@ agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
 
 ### Agents365-ai(1本, MIT)
 
-- tooling/drawio — draw.io CLIで図生成(君が v1.16.0 まで検証済み)
+- tooling/drawio — draw.io CLIで図生成(君が v1.16.0 まで検証済み。v1.18.0 で renderlint/typography/tint ladder/legend/表を追加、live 検証済み)
 
 ### mizchi(36本, MIT 既定 / 一部 Apache-2.0, VENDORED.md 管理済み)
 

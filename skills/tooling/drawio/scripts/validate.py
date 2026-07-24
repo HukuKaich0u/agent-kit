@@ -19,7 +19,8 @@ Layout (warnings — the overlap/readability class of bugs):
     the label renders OUTSIDE the shape's geometry box, so pure geometry
     spacing does not protect it
   - labels that don't fit their shape (CJK-aware width estimate: fullwidth
-    chars ≈ fontSize px, ASCII ≈ 0.6×fontSize)
+    chars ≈ fontSize px, ASCII ≈ 0.6×fontSize; spacing/spacingLeft/... keys
+    shrink the usable inner box)
   - edges whose path (straight corridor, or explicit waypoints) passes
     through an unrelated node
   - parallel edges on the same node pair with no distinguishing exit/entry
@@ -34,7 +35,9 @@ Layout (warnings — the overlap/readability class of bugs):
 
 Notes (informational, not counted in the gate):
   - straight-corridor edge-crossing estimate; the rendered truth comes from
-    renderlint.py (SVG-based post-render lint) after export.
+    renderlint.py (SVG-based post-render lint) after export
+  - cramped labels: text that fits but nearly touches the border (fix with
+    spacing=6..8 or a wider/taller shape).
   - AWS official-style conformance (needs data/aws-icon-index.json):
     resourceIcon fillColor must equal the official category color (error),
     group frames must match an official variant (error), unknown
@@ -64,7 +67,6 @@ DEFAULT_FONT = 12
 ASCII_W = 0.6      # avg glyph advance / fontSize for latin text
 WIDE_W = 1.0       # fullwidth (CJK) glyph advance / fontSize
 LINE_H = 1.35      # line height / fontSize
-LABEL_PAD = 4      # inner horizontal padding per side inside a shape
 EPS = 1.0          # tolerance px for touch-vs-overlap
 
 AWS_INDEX = os.path.join(os.path.dirname(__file__), "..", "data", "aws-icon-index.json")
@@ -198,6 +200,26 @@ def font_size(st):
         return float(st.get("fontSize", DEFAULT_FONT))
     except ValueError:
         return DEFAULT_FONT
+
+
+def side_pads(st):
+    """Per-side inner label padding (left, right, top, bottom) in px.
+
+    draw.io pads labels by ~2px, plus `spacing` on all sides, plus the
+    side-specific spacingLeft/Right/Top/Bottom keys. Vertically, `spacing`
+    only bites when the label is top/bottom-aligned — a middle-aligned
+    (default) label centers regardless, so counting it there would flag
+    single-line labels in 30px table rows that render fine.
+    """
+    def f(key, default=0.0):
+        try:
+            return float(st.get(key, default))
+        except ValueError:
+            return default
+    sp = f("spacing", 2.0)
+    vsp = sp if st.get("verticalAlign") in ("top", "bottom") else 0.0
+    return (2 + sp + f("spacingLeft"), 2 + sp + f("spacingRight"),
+            2 + vsp + f("spacingTop"), 2 + vsp + f("spacingBottom"))
 
 
 def has_external_bottom_label(st):
@@ -405,7 +427,7 @@ def check_page(diagram):
                 warns.append(f"external labels of {ia!r} and {ib!r} overlap — "
                              f"widen horizontal gap or use &#xa; to wrap")
 
-    # --- labels that don't fit their shape ---
+    # --- labels that don't fit (or barely fit) their shape ---
     for cid, c, r, st in leaves:
         if has_external_bottom_label(st):
             continue
@@ -414,17 +436,33 @@ def check_page(diagram):
             continue
         font = font_size(st)
         widest = max(text_width(ln, font) for ln in lines)
-        inner_w = r[2] - 2 * LABEL_PAD
+        pad_l, pad_r, pad_t, pad_b = side_pads(st)
+        inner_w = r[2] - pad_l - pad_r
+        inner_h = r[3] - pad_t - pad_b
         if inner_w <= 0:
             continue
         if st.get("whiteSpace") == "wrap":
             need = sum(max(1, math.ceil(text_width(ln, font) / inner_w)) for ln in lines)
-            if need * font * LINE_H > r[3] + EPS:
+            need_h = need * font * LINE_H
+            if need_h > inner_h + EPS:
                 warns.append(f"label of {cid!r} likely clipped: needs ~{need} wrapped line(s) "
-                             f"({need * font * LINE_H:.0f}px) in {r[3]:g}px height — enlarge shape or shorten text")
-        elif widest > r[2] + EPS:
-            warns.append(f"label of {cid!r} wider than shape ({widest:.0f}px > {r[2]:g}px) "
-                         f"and whiteSpace=wrap is not set")
+                             f"({need_h:.0f}px) in {inner_h:g}px inner height — enlarge shape, "
+                             f"shorten text, or reduce spacing")
+            elif need_h > inner_h - 6:
+                notes.append(f"label of {cid!r} nearly fills the shape vertically "
+                             f"({need_h:.0f}px of {inner_h:g}px) — cramped; consider a taller "
+                             f"shape or fewer lines")
+            elif need == len(lines) and widest > inner_w - 8:
+                notes.append(f"label of {cid!r} nearly touches the border ({widest:.0f}px of "
+                             f"{inner_w:g}px inner width) — cramped; widen the shape or add "
+                             f"spacing=6..8 to the style")
+        elif widest > inner_w + EPS:
+            warns.append(f"label of {cid!r} wider than the inner width ({widest:.0f}px > "
+                         f"{inner_w:g}px) and whiteSpace=wrap is not set")
+        elif widest > inner_w - 8:
+            notes.append(f"label of {cid!r} nearly touches the border ({widest:.0f}px of "
+                         f"{inner_w:g}px inner width) — cramped; widen the shape or add "
+                         f"spacing=6..8 to the style")
 
     # --- edge paths through unrelated nodes ---
     edges = [c for c in cells if c.get("edge") == "1"]

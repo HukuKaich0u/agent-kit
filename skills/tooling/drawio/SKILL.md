@@ -1,12 +1,12 @@
 ---
 name: drawio
-version: 1.17.0
+version: 1.18.0
 description: Use when the user requests diagrams, flowcharts, architecture diagrams, ER diagrams, UML / sequence / class diagrams, network topology, ML/DL model figures (Transformer/CNN/LSTM), mind maps, or any visualization. Also use proactively when explaining systems with 3+ components, complex data flows, or relationships that benefit from visual representation. Best suited when the diagram needs custom styling, rich shape vocabulary, swimlanes, or exportable images (PNG/SVG/PDF/JPG). Generates .drawio XML and exports locally via the native draw.io desktop CLI.
 license: MIT
 homepage: https://github.com/Agents365-ai/drawio-skill
 compatibility: Requires draw.io desktop app CLI on PATH (macOS/Linux/Windows). Self-check step requires a vision-enabled model (e.g., Claude Sonnet/Opus); gracefully skipped if unavailable. Optional auto-layout (scripts/autolayout.py) needs Graphviz (dot).
 platforms: [macos, linux, windows]
-metadata: {"openclaw":{"requires":{"anyBins":["draw.io","drawio"]},"emoji":"📐","os":["darwin","linux","win32"],"install":[{"id":"brew-drawio","kind":"brew","formula":"drawio","bins":["drawio"],"label":"Install draw.io via Homebrew","os":["darwin"]},{"id":"brew-graphviz","kind":"brew","formula":"graphviz","bins":["dot"],"label":"Install Graphviz for optional autolayout.py","os":["darwin"],"optional":true}]},"hermes":{"tags":["drawio","diagram","flowchart","architecture","visualization","uml"],"category":"design","requires_tools":["drawio","draw.io"],"related_skills":["mermaid","excalidraw","plantuml"]},"author":"Agents365-ai","version":"1.17.0"}
+metadata: {"openclaw":{"requires":{"anyBins":["draw.io","drawio"]},"emoji":"📐","os":["darwin","linux","win32"],"install":[{"id":"brew-drawio","kind":"brew","formula":"drawio","bins":["drawio"],"label":"Install draw.io via Homebrew","os":["darwin"]},{"id":"brew-graphviz","kind":"brew","formula":"graphviz","bins":["dot"],"label":"Install Graphviz for optional autolayout.py","os":["darwin"],"optional":true}]},"hermes":{"tags":["drawio","diagram","flowchart","architecture","visualization","uml"],"category":"design","requires_tools":["drawio","draw.io"],"related_skills":["mermaid","excalidraw","plantuml"]},"author":"Agents365-ai","version":"1.18.0"}
 ---
 
 # Draw.io Diagrams
@@ -29,6 +29,7 @@ PNG, SVG, and PDF exports support `--embed-diagram` (`-e`) — the exported file
 - A casual hand-drawn / whiteboard look → **excalidraw** or **tldraw**.
 - Diagrams-as-code that live in git / render in Markdown → **mermaid** (general) or **plantuml** (UML).
 - Freeform infinite-canvas sketching or freehand strokes → **tldraw**.
+- **Data charts** (bar / line / pie / scatter, anything plotting quantities) → the **dataviz** skill (HTML/React/plotting libraries) or **mermaid** (`xychart-beta`, `pie`). draw.io has no data-driven chart primitives — hand-building bars from rectangles is slow, inaccurate, and unmaintainable. Tables/matrices ARE in scope (`references/tables.md`); numeric annotations on nodes/edges are fine as labels.
 
 ## Bundled resources
 
@@ -41,6 +42,7 @@ When the workflow references one of these, read it on demand — none of them ne
 | `references/shapes.md` + `scripts/shapesearch.py` | The diagram needs a **specific shape** — a cloud icon (AWS/Azure/GCP), Cisco/Kubernetes/network symbol, UML/BPMN/ER/electrical/P&ID element — or any time you'd otherwise guess a `style=` string. `shapesearch.py "<keywords>"` returns the exact official style for 10k+ shapes |
 | `scripts/aiicons.py` | The diagram involves an **AI/LLM brand** (OpenAI, Claude, Gemini, Mistral, Llama, HuggingFace, Ollama, LangChain, …) — `aiicons.py "<brand>"` returns a draw.io `image` style for the brand logo (lobe-icons via CDN; `--embed` to inline). draw.io has no built-in AI logos. See `references/shapes.md` → "AI / LLM brand logos" |
 | `references/style-presets.md` | The user asks to learn / save / list / set-default / delete a style preset, or you've resolved an active preset and need the application rules |
+| `references/tables.md` | The deliverable includes a **generic table** — comparison matrix, feature grid, RACI, decision matrix — standalone or embedded in a diagram (ERD entities keep the ERD preset) |
 | `references/style-extraction.md` | You're inside the Learn flow and need the extraction procedure (called from `style-presets.md`) |
 | `references/troubleshooting.md` | An export fails, vision rejects a PNG, or a rendering looks wrong |
 | `scripts/repair_png.py` | After every `-e` PNG export — fixes draw.io's truncated IEND chunk (issue #8) |
@@ -95,7 +97,7 @@ Skip clarification if the request already specifies these details or is clearly 
 
 Load the preset JSON from `~/.drawio-skill/styles/<name>.json`, falling back to `<this-skill-dir>/styles/built-in/<name>.json`. If the named preset exists in neither location, tell the user the name is unknown, list the available presets (user dir + built-in), and stop — do **not** silently fall back to defaults.
 
-When a preset loads successfully, mention it in the first line of the reply: *"Using preset `<name>` (confidence: `<level>`)."* See the **Applying a preset** subsection below for how the preset changes color/shape/edge/font decisions.
+When a preset loads successfully, mention it in the first line of the reply: *"Using preset `<name>` (confidence: `<level>`)."* See `references/style-presets.md` → "Applying a preset" for how the preset changes color/shape/edge/font decisions.
 
 1. **Check deps** — **resolve which name the binary has on this system** and use that name verbatim in every subsequent command in this workflow. Try in order: (a) `drawio --version` (the canonical name for Homebrew cask, jgraph `.deb`/`.rpm`, Arch AUR), (b) `draw.io --version` (older builds, some custom symlinks, some distro packages), (c) macOS `.app` direct: `/Applications/draw.io.app/Contents/MacOS/draw.io --version`, (d) Windows: `"C:\Program Files\draw.io\draw.io.exe" --version`. The first one that prints a version is your binary; remember the exact path/name and substitute it for `drawio` in every export command below. **Do not copy the example commands verbatim if your binary is named differently** — the examples use `drawio` only because it's the most common. On macOS-Homebrew, `drawio` is just a thin wrapper script that execs `/Applications/draw.io.app/Contents/MacOS/draw.io` — they run the same engine, so candidate (c) is only needed when the `drawio` wrapper is absent (e.g. the app was installed by drag-and-drop without the cask).
 2. **Plan** — identify shapes, relationships, layout (LR or TB), group by tier/layer. **Write the coordinate plan before any XML**: a lane table of columns (x centers) and rows (y), plus reserved empty corridors for edges that must travel across the diagram (cross-cutting hubs like logging/monitoring get one dedicated corridor). Estimate label widths first — a fullwidth (CJK) char ≈ fontSize px, ASCII ≈ 0.6×fontSize — and derive shape sizes and pitches from them, not the other way round. For vendor-icon diagrams (AWS/Azure/GCP) apply the spacing constants in `references/aws-architecture.md`
@@ -259,6 +261,21 @@ For architecture diagrams with nested elements, use draw.io's parent-child conta
 - Add `pointerEvents=0;` to container styles that should not capture connections between children
 - Children set `parent="containerId"` and use coordinates **relative to the container**
 
+**Tint ladder — containers get a background, three levels deep.** A container drawn as a bare wireframe doesn't read as a region; a container filled as strongly as its nodes drowns them. Use three fill strengths, lightest at the back:
+
+1. **Canvas** — white (or the page background).
+2. **Container** — the tier hue at ~40% toward white (`containerFill` in the preset palette; e.g. blue tier `#F0F6FE`). Border = the hue's strokeColor; title = same color, `fontSize=14;fontStyle=1;align=left` (top-LEFT — a centered title sits exactly where edges enter centered child nodes and gets struck through).
+3. **Node** — the full palette fillColor (`#dae8fc` etc.).
+
+Nested containers alternate: tint → white → tint, so every nesting level stays distinguishable. AWS diagrams are the exception — their group frames are official styles (`references/aws-architecture.md`): subnets already carry official light fills; never invent fills for AWS Cloud/Region/VPC frames.
+
+```xml
+<!-- Tier container on the tint ladder: light fill, hue border, top-left bold title -->
+<mxCell id="tier1" value="Service Tier" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F0F6FE;strokeColor=#6c8ebf;fontColor=#6c8ebf;verticalAlign=top;align=left;spacingLeft=8;fontStyle=1;fontSize=14;container=1;pointerEvents=0;" vertex="1" parent="1">
+  <mxGeometry x="80" y="120" width="400" height="220" as="geometry"/>
+</mxCell>
+```
+
 ```xml
 <!-- Swimlane container -->
 <mxCell id="svc1" value="User Service" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
@@ -283,8 +300,9 @@ For architecture diagrams with nested elements, use draw.io's parent-child conta
   <mxGeometry relative="1" as="geometry" />
 </mxCell>
 
-<!-- Arrow with label + explicit entry/exit points to control direction -->
-<mxCell id="11" value="HTTP/REST" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="4">
+<!-- Arrow with label + explicit entry/exit points to control direction.
+     Labeled edges always carry the demoted label style + background. -->
+<mxCell id="11" value="HTTP/REST" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontColor=#595959;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="4">
   <mxGeometry relative="1" as="geometry" />
 </mxCell>
 
@@ -300,6 +318,7 @@ For architecture diagrams with nested elements, use draw.io's parent-child conta
 
 **Edge style rules:**
 - **Every labeled edge gets `labelBackgroundColor=#ffffff;`** (match the canvas color if not white). Without it the text is struck through by its own line and becomes unreadable wherever it crosses another edge or shape — the single most common readability bug. When two edge labels sit close, also shift one along its edge (label child geometry `x` in −0.6…0.6).
+- **Every labeled edge also gets the demoted label style `fontSize=10;fontColor=#595959;`** — see "Typography & spacing". Edge text must recede behind node text.
 - **Animated connectors:** add `flowAnimation=1;` to any edge style to show a moving dot animation along the arrow. Works in SVG export and draw.io desktop — ideal for data-flow and pipeline diagrams. Example: `style="edgeStyle=orthogonalEdgeStyle;flowAnimation=1;rounded=1;..."`
 - **Always** include `rounded=1;orthogonalLoop=1;jettySize=auto` — these enable smart routing that avoids overlaps
 - Pin `exitX/exitY/entryX/entryY` on every edge when a node has 2+ connections — distributes lines across the shape perimeter
@@ -324,7 +343,7 @@ When multiple edges connect to the same shape, assign different entry/exit point
 
 ### Color palette (fillColor / strokeColor)
 
-*Used only when no preset is active (see "Applying a preset" above).*
+*Used only when no preset is active (`references/style-presets.md` → "Applying a preset").*
 
 | Color name | fillColor | strokeColor | Use for |
 |-----------|-----------|-------------|---------|
@@ -335,6 +354,88 @@ When multiple edges connect to the same shape, assign different entry/exit point
 | Red/Pink | `#f8cecc` | `#b85450` | errors, alerts |
 | Grey | `#f5f5f5` | `#666666` | external/neutral |
 | Purple | `#e1d5e7` | `#9673a6` | security, auth |
+
+### Typography & spacing
+
+Flat, same-size text everywhere is the single biggest "amateur diagram" tell. Build a size hierarchy anchored on the node label, and give text room to breathe.
+
+**Size hierarchy — node labels are the anchor (fontSize 12); every other role is derived:**
+
+| Text role | style keys | Notes |
+|---|---|---|
+| Diagram title | `fontSize=20;fontStyle=1;fontColor=#333333` | One per diagram, top-left. See "Title & legend" |
+| Container / group title | `fontSize=14;fontStyle=1` + the container's strokeColor as fontColor | AWS group frames keep their official fontColor/12 — don't restyle those |
+| Node label | `fontSize=12` | The anchor. Never mix two node-label sizes in the same tier |
+| Edge label | `fontSize=10;fontColor=#595959;labelBackgroundColor=#ffffff` | **Always demoted**: smaller AND grayer than node labels, so line text recedes behind box text |
+| Annotation / legend body | `fontSize=10;fontStyle=2;fontColor=#808080` | Italic gray — clearly not part of the system |
+
+At most 3 sizes should be visible below the title (14 / 12 / 10). An edge label at node size shouts; a container title at node size disappears.
+
+**Inner padding — text must never touch a border.** draw.io's default label padding (~2px) makes boxed labels — especially CJK — look cramped. On every box-shaped node with an inside label, add `spacing=6` (8 for CJK-heavy diagrams) to the style. Size shapes text-first: estimated label width (CJK ≈ fontSize px/char, ASCII ≈ 0.6×fontSize) + 2×spacing + ≥8px slack → that's the minimum width. `validate.py` reads `spacing`/`spacingLeft`/`spacingRight`/`spacingTop`/`spacingBottom` when checking label fit, and emits a `note:` when text merely *nearly* touches the border.
+
+**CJK-safe font stack.** A bare `fontFamily=Helvetica` renders Japanese through an environment-dependent fallback (inconsistent metrics, cramped glyphs). Pin the stack — commas are legal inside a style value (only `;` and `=` are reserved):
+
+```
+fontFamily=Helvetica Neue, Helvetica, Hiragino Sans, Yu Gothic UI, Meiryo, Noto Sans CJK JP, sans-serif;
+```
+
+The built-in presets ship this stack (corporate leads with Arial). Keep one fontFamily per diagram.
+
+**Line breaks.** HTML labels render at a fixed line-height of 1.2 — control density with `&#xa;` breaks, not spacing hacks. Keep labels ≤2 lines on icons, ≤3 lines in boxes.
+
+### Title & legend
+
+A finished architecture diagram carries a title and, when it uses more than one line semantic, a legend. Add both by default for architecture/system diagrams (skip for trivial flowcharts or when the user provides their own caption).
+
+**Title** — top-left, aligned with the content's left edge, ~70px reserved above the topmost shape. Optional subtitle line for date/version:
+
+```xml
+<mxCell id="title" value="注文処理システム 全体構成" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+  <mxGeometry x="40" y="20" width="480" height="30" as="geometry"/>
+</mxCell>
+<mxCell id="subtitle" value="2026-07-25 · v1.0" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontStyle=2;fontColor=#808080;" vertex="1" parent="1">
+  <mxGeometry x="40" y="54" width="480" height="16" as="geometry"/>
+</mxCell>
+```
+
+**Arrow semantics — encode meaning in line style, never in color alone:**
+
+| Meaning | Edge style additions |
+|---|---|
+| Sync call / primary flow | solid, `endArrow=classic;endFill=1;` (AWS diagrams: `endArrow=open;endFill=0;strokeWidth=2;`) |
+| Async / event / queue | `dashed=1;endArrow=open;endFill=0;` |
+| Cross-cutting (logs, metrics, monitoring) | `dashed=1;strokeColor=#7F7F7F;` — one shared corridor, one label |
+| Optional / fallback | `dashed=1;dashPattern=1 4;` (dotted) |
+
+Keep it to ≤3 line semantics per diagram; more than that means the diagram is trying to say too much.
+
+**Legend** — a small bordered box in a margin corner (top-right or bottom-right, clear of all routes), listing **only the semantics the diagram actually uses**. Sample lines are edges with absolute `sourcePoint`/`targetPoint` (no nodes needed); write legend cells last in document order so they paint on top:
+
+```xml
+<mxCell id="legend" value="凡例" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;verticalAlign=top;align=left;spacingLeft=8;fontStyle=1;fontSize=12;container=1;pointerEvents=0;" vertex="1" parent="1">
+  <mxGeometry x="900" y="40" width="200" height="100" as="geometry"/>
+</mxCell>
+<mxCell id="lg1" style="endArrow=classic;endFill=1;html=1;" edge="1" parent="legend">
+  <mxGeometry relative="1" as="geometry">
+    <mxPoint x="12" y="42" as="sourcePoint"/>
+    <mxPoint x="52" y="42" as="targetPoint"/>
+  </mxGeometry>
+</mxCell>
+<mxCell id="lg1t" value="同期呼び出し" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#333333;" vertex="1" parent="legend">
+  <mxGeometry x="60" y="30" width="130" height="24" as="geometry"/>
+</mxCell>
+<mxCell id="lg2" style="dashed=1;endArrow=open;endFill=0;html=1;" edge="1" parent="legend">
+  <mxGeometry relative="1" as="geometry">
+    <mxPoint x="12" y="72" as="sourcePoint"/>
+    <mxPoint x="52" y="72" as="targetPoint"/>
+  </mxGeometry>
+</mxCell>
+<mxCell id="lg2t" value="非同期 / イベント" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#333333;" vertex="1" parent="legend">
+  <mxGeometry x="60" y="60" width="130" height="24" as="geometry"/>
+</mxCell>
+```
+
+Size the legend box to its rows (~30px per row + 30px title zone); it goes through the same validate/renderlint gates as everything else.
 
 ### Layout tips
 
@@ -500,6 +601,7 @@ When the user requests a specific diagram type, read `references/diagram-types.m
 | "architecture", "system diagram", "service diagram" | Architecture |
 | "neural network", "model architecture", "ML diagram", "deep learning" | ML / Deep Learning Model |
 | "flowchart", "decision tree", "process flow" | Flowchart |
+| "comparison table", "matrix", "feature grid", "RACI" | — read `references/tables.md` instead |
 
 The diagram-type preset sets **structural** style keywords. If a user style preset is also active (see `## Style Presets`), keep the structural keywords and layer color/font/edge/extras on top — read `references/style-presets.md` → "Interaction with diagram-type presets" for the merge rules.
 

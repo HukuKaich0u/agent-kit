@@ -3,44 +3,76 @@
   "name": "handdrawn",
   "version": 1,
   "default": false,
-  "source": { "type": "built-in" },
+  "source": {
+    "type": "built-in"
+  },
   "confidence": "high",
   "palette": {
-    "primary":   { "fillColor": "#ffe4b5", "strokeColor": "#b8651e" },
-    "success":   { "fillColor": "#def0dc", "strokeColor": "#5c8a49" },
-    "warning":   { "fillColor": "#fff4cc", "strokeColor": "#b8901a" },
-    "accent":    { "fillColor": "#ffd9b3", "strokeColor": "#c25100" },
-    "danger":    { "fillColor": "#ffcdbf", "strokeColor": "#a53d3d" },
-    "neutral":   { "fillColor": "#f5e6d3", "strokeColor": "#8b7355" },
-    "secondary": { "fillColor": "#e6d7e8", "strokeColor": "#7b4397" }
+    "primary": {
+      "fillColor": "#ffe4b5",
+      "strokeColor": "#b8651e",
+      "containerFill": "#FFF4E1"
+    },
+    "success": {
+      "fillColor": "#def0dc",
+      "strokeColor": "#5c8a49",
+      "containerFill": "#F2F9F1"
+    },
+    "warning": {
+      "fillColor": "#fff4cc",
+      "strokeColor": "#b8901a",
+      "containerFill": "#FFFBEB"
+    },
+    "accent": {
+      "fillColor": "#ffd9b3",
+      "strokeColor": "#c25100",
+      "containerFill": "#FFF0E1"
+    },
+    "danger": {
+      "fillColor": "#ffcdbf",
+      "strokeColor": "#a53d3d",
+      "containerFill": "#FFEBE5"
+    },
+    "neutral": {
+      "fillColor": "#f5e6d3",
+      "strokeColor": "#8b7355",
+      "containerFill": "#FBF5ED"
+    },
+    "secondary": {
+      "fillColor": "#e6d7e8",
+      "strokeColor": "#7b4397",
+      "containerFill": "#F5EFF6"
+    }
   },
   "roles": {
-    "service":  "primary",
+    "service": "primary",
     "database": "success",
-    "queue":    "warning",
-    "gateway":  "accent",
-    "error":    "danger",
+    "queue": "warning",
+    "gateway": "accent",
+    "error": "danger",
     "external": "neutral",
     "security": "secondary"
   },
   "shapes": {
-    "service":   "rounded=1",
-    "database":  "shape=cylinder3",
-    "queue":     "rounded=1",
-    "decision":  "rhombus",
-    "external":  "rounded=1;dashed=1",
+    "service": "rounded=1",
+    "database": "shape=cylinder3",
+    "queue": "rounded=1",
+    "decision": "rhombus",
+    "external": "rounded=1;dashed=1",
     "container": "swimlane;startSize=30"
   },
   "font": {
-    "fontFamily": "Helvetica",
+    "fontFamily": "Helvetica Neue, Helvetica, Hiragino Sans, Yu Gothic UI, Meiryo, Noto Sans CJK JP, sans-serif",
     "fontSize": 12,
     "titleFontSize": 14,
     "titleBold": true
   },
   "edges": {
-    "style": "edgeStyle=orthogonalEdgeStyle;curved=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1",
+    "style": "edgeStyle=orthogonalEdgeStyle;curved=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;fontColor=#595959",
     "arrow": "endArrow=classic;endFill=1",
-    "dashedFor": ["optional"]
+    "dashedFor": [
+      "optional"
+    ]
   },
   "extras": {
     "sketch": true,

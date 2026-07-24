@@ -60,9 +60,11 @@ It prints `wrote diagram.drawio (N nodes, M edges)` to stderr and writes a norma
 
 ## How it places things
 
-- Node positions come from `dot` (hierarchical layered layout), converted to draw.io pixels and snapped to the grid (multiples of 10).
-- Edges use `splines=ortho`: dot's orthogonal route is replayed as draw.io waypoints, so edges go **around** nodes instead of through them.
+- Node positions come from `dot` (hierarchical layered layout, `ranksep`/`nodesep` widened to match the skill's spacing constants), converted to draw.io pixels and snapped to the grid (multiples of 10).
+- Edges use `splines=ortho`: dot's orthogonal route is replayed as draw.io waypoints (bends hugging an endpoint node are pruned so the arrowhead gets a clean straight run), and the edge style is `orthogonalEdgeStyle` so every segment stays at right angles.
+- **Ports are pinned automatically**: each edge's exit/entry side comes from dot's own spline endpoints, and multiple edges on the same side of a node are distributed evenly (SKILL.md's port-distribution rule) — sibling edges fan out instead of stacking on one stem.
 - Apply the active style preset by setting each node's `style` to the preset's role/shape values before calling the script — the script does not know about presets.
+- Gate the output like any generated diagram: `validate.py`, then `renderlint.py` after export.
 
 ## Containers / grouping
 
@@ -70,7 +72,7 @@ Give nodes a `group` key and the script wraps each group in a labeled container 
 
 **Nesting.** A `group` value with `/` separators builds nested containers: `"core/db"` puts the node inside a `db` box that itself sits inside a `core` box. Every path prefix becomes a container, so an arbitrarily deep package tree maps to nested boxes. A node can also sit *directly* in a parent box (`group: "core"`) alongside a sibling sub-box (`group: "core/db"`).
 
-- **Colour by group.** Each top-level group is assigned a colour from the skill's own palette (`styles/built-in/default.json`, cycled in role order: blue → green → orange → purple → yellow → red → grey). A node with no `style` of its own is tinted with its group's colour, and the container's border + title match — so related modules read as a coloured cluster instead of monochrome boxes. A node that carries its own `style` (e.g. from an applied preset) is left untouched. Pass `--mono` to turn colouring off (dashed grey boxes, default-blue nodes — the previous look). Ungrouped graphs are unaffected.
+- **Colour by group.** Each top-level group is assigned a colour from the skill's own palette (`styles/built-in/default.json`, cycled in role order: blue → green → orange → purple → yellow → red → grey). A node with no `style` of its own is tinted with its group's colour; the container gets the hue's **`containerFill` background tint** (the tint ladder: canvas < container < node), a solid hue border, and a bold top-left title. Nested containers alternate tint → white → tint by depth so every level stays readable. A node that carries its own `style` (e.g. from an applied preset) is left untouched. Pass `--mono` to turn colouring off (dashed grey boxes, default-blue nodes — the previous look). Ungrouped graphs are unaffected.
 - Each container box is the bounding box of its members and child boxes plus a uniform padding. The dot cluster margin is set to that same padding, so each box equals dot's cluster box — which dot keeps non-overlapping at **any nesting depth**.
 - The title sits in the top padding (`verticalAlign=top`); the box title is the path's last segment, or a member's `groupLabel`.
 - Containers are visual only (no edges of their own). Edges still connect node→node and route across containers normally.

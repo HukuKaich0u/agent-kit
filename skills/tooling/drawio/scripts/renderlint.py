@@ -54,7 +54,9 @@ LABEL_SHRINK = 1.0
 ENDPOINT_SKIP = 12.0  # crossings this close to an edge endpoint = shared port
 STACK_TOL = 1.5      # max lateral distance for "collinear" segments
 STACK_MIN = 24.0     # min shared length before stacking is reported
-ARROW_MIN = 20.0     # min final-segment length before the arrowhead
+ARROW_MIN = 16.0     # min straight run before the arrowhead (excludes the
+                     # rounded-corner arc, so ≈ the official "20px from the
+                     # bend" once the arc is added back; ~2.5× an arrowhead)
 CURVE_SAMPLES = (0.25, 0.5, 0.75)
 
 MACOS_APP = "/Applications/draw.io.app/Contents/MacOS/draw.io"
@@ -411,6 +413,17 @@ def run_checks(cells, svgcells):
     nodes = {cid: sc for cid, sc in svgcells.items()
              if cells.get(cid, {}).get("vertex") and sc.bbox and sc.is_leaf}
 
+    # open/stroked arrowheads render as their own short fill="none" path in the
+    # same edge group — drop everything but the route (longest) and any other
+    # substantial polyline, or the arrowhead V gets linted as a 2-segment route
+    def plen(line):
+        return sum(seg_len(line[k], line[k + 1]) for k in range(len(line) - 1))
+    for sc in edges.values():
+        if len(sc.polylines) > 1:
+            longest = max(sc.polylines, key=plen)
+            sc.polylines = [ln for ln in sc.polylines
+                            if ln is longest or plen(ln) >= 24]
+
     # exemption sets per edge: endpoints + their ancestor/descendant chains
     exempt = {}
     for cid in edges:
@@ -519,16 +532,35 @@ def run_checks(cells, svgcells):
                 warns.append(f"label of {owner!r} overlaps node {nid!r} "
                              f"(rendered box) — increase pitch or wrap the label")
 
-    # 7. arrowhead landing room: final segment ≥ ARROW_MIN
+    # 7. arrowhead landing room: trailing straight run ≥ ARROW_MIN.
+    # Accumulate backwards from the tip while the direction stays within ~15°
+    # of the final heading — rounded-corner arcs are flattened into short
+    # near-collinear samples that belong to the straight run, not the bend.
     for cid, sc in sorted(edges.items()):
         for line in sc.polylines:
             if len(line) < 3:                     # straight line: no bend
                 continue
-            last = seg_len(line[-2], line[-1])
-            if last < ARROW_MIN:
-                warns.append(f"edge {cid!r} final segment is {last:.0f}px "
-                             f"(<{ARROW_MIN:.0f}px) — the arrowhead lands on a "
-                             f"bend; extend spacing or move the last waypoint")
+            tip_dx = line[-1][0] - line[-2][0]
+            tip_dy = line[-1][1] - line[-2][1]
+            tip_len = math.hypot(tip_dx, tip_dy)
+            if tip_len < 1e-6:
+                continue
+            run = 0.0
+            for k in range(len(line) - 1, 0, -1):
+                dx = line[k][0] - line[k - 1][0]
+                dy = line[k][1] - line[k - 1][1]
+                ln = math.hypot(dx, dy)
+                if ln < 1e-6:
+                    continue
+                cos = (dx * tip_dx + dy * tip_dy) / (ln * tip_len)
+                if cos < 0.966:                   # >15° off the final heading
+                    break
+                run += ln
+            if run < ARROW_MIN:
+                warns.append(f"edge {cid!r} straight run before the arrowhead "
+                             f"is {run:.0f}px (<{ARROW_MIN:.0f}px) — the "
+                             f"arrowhead lands on a bend; extend spacing or "
+                             f"move the last waypoint")
                 break
 
     return warns, infos

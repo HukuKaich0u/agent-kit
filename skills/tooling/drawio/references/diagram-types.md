@@ -43,8 +43,8 @@ Read this file when:
 
 | Element | Style | Notes |
 |---------|-------|-------|
-| Layer/tier | `swimlane;startSize=30;` | Containers for grouping: Client / API / Service / Data |
-| Service | `rounded=1;whiteSpace=wrap;html=1;` + tier color | Use color palette by tier |
+| Layer/tier | `rounded=0;whiteSpace=wrap;html=1;fillColor=<containerFill>;strokeColor=<tier stroke>;fontColor=<tier stroke>;verticalAlign=top;align=left;spacingLeft=8;fontStyle=1;fontSize=14;container=1;pointerEvents=0;` | **Tint ladder**: container fill = the tier hue's `containerFill` (~40% toward white), NOT the node fill — nodes must pop against the container. Title top-left. Alternate tint→white when nesting. See SKILL.md "Tint ladder" |
+| Service | `rounded=1;whiteSpace=wrap;html=1;` + tier color | Use color palette by tier (full `fillColor` — one step stronger than the container) |
 | Database | `shape=cylinder3;whiteSpace=wrap;html=1;` | Green palette |
 | Queue/Bus | `rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;` | Yellow — place centrally for hub pattern |
 | Gateway/LB | `shape=mxgraph.aws4.resourceIcon;` or `rounded=1;` with orange | Orange palette |

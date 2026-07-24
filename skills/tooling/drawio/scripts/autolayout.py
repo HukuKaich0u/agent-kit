@@ -33,9 +33,11 @@ from xml.sax.saxutils import escape
 
 DEFAULT_W, DEFAULT_H = 120, 60
 NODE_STYLE = "rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
-EDGE_STYLE = "html=1;rounded=0;"
+# Orthogonal routing with dot's bends replayed as waypoints: draw.io keeps the
+# segments at right angles (no diagonal final approach into a port).
+EDGE_STYLE = "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;"
 GROUP_STYLE = ("rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#999999;"
-               "verticalAlign=top;fontStyle=2;dashed=1;")
+               "verticalAlign=top;align=left;spacingLeft=8;fontStyle=2;dashed=1;")
 # Group colours come from the skill's own palette (styles/built-in/default.json)
 # so there is a single source of truth, not a second list baked in here. When a
 # grouped graph is laid out, each top-level group takes the next colour (cycled
@@ -48,25 +50,39 @@ _FALLBACK_PALETTE = [("#dae8fc", "#6c8ebf"), ("#d5e8d4", "#82b366"), ("#ffe6cc",
                      ("#e1d5e7", "#9673a6"), ("#fff2cc", "#d6b656"), ("#f8cecc", "#b85450")]
 
 
+def container_tint(fill, keep=0.40):
+    """Light background for a container: keep `keep` of the hue, rest white."""
+    try:
+        r, g, b = (int(fill[i:i + 2], 16) for i in (1, 3, 5))
+    except (ValueError, IndexError):
+        return "#FAFAFA"
+    mix = lambda v: round(255 * (1 - keep) + v * keep)  # noqa: E731
+    return "#{:02X}{:02X}{:02X}".format(mix(r), mix(g), mix(b))
+
+
 def load_palette():
-    """Ordered (fill, stroke) list from the default preset's palette; fall back
-    to the same colours inline if the preset file can't be read."""
+    """Ordered (fill, stroke, containerFill) list from the default preset's
+    palette; fall back to the same colours inline if the file can't be read."""
     try:
         with open(_PALETTE_FILE, encoding="utf-8") as fh:
             pal = json.load(fh)["palette"]
-        colors = [(pal[r]["fillColor"], pal[r]["strokeColor"]) for r in _PALETTE_ORDER if r in pal]
+        colors = [(pal[r]["fillColor"], pal[r]["strokeColor"],
+                   pal[r].get("containerFill") or container_tint(pal[r]["fillColor"]))
+                  for r in _PALETTE_ORDER if r in pal]
         if colors:
             return colors
     except (OSError, KeyError, ValueError):
         pass
-    return _FALLBACK_PALETTE
+    return [(f, s, container_tint(f)) for f, s in _FALLBACK_PALETTE]
 
 
 PALETTE = load_palette()
 # Uniform container padding; the title sits in the top pad (verticalAlign=top).
 # dot's cluster margin is set to this same value so each container box equals
 # dot's cluster box — which dot guarantees never overlaps, at any nesting depth.
-GROUP_PAD = 24
+# 32px (not 24) so a side-entering edge still gets a ≥20px straight run between
+# the container border and the node, and the 14px bold title breathes.
+GROUP_PAD = 32
 
 
 def attr(value):
@@ -115,7 +131,11 @@ def build_dot(graph):
     rankdir = "LR" if str(graph.get("direction", "TB")).upper() == "LR" else "TB"
     # splines=ortho makes dot route edges as orthogonal polylines; we replay
     # those bends as draw.io waypoints so edges go around nodes, not through them.
-    lines = [f"digraph G {{ rankdir={rankdir}; splines=ortho; node [shape=box fixedsize=true];"]
+    # ranksep/nodesep ≈ the skill's spacing constants (dot defaults are 36/18px
+    # — too tight: corners land right on node borders and arrowheads sit on
+    # bends). 1.0in = 72px between ranks leaves a real routing corridor.
+    lines = [f"digraph G {{ rankdir={rankdir}; splines=ortho; "
+             f"ranksep=1.0; nodesep=0.6; node [shape=box fixedsize=true];"]
     # Group nodes into (possibly nested) clusters so dot keeps each group
     # together; a node's first appearance fixes its cluster, so list members
     # before the size attributes. The cluster margin reserves room for the
@@ -176,10 +196,18 @@ def layout(dot_src):
     return height, pos, edges
 
 
-def group_style(stroke):
-    """Container box styled with a group's colour (coloured border + title)."""
-    return (f"rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor={stroke};"
-            f"fontColor={stroke};verticalAlign=top;fontStyle=2;dashed=1;")
+def group_style(stroke, fill):
+    """Container box: light tinted background + coloured border and title.
+
+    The tint ladder (canvas < container fill < node fill) is what makes a
+    group read as a region instead of a wire frame. Nested containers
+    alternate tint/white by depth so each level stays distinguishable.
+    """
+    # Title top-LEFT (AWS-group convention): a centered title sits exactly where
+    # edges enter centered child nodes and gets struck through.
+    return (f"rounded=0;whiteSpace=wrap;html=1;fillColor={fill};strokeColor={stroke};"
+            f"fontColor={stroke};verticalAlign=top;align=left;spacingLeft=8;"
+            f"fontStyle=1;fontSize=14;dashed=0;")
 
 
 def to_drawio(graph, height, pos, edge_pts, color=True):
@@ -258,7 +286,12 @@ def to_drawio(graph, height, pos, edge_pts, color=True):
             continue
         gx, gy, gw, gh = gbox[p]
         x, y, parent = rebase(gx, gy, p[:-1] if len(p) > 1 else None)
-        gstyle = group_style(gcolor(p[0])[1]) if color else GROUP_STYLE
+        if color:
+            _, stroke, cfill = gcolor(p[0])
+            # alternate tint / white by nesting depth so levels stay readable
+            gstyle = group_style(stroke, cfill if len(p) % 2 == 1 else "#ffffff")
+        else:
+            gstyle = GROUP_STYLE
         cells.append(
             f'        <mxCell id="{attr(gid[p])}" value="{attr(glabel[p])}" '
             f'style="{gstyle}" vertex="1" parent="{attr(parent)}">\n'
@@ -274,7 +307,7 @@ def to_drawio(graph, height, pos, edge_pts, color=True):
         if node.get("style"):
             style = node["style"]                         # explicit style always wins
         elif color and nid in gpath:
-            fill, stroke = gcolor(gpath[nid][0])          # tint styleless nodes by group
+            fill, stroke, _ = gcolor(gpath[nid][0])       # tint styleless nodes by group
             style = f"rounded=1;whiteSpace=wrap;html=1;fillColor={fill};strokeColor={stroke};"
         else:
             style = NODE_STYLE
@@ -284,10 +317,80 @@ def to_drawio(graph, height, pos, edge_pts, color=True):
             f'          <mxGeometry x="{x}" y="{y}" width="{w}" height="{h}" as="geometry"/>\n'
             f"        </mxCell>"
         )
+    def near_rect(pt, rect, margin=16):
+        if rect is None:
+            return False
+        x, y, w, h = rect
+        return (x - margin <= pt[0] <= x + w + margin and
+                y - margin <= pt[1] <= y + h + margin)
+
+    # --- pin ports: distribute exits/entries so edges never share a stem ---
+    # The side each edge attaches to comes from dot's OWN spline endpoints
+    # (they sit on the node boundary), so the pinned port always agrees with
+    # the replayed route. Multiple edges on one side are spread evenly in
+    # dot's order — SKILL.md's port-distribution rule, applied automatically.
+    def to_px(p):
+        return (p[0] * 72, (height - p[1]) * 72)
+
+    def side_of(pt, rect):
+        x, y, w, h = rect
+        cands = [("top", abs(pt[1] - y)), ("bottom", abs(pt[1] - (y + h))),
+                 ("left", abs(pt[0] - x)), ("right", abs(pt[0] - (x + w)))]
+        return min(cands, key=lambda c: c[1])[0]
+
+    exit_groups, entry_groups = {}, {}
+    for idx, e in enumerate(graph.get("edges", [])):
+        spline = edge_pts.get((e["source"], e["target"]))
+        rs, rt = rects.get(e["source"]), rects.get(e["target"])
+        if not spline or len(spline) < 2 or rs is None or rt is None \
+                or e["source"] == e["target"]:
+            continue
+        p0, p1 = to_px(spline[0]), to_px(spline[-1])
+        s_side, t_side = side_of(p0, rs), side_of(p1, rt)
+        along = p0[0] if s_side in ("top", "bottom") else p0[1]
+        exit_groups.setdefault((e["source"], s_side), []).append((along, idx))
+        along = p1[0] if t_side in ("top", "bottom") else p1[1]
+        entry_groups.setdefault((e["target"], t_side), []).append((along, idx))
+
+    SIDE_FIXED = {"top": ("X", 0), "bottom": ("X", 1), "left": ("Y", 0), "right": ("Y", 1)}
+    port_style = {}
+
+    def assign(groups, prefix):
+        for (_, side), members in groups.items():
+            members.sort()
+            n = len(members)
+            axis, fixed = SIDE_FIXED[side]
+            for i, (_, idx) in enumerate(members):
+                frac = round((i + 1) / (n + 1), 3) if n > 1 else 0.5
+                if axis == "X":
+                    frag = f"{prefix}X={frac};{prefix}Y={fixed};"
+                else:
+                    frag = f"{prefix}X={fixed};{prefix}Y={frac};"
+                port_style[idx] = port_style.get(idx, "") + \
+                    f"{frag}{prefix}Dx=0;{prefix}Dy=0;"
+    assign(exit_groups, "exit")
+    assign(entry_groups, "entry")
+
     for i, edge in enumerate(graph.get("edges", [])):
         # Drop the first/last points (they sit on the node borders, where
         # draw.io attaches anyway) and replay the interior bends as waypoints.
         interior = edge_pts.get((edge["source"], edge["target"]), [])[1:-1]
+        # Also drop bends hugging an endpoint node: dot places spline points on
+        # the boundary, which would leave a <20px final segment — the arrowhead
+        # then lands on a bend. draw.io routes the last stretch cleanly itself.
+        interior = [(x, y) for x, y in interior
+                    if not near_rect((snap(x * 72), snap((height - y) * 72)),
+                                     rects.get(edge["source"])) and
+                    not near_rect((snap(x * 72), snap((height - y) * 72)),
+                                  rects.get(edge["target"]))]
+        # The approach bend needs more clearance than a passing bend: keep the
+        # last stretch ≥ ~40px so the router's entry run dwarfs the arrowhead.
+        def px(pt):
+            return (snap(pt[0] * 72), snap((height - pt[1]) * 72))
+        while interior and near_rect(px(interior[-1]), rects.get(edge["target"]), 40):
+            interior.pop()
+        while interior and near_rect(px(interior[0]), rects.get(edge["source"]), 40):
+            interior.pop(0)
         if interior:
             points = "".join(
                 f'<mxPoint x="{snap(x * 72) + dx}" y="{snap((height - y) * 72) + dy}"/>'
@@ -297,9 +400,10 @@ def to_drawio(graph, height, pos, edge_pts, color=True):
                     f'<Array as="points">{points}</Array></mxGeometry>')
         else:
             geom = '<mxGeometry relative="1" as="geometry"/>'
-        # Labeled edges get a background so the text stays readable where the
-        # line crosses other edges/shapes (same rule as hand-written edges).
-        estyle = EDGE_STYLE + ("labelBackgroundColor=#ffffff;" if edge.get("label") else "")
+        # Labeled edges get a background (readable at crossings) and the demoted
+        # label style (smaller + gray — same typography rule as hand-written edges).
+        estyle = EDGE_STYLE + ("labelBackgroundColor=#ffffff;fontSize=10;fontColor=#595959;"
+                               if edge.get("label") else "") + port_style.get(i, "")
         cells.append(
             f'        <mxCell id="e{i}" value="{attr(edge.get("label", ""))}" '
             f'style="{estyle}" edge="1" parent="1" '

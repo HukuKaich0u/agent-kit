@@ -172,7 +172,7 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 | ✅ | diagnosing-bugs | `tooling/diagnosing-bugs` | 難バグ・性能劣化の診断ループ |
 | ✅ | resolving-merge-conflicts | `tooling/resolving-merge-conflicts` | 進行中の git merge/rebase 衝突解消 |
 | ✅ | prototype | `tooling/prototype` | 使い捨てプロトタイプで設計判断を検証 |
-| ✅ | drawio | `tooling/drawio` | draw.io CLI で図生成(v1.16.0 まで検証済み) |
+| ✅ | drawio | `tooling/drawio` | draw.io CLI で図生成(v1.18.0: SVG実描画lint・typography・tint ladder・凡例・表まで検証済み) |
 | ✅ | git-guardrails-claude-code | `tooling/git-guardrails-claude-code` | 危険 git 操作を hook でブロック(**Claude Code 専用**) |
 | 🔧 | research | `tooling/research` | 軽量な一次情報調査。重量級は `deep-research` plugin と分担する要カスタム |
 | 🔧 | code-review | `tooling/code-review` | 固定点からの差分を Standards / Spec 軸で review。Spec 軸の残りカスタムは継続 |

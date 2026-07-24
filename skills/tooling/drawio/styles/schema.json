@@ -98,8 +98,9 @@
           "additionalProperties": false,
           "required": ["fillColor", "strokeColor"],
           "properties": {
-            "fillColor":   { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
-            "strokeColor": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+            "fillColor":     { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "strokeColor":   { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "containerFill": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
           }
         }
       ]
