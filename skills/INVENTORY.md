@@ -7,7 +7,7 @@ type: inventory
 
 # Skills Inventory(棚卸し表)
 
-agent-kit の全 skill(現在 **82本**)の棚卸しと状態管理。
+agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
 各 skill が「何をするか・出自・環境依存・重複」を一覧化し、精査の起点にする。
 
 ## この表の使い方
@@ -20,7 +20,7 @@ agent-kit の全 skill(現在 **82本**)の棚卸しと状態管理。
 - **🔗 統合候補** — 別の skill と機能が重なる。役割分担を明記するか片方に寄せる。
 - **🔎 上位互換を探す** — 現状で足りるが、より優れた公開 skill があれば差し替え検討(skill-finder + waxa-eval で評価)。
 
-出自: **mizchi 36・mattpocock 33・自作 12・Agents365-ai 1**(計82)。
+出自: **mizchi 36・mattpocock 33・自作 11・Agents365-ai 1**(計81)。
 ※ meta/empirical-prompt-tuning は旧自作版を mizchi 版で置換したため mizchi 由来にカウント。
 ※ 自作の追加(2026-07-24): meta/decision-interview、lang/go、lang/python。
   ユーザーの主要言語は Rust / Go / Python / TypeScript の4つ(全部がっつり使う)。言語 skill を4言語に揃えた。
@@ -204,6 +204,11 @@ agent-kit の全 skill(現在 **82本**)の棚卸しと状態管理。
   design record / tracker issue を作るほどではない現session限定の小規模作業を 2–5 step の
   ephemeral task list へ分解する軽量経路。`to-tickets` が committed design record を必須化した
   代償として空いた中間domainを埋め、小さい作業に issue を切らせないガードを兼ねる。
+- **`tooling/to-tasks` を削除 → 計81本**(2026-07-25)。中身の大半が agent の native な計画行為と
+  重複し、手動起動専用 skill としての固有価値が薄いと判断(追加同日に削除)。
+  「小さい作業に issue を切らない」ガードと軽量経路の案内は `to-tickets` の Gather context と
+  `ask-matt` の main flow 本文へ畳み込んだ。`implement` の current-session task list 文言は
+  skill なしでも成立するため維持。
 
 ---
 
@@ -376,9 +381,6 @@ agent-kit の全 skill(現在 **82本**)の棚卸しと状態管理。
   `0fd8ec3` から設計材料として回収できる。`schema-audit` のdrop candidateはcatalog外queryとproduction usageを
   確認する人間向けsignalに限定し、N+1はRust / TypeScriptのASTまたは実際のquery layerに合わせて作り直す。
   engineと導入projectが決まるまでは通常導線に載せない要カスタム候補。
-- **tooling/to-tasks** — durableなrecordやtracker issueを作るほどではない2–5段階の作業を、現session限定の
-  ephemeral task listへ分解する。Issue・label・dependencyを一切書かず、multi-session化・他agentへの委譲・
-  durableな追跡が必要になったら `to-spec` → `to-tickets` へ昇格する。
 - **tooling/implement** — work ticketとそのdesign record、または確認済みのcurrent-session task listから `tdd`、段階的検証、`code-review` をつなぐ薄いorchestratorとして
   残す。一度に一つの合意済みscope、開始時のbase commitと既存変更の保全、狭いtestから広いtestへの展開、
   review findings修正後の再検証、理解可能なvertical sliceを原則にする。実装・検証・review結果を提示し、
