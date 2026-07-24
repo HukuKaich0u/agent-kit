@@ -7,6 +7,10 @@ reconstructing why the code looks like this. Write for both. Anything readable
 to a person is readable to an agent; the reverse is not true, so never compress
 a message into shorthand only a machine would parse.
 
+These are defaults. When a repository has its own enforced or established
+convention — commitlint, CONTRIBUTING, or a history consistently in another
+language or format — the repository's convention wins where the two conflict.
+
 Two properties matter more than brevity:
 
 - **Every commit stands on its own.** Checked out in isolation, the tree is
@@ -46,11 +50,18 @@ Size is not the criterion. Coherence is.
 - **Split** when the work contains genuinely unrelated concerns, and each half
   would still leave the tree coherent. Related tweaks, review fixes, and
   follow-ups belong with the change they serve, not in commits of their own.
+  If the change they serve is already committed, see the follow-up rule under
+  "Requires an explicit request".
 - **Do not split** when the pieces are only meaningful together. Code and the
   index that lists it, a rename and its call sites, a spec and the script that
   enforces it — separating these creates a commit whose tree contradicts itself,
   and a later `git bisect` lands on it and blames the wrong thing. A large commit
   is fine; an incoherent one is not.
+- Within those bounds, prefer the smallest unit that stays coherent. A change
+  that decomposes into steps that each leave the tree consistent (one batch plus
+  its index update, then the next batch) should be committed as those steps —
+  bisect localizes a regression far better to a small commit than to a
+  700-file one.
 - When unrelated work has already piled up in the working tree, do not paper over
   it with one blob commit. Stage by path and commit each concern in turn.
 
@@ -64,10 +75,15 @@ Size is not the criterion. Coherence is.
   about. `fix(auth): 期限切れトークンで TokenExpiredError が500になる不具合を修正`
   identifies the change; `fix(auth): 参照を修正` identifies nothing, and neither a
   person nor an agent can tell later which commit they want.
-- One concern per subject. If the description needs `し` / `かつ` / `+` to join two
-  independent changes, split the commit — do not lengthen the line. No character
-  limit is imposed: specificity matters more than fitting one terminal row, and
-  the one-concern rule already keeps subjects short.
+- One concern per subject. A connective (`し` / `かつ` / `+`) joining two changes is
+  a signal to stop and apply the coherence test above: if each half would leave
+  the tree coherent on its own, split the commit; if the halves are interlocked
+  parts of one change, they are one concern and the connective is fine.
+  Coherence decides, not grammar.
+- No character limit is imposed: specificity matters more than fitting one
+  terminal row, and the one-concern rule already keeps subjects short. Put the
+  most identifying term early in the line, so truncated views (`git log
+  --oneline`, commit lists) still show it.
 - Do not end the subject with punctuation. Keep code identifiers, paths,
   commands, and library names in their original form.
 
@@ -78,7 +94,7 @@ Size is not the criterion. Coherence is.
 - Reuse the vocabulary already in the repo. Check `git log --format='%s' | head -50`
   before inventing a new scope, and match existing spelling exactly. Where the
   history already disagrees with itself (`spec` vs `specs`), pick the dominant
-  form rather than continuing the split.
+  form; on a tie, pick one, use it, and keep using it in later commits.
 - Use one scope. If two genuinely apply, ask whether the commit is doing two things.
 
 ## Body
@@ -128,5 +144,13 @@ Body rules:
 
 ## Requires an explicit request
 
-Never `git push`, `git commit --amend`, rebase or otherwise rewrite published
-history, force-push, create tags, or open PRs unless the user asks for it.
+Never `git push`, rebase or otherwise rewrite published history, force-push,
+create tags, or open PRs unless the user asks for it.
+
+`git commit --amend` has one permitted use without a request: folding a small
+follow-up (typo, missed rename site, review nit) into the immediately preceding
+commit, when that commit was created by you in this session and has not been
+pushed. In every other case — someone else's commit, a pushed commit, an older
+commit, a message rewrite the user did not ask for — amend requires an explicit
+request. Never hold a verified fix back waiting for a batch; if amend is not
+permitted, a small follow-up commit is the right call.
