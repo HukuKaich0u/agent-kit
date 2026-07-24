@@ -12,3 +12,7 @@ node_modules/
 
 # docs/superpowers
 docs/superpowers
+
+# Python bytecode
+__pycache__/
+*.pyc
