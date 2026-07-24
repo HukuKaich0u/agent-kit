@@ -14,4 +14,4 @@ Run typechecking regularly, single test files regularly, and the full test suite
 
 Once done, use /code-review to review the work.
 
-Commit your work to the current branch.
+Then stop and report before writing anything outside the working tree: what changed, how it was verified (typecheck, tests, review findings), and anything left undone. Propose the commit — the files to stage and the message — and any tracker update (ticket status change, comment). Apply each only after the user approves it. Commit to the current branch; never push.

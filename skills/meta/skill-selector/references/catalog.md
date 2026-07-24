@@ -201,14 +201,14 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 
 **Signals**: 仕様固め・チケット分割・実装オーケストレーション。
 `setup-agent-environment` で work tracker・domain docs・design record規約を設定済みが前提。
-to-spec / to-tickets は承認境界カスタム済み(2026-07-25)。triage / implement は要カスタムが残る。
+to-spec / to-tickets / triage / implement は承認境界カスタム済み(2026-07-25)。wayfinder のみ 🔧 が残る。
 
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
 | ✅ | to-spec | `tooling/to-spec` | 合意済み会話を不変のdesign recordとして `docs/specs/` へ固定(承認gate・commit手順カスタム済み) |
 | ✅ | to-tickets | `tooling/to-tickets` | design recordを vertical slice の tracer-bullet work ticketへ分割(公開前承認・ready-for-agent除外条件カスタム済み。部分公開失敗の回復手順とDAG検証は検討事項) |
-| 🔧 | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める。外部PRを隔離なしで現worktreeへcheckout・実行する、tracker変更前の包括承認なし、`.out-of-scope/` が opt-in でない点を直す要カスタム |
-| 🔧 | implement | `tooling/implement` | work ticket/design recordまたはcurrent-session task listから tdd → 段階検証 → code-review をつなぐ薄い orchestrator。commit・tracker更新を明示承認後にする要カスタム |
+| ✅ | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める(tracker 書き込みは全文提示→承認後、外部PRコードは承認+隔離worktree実行、`.out-of-scope/` は opt-in にカスタム済み) |
+| ✅ | implement | `tooling/implement` | work ticket/design recordまたはcurrent-session task listから tdd → 段階検証 → code-review をつなぐ薄い orchestrator(commit・tracker更新は提案→承認後にカスタム済み) |
 | 🔧 | wayfinder | `tooling/wayfinder` | 一 session で見通せない大規模案件を decision ticket の地図へ分解(明示起動) |
 
 ---

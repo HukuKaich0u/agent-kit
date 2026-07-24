@@ -141,7 +141,20 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 - Vendored commit: `9603c1cc8118d08bc1b3bf34cf714f62178dea3b`
 - Vendored date: 2026-07-20(完全ミラー化。初回取り込みは 2026-07-19 の 11本)
 - Upstream commit date: 2026-07-16
-- 改造: **8本**(下記「改造記録」参照)。残り25本は上流 verbatim。
+- 改造: **9本**(下記「改造記録」参照)。残り24本は上流 verbatim。
+
+### 改造記録(2026-07-25 — triage / implement の承認境界と外部 PR 隔離)
+
+to-spec / to-tickets で確立した「書き込み前に全文提示→承認」の境界を
+実装フローの残り2本へ展開した。triage は外部 PR のコードを現 worktree に
+checkout してテスト実行する手順が untrusted code の無隔離実行になっていた点、
+tracker への comment / label / close が本文提示なしに行われる点、
+`.out-of-scope/` ディレクトリを repo に無断で作る点を直した。
+
+| skill | 改造内容 |
+|---|---|
+| `skills/tooling/implement` | 完了時に変更・検証結果・残作業を報告し、commit(stage 対象+message)と tracker 更新を提案→承認後に実行するよう変更。push 禁止を明記 |
+| `skills/tooling/triage` | 冒頭に write gate(tracker 変更は全文提示→承認後)を追加。外部 PR の検証を「diff を read-only で確認→実行が要るなら承認+隔離 worktree+secrets なし」へ変更。`.out-of-scope/` を opt-in 化(OUT-OF-SCOPE.md にも明記)。grill 手順の文言を domain-modeling の提案→承認方式に合わせた |
 
 ### 改造記録(2026-07-25 — setup-agent-kit を setup-agent-environment へ改名)
 
@@ -206,13 +219,13 @@ domain-modeling)と `skill-selector` catalog・`scripts/check-vendored.sh` の
 | `skills/tooling/code-review` | `skills/engineering/code-review`(2026-07-24 に `/setup-agent-kit` 参照へ修正。Spec軸の残りカスタムは継続) |
 | `skills/tooling/diagnosing-bugs` | `skills/engineering/diagnosing-bugs` |
 | `skills/tooling/git-guardrails-claude-code` | `skills/misc/git-guardrails-claude-code`(Claude Code 専用) |
-| `skills/tooling/implement` | `skills/engineering/implement` |
+| `skills/tooling/implement` | `skills/engineering/implement`(2026-07-25 に commit・tracker 更新を承認後へ改造。改造記録参照) |
 | `skills/tooling/prototype` | `skills/engineering/prototype` |
 | `skills/tooling/research` | `skills/engineering/research` |
 | `skills/tooling/resolving-merge-conflicts` | `skills/engineering/resolving-merge-conflicts` |
 | `skills/tooling/to-spec` | `skills/engineering/to-spec` |
 | `skills/tooling/to-tickets` | `skills/engineering/to-tickets` |
-| `skills/tooling/triage` | `skills/engineering/triage` |
+| `skills/tooling/triage` | `skills/engineering/triage`(2026-07-24 に design record 軸へ、2026-07-25 に承認境界・外部 PR 隔離・`.out-of-scope/` opt-in へ改造。改造記録参照) |
 | `skills/tooling/wayfinder` | `skills/engineering/wayfinder` |
 | `skills/deprecated/qa` | `skills/deprecated/qa` ⚠️ 上流deprecated。要カスタム候補として原形を維持 |
 | `skills/in-progress/batch-grill-me` | `skills/in-progress/batch-grill-me` |

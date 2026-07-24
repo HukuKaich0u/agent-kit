@@ -1,5 +1,7 @@
 # Out-of-Scope Knowledge Base
 
+`.out-of-scope/` is **opt-in**. Use it only when the directory already exists in the repo, or when the maintainer explicitly adopts it the first time you propose a record. Never create the directory unasked.
+
 The `.out-of-scope/` directory in a repo stores persistent records of rejected feature requests. It serves two purposes:
 
 1. **Institutional memory** — why a feature was rejected, so the reasoning isn't lost when the issue is closed
