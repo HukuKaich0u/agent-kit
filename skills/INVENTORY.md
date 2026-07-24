@@ -153,6 +153,19 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
     superpowers/chezmoi/nix-setup/cloudflare-deploy 参照と fork 先を現存 skill・この repo へ修正。
     外部ソース表の `obra/superpowers` 等は探索先として維持。
   - vendored 改造は `VENDORED.md` の「改造記録」に記録(mizchi 2本・mattpocock 7本+ローカル改名分)。
+- **横断的な壊れ参照の一括掃討 + apm-usage/waxa-eval カスタム**(2026-07-24、本数変更なし=78本)。
+  基盤3本で繰り返し出た壊れパターンを全skill横断で一掃した。
+  - **SKILL-ja.md 10本を削除しEN一本化**: 上流で復活した日本語版が壊れ参照を英語版と重複して抱え
+    drift の温床だったため削除。SKILL.md を唯一の正とする。生成スクリプト・check-vendored は SKILL.md のみ参照。
+  - **全skill横断の壊れ参照除去**(subagent 3本で分担、Opus 本体がレビュー): 存在しない superpowers /
+    削除済み chezmoi-management / pkfire / create-plan / cloudflare-deploy / workers-otel-utels /
+    node-sqlite-vec / mizchi-blog-style / nix-setup / moonbit・gleam 系の参照を除去または現存 skill へ置換。
+    vlmkit の install 元・見出し(vrt→vlmkit)も修正。→ **真の壊れ参照はゼロを確認**。
+  - **`tooling/apm-usage`**: 手元の apm 0.26.0 で全コマンドを検証し実仕様へ更新
+    (`apm update`/`--frozen`/`lock`/`outdated`/`doctor`/`audit --ci`・targets 解決順、chezmoi 節の一般化)。
+  - **`meta/waxa-eval`**: 自動 `iterate` を使用停止(reseen≠resolved の誤収束)、Bun 版へ、パス誤り修正。
+  - npm フラグ(pnpm `--frozen-lockfile` 等)・npm パッケージ名・skill-finder の外部ソース表
+    `obra/superpowers` は正当な参照として保持(誤って消さない)。
 
 ---
 
@@ -173,7 +186,7 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 | meta/skill-selector | ✅ **解消済み(2026-07-24)**。`catalog.md` を現存78本の一次catalogへ全面再構築。SKILL.md/evals の壊れ参照も一掃 |
 | meta/skill-finder | ✅ **解消済み(2026-07-24)**。waxa を Bun 版へ、自動iterate停止、superpowers/chezmoi/nix-setup 参照を修正 |
 | tooling/code-review | 🔧 **部分解消**。`/setup-matt-pocock-skills` → `/setup-agent-kit` は修正済み。残: Spec軸の parallel subagent opt-in化・severity/根拠/対象行・findings上限の設計 |
-| meta/waxa-eval | 🔧 未着手。waxa を上流前提(npx / mizchi repo パス)で呼ぶ。自動 `iterate` の誤収束バグで使用保留。ローカルは Bun 移植版 `tools/waxa` |
+| meta/waxa-eval | 🔧 **部分解消(2026-07-24)**。自動 `iterate` を使用停止(reseen≠resolved 明記)、Bun 版 `bun run src/cli.ts` へ、nix-setup 参照除去。残: ledger / convergence の運用を実 eval で回して確認 |
 | frontend/review-ci ・ deps ・ hygiene ・ security ・ testing ・ triage | 🔧 未着手。SKILL が参照する `scripts/audit-*.sh` が上流に存在しない。旧対応=自作 `.mjs` スクリプト6本(0fd8ec3) |
 
 **新規に設計するもの:**
@@ -438,26 +451,33 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 
 **存在しない skill への参照(発火すると迷子になる):**
 
-> skill-selector / skill-finder が持っていた参照は 2026-07-24 に解消済み。以下は**未着手 skill に残る分**。
+> ✅ **全解消済み(2026-07-24)**。全skill横断で真の壊れ参照はゼロを確認済み。
+> 以下は解消記録(何をどこから消したか):
+>
+> - superpowers 系(empirical-prompt-tuning / optimizing-descriptions / retrospective-codify)→ `writing-great-skills` 等へ
+> - pkfire(justfile / conventional-changelog)→ 除去
+> - `chezmoi-management`(apm-usage)→ 汎用 dotfiles manager へ一般化
+> - `cloudflare-deploy` / `aws-vault-mfa-iam` / `node-sqlite-vec` / `dotenvx`(optimizing-descriptions の trigger 例)→ 現存 skill の例へ
+> - `nix-setup` eval 例(waxa-eval)→ waxa-eval 自身の eval へ
+> - `create-plan`(gh-fix-ci)→ 除去(plan 方針は inline draft へ)
+> - `workers-otel-utels`(opentelemetry / otel-node)→ 除去
+> - `mizchi-blog-style`(tech-article-reproducibility)→ 一般表現へ
+> - `cloudflare-deploy`(lang/typescript)→ 除去(npm `@cloudflare/workers-types` は保持)
+>
+> 注: npm フラグ(pnpm `--frozen-lockfile` 等)・npm パッケージ名・skill-finder の外部ソース表
+> `obra/superpowers` は**正当な参照として保持**。
 
-- superpowers 系参照: meta/empirical-prompt-tuning ・ optimizing-descriptions ・ retrospective-codify
-- pkfire 参照: tooling/justfile ・ conventional-changelog
-- 削除済み `chezmoi-management` 参照: tooling/apm-usage
-- 削除済み `cloudflare-deploy` / `aws-vault-mfa-iam` をtrigger例に使用: meta/optimizing-descriptions
-- 削除済み `node-sqlite-vec` をtrigger例に使用: meta/optimizing-descriptions
-- 削除済み `dotenvx` 参照: meta/optimizing-descriptions
-- 削除済み `nix-setup` のeval参照: meta/waxa-eval
-- `create-plan` 参照: devops/gh-fix-ci
-- 削除済み `workers-otel-utels` 参照: devops/opentelemetry ・ otel-node
-- 削除済み `mizchi-blog-style` 参照: meta/tech-article-reproducibility
+**mizchi 個人環境の値・古い記述(残る課題):**
 
-**mizchi 個人環境の値・古い記述:**
-
-- ai/vlmkit(旧 `vrt` 表記が残る)・ devops/opentelemetry ・ otel-node(OTel SDK 2.x 未対応のコード例)
+- ai/vlmkit — install 元・見出しは修正済み。ただし `@mizchi/vrt` 0.5系の CLI コマンド体系・
+  バージョン番号は未更新(0.6.0 `@mizchi/vlmkit` への全面追従は要カスタム時に)
+- devops/opentelemetry ・ otel-node — 削除済み Workers 版参照は除去済み。OTel SDK 2.x 未対応の
+  コード例の全面更新は未着手(要カスタム時に)
 
 **その他(方針判断):**
 
-- 上流の `SKILL-ja.md` が復活・「Agent compatibility」節は消滅。再正規化(ja 削除+節追加)を一括でやり直すか要判断
+- ✅ `SKILL-ja.md` は 2026-07-24 に10本削除し EN 版へ一本化。壊れ参照の drift 温床を解消。
+  「Agent compatibility」節の再追加は別途判断(今回は見送り)。
 - sql/plan-audit の PG/RDS 用 EXPLAIN runner(自作)は外れている。必要時に `0fd8ec3` から設計材料として回収する
 
 ### ❓ 保留・様子見
@@ -570,7 +590,7 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 - meta/skill-finder — 🔧 外部候補の安全な探索・段階評価を担う高優先度の要カスタム
 - meta/extract-glossary — 🔧 必要量だけ作る根拠付きonboarding資料生成へ直す要カスタム
 - testing/playwright-cli ・ playwright-test — Playwright
-- tooling/apm-usage — 🔧 APM 0.26.0準拠へ更新する高優先度の要カスタム
+- tooling/apm-usage — ✅ **カスタム完了(2026-07-24)**。実 apm 0.26.0 で全コマンド検証し、`apm update`/`--frozen`/`lock`/`outdated`/`doctor`/`audit --ci`・targets 解決順を反映、chezmoi 節を一般化
 - tooling/ast-grep-practice — 🔧 ast-grep 0.44.0で全実例を検証・簡潔化する要カスタム
 - tooling/conventional-changelog — 🔧 release方式の薄い判断ガイドへ縮小する要カスタム
 - tooling/dep-lib-review ・ tech-trend-watch — ツール系
