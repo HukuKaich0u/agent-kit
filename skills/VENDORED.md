@@ -36,15 +36,16 @@ type: reference
   `devops/gh-fix-ci` のみ Apache-2.0 の `LICENSE.txt` 同梱。
 - Vendored commit: `7a0d72866a0bb3e9ac3e2768c328b09ba2bc40c4`
 - Vendored date: 2026-07-20(初回 import は 2026-06-28 の `d799945`)
-- 改造: **1本**(下記「改造記録」参照)。残り35本は上流 verbatim。
+- 改造: **2本**(下記「改造記録」参照)。残り34本は上流 verbatim。
 
-### 改造記録(2026-07-24 — skill-selector を agent-kit 一次カタログ化)
+### 改造記録(2026-07-24 — skill 選定・探索の基盤を agent-kit 化)
 
-`meta/skill-selector` を上流 mizchi の外部カタログ前提から agent-kit 専用に全面改造した。
+`meta/skill-selector` と対の `meta/skill-finder` を上流 mizchi の外部前提から agent-kit 専用に改造した。
 
 | skill | 改造内容 |
 |---|---|
 | `skills/meta/skill-selector` | `references/catalog.md` を mizchi 外部レジストリの一覧から**このリポジトリ現存78本**の一次カタログへ全面再構築(install 文字列を `HukuKaich0u/agent-kit/skills/<path>` に統一、状態列を INVENTORY の ✅/🔧/⏸/🎯 に対応、削除済み MoonBit/Gleam/Cloudflare/AWS/dotenvx/Nix/pkfire/chezmoi 等の行を一掃)。SKILL.md のシグナル例・APM 0.12/`--frozen-lockfile` 記述・Related の superpowers/chezmoi 参照・同期先 `mizchi/skills` を修正。`evals/` の scenario-a/b を現行スタック(TS+Playwright / Rust+SQL)へ作り直し、ledger をリセット |
+| `skills/meta/skill-finder` | waxa 呼び出しを Bun 版(`bun run src/cli.ts`、npx はフォールバック)へ、自動 `iterate` を使用停止(one-shot 評価 + 人間承認)に。非冗長ペア例・Related・rejection-log の `superpowers:writing-skills`/`chezmoi` を現存 skill(`writing-great-skills` 等)へ、fork 先を `mizchi/skills` からこの repo へ、`nix-setup/evals` 参照・`executor: claude-cli`・`self_report` 表記を修正。ledger をリセット。外部ソース表の `obra/superpowers` 等は探索先として維持 |
 
 **上流パスの対応**: 選定した skill を `skills/<上流パス>` にそのまま配置(リネームなし)。
 `scripts/check-vendored.sh` は上流の skill を自動検出し、明示的な除外を飛ばして残した skill の更新を確認する。

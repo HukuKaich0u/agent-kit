@@ -15,8 +15,8 @@ config:
   trials_per_task: 2
   timeout_seconds: 360
   parallel: false
-  # mock for smoke verification of the YAML structure; switch to claude-cli
-  # for real evaluation runs (model: claude-opus-4-8).
+  # mock for smoke verification of the YAML structure; switch to the real
+  # executor for scored evaluation runs (model: claude-opus-4-8).
   executor: mock
   model: claude-opus-4-8
 
