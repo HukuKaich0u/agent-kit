@@ -31,8 +31,9 @@ Every `mxgraph.aws4.resourceIcon` style carries `verticalLabelPosition=bottom;ve
 
 ## Port discipline on bottom-labeled icons
 
-- **Never `exitX=0.5;exitY=1` (bottom center)** — the vertical line strikes straight through the label text. This is the #1 cause of "text under a line". (`validate.py` warns on it deterministically; `renderlint.py` re-checks the rendered route, which also catches wide labels that a 0.25/0.75 exit still strikes.)
-- Downward edge → exit at `exitX=0.25;exitY=1` or `exitX=0.75;exitY=1` (the two lines straddle the centered label), or exit a side (`exitX=0/1;exitY=0.5..0.8`).
+- **A bottom port is only safe OUTSIDE the label span.** The label is centered under the icon and routinely **wider than the icon itself** (`API Gateway` = 11 ASCII ≈ 77px under a 78px icon; `ElastiCache Redis` ≈ 120px) — so `exitX=0.25/0.75` strikes the text just like bottom-center does. This is the #1 cause of "text under a line".
+- **Default for downward edges: exit a side** (`exitX=0/1;exitY=0.5..0.8`) and route through a vertical corridor beside the icon, entering the target from the top. Reserve bottom exits (`0.25/0.75`) for genuinely short labels — ≤5 ASCII or ≤3 CJK chars, whose span stays inside the middle half of the icon.
+- Decide by measurement, not by rule of thumb: label span = width estimate (ASCII ≈ 0.6×fontSize, CJK ≈ fontSize px/char), centered on the icon. `validate.py` warns on any pinned bottom port whose x lands inside that span; `renderlint.py` re-checks against the rendered label box.
 - Entering the **top** of an icon (`entryY=0`) is always safe. Side entries are safe.
 - Cross-cutting edges (logs, metrics, image pull) must not cut across the main flow: exit sideways and route through a **reserved corridor** (see below).
 
@@ -129,7 +130,9 @@ Resource icons: get exact styles with `shapesearch.py` (`python3 <this-skill-dir
 <mxCell id="alb" value="ALB" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_load_balancer;" vertex="1" parent="pub">
   <mxGeometry x="81" y="40" width="78" height="78" as="geometry"/>
 </mxCell>
-<!-- downward edge: 0.25/1 exit straddles the label instead of striking it -->
+<!-- downward edge: bottom exit at 0.25 is allowed here ONLY because "ALB" is
+     3 chars (span ≈ 21px, x 28.5..49.5 — the 0.25 port at 19.5px clears it).
+     A full service name would cover the port: use a side exit instead -->
 <mxCell id="e1" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="alb" target="svc">
   <mxGeometry relative="1" as="geometry"/>
 </mxCell>
@@ -138,8 +141,8 @@ Resource icons: get exact styles with `shapesearch.py` (`python3 <this-skill-dir
 ## Pre-export checklist (AWS diagrams)
 
 - `validate.py` reports 0 errors / 0 warnings (it models label zones, container bounds, edge corridors)
-- After the draft export, `renderlint.py` reports 0 warnings (it checks the **rendered** SVG: real routes through icons/labels, stacked edges, measured label collisions — including wide labels that a 0.25/0.75 exit still strikes)
-- No `exitX=0.5;exitY=1` on any bottom-labeled icon
+- After the draft export, `renderlint.py` reports 0 warnings (it checks the **rendered** SVG: real routes through icons/labels, stacked edges, measured label collisions)
+- No pinned bottom port inside any icon's label span (side ports are the default for downward edges)
 - Every labeled edge has `labelBackgroundColor`
 - No full-size empty containers; every container sized to content + padding
 - Cross-cutting hub edges share one corridor and carry at most one label

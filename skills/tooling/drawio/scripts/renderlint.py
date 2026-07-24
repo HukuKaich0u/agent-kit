@@ -8,19 +8,26 @@ never shows. This script closes that gap: it parses the SVG export (which
 contains the final routed paths, measured label boxes, and data-cell-id
 markers) and reports what the diagram ACTUALLY looks like.
 
-Checks (on real rendered geometry):
-  warnings — fix these:
+Checks (on real rendered geometry), in three severities so the gate stays
+usable on dense graphs:
+  warnings — hard defects, must reach 0 (always fixable by rerouting/moving):
     - edge routed through an unrelated node
     - edge passing through a text label (the "line strikes through text" bug;
       external AWS-style labels and edge labels have tight measured boxes)
-    - two edges overlapping collinearly (stacked segments — reads as one line)
+  notes — visible defects; fix the top offenders, drive the count down
+  (on a small diagram: to zero; on a 50+ node graph a small residue is
+  acceptable if stated):
+    - two edges overlapping collinearly (stacked segments — read as one line)
     - two labels overlapping (measured, not estimated)
     - a label overlapping an unrelated node
-    - final edge segment before the arrowhead shorter than 20px (arrowhead
-      lands on a bend and looks broken)
-  info — minimize, but sometimes unavoidable:
-    - edge-edge crossings (count per pair; a planar layout is not always
-      possible — reduce by moving nodes / reserving corridors)
+    - last bend closer than 20px to the target node (the arrowhead lands on
+      the bend; run + arrowhead gap measured on the rendered path)
+  info — context, minimize but sometimes unavoidable:
+    - edge-edge crossings, aggregated (total + the worst pairs; a planar
+      layout is not always possible — reduce via corridors / node moves)
+
+Output is capped at 15 detail lines per severity (--all lifts the cap); the
+final summary line always carries the full counts.
 
 Usage:
   python3 renderlint.py diagram.drawio                 # auto-exports SVG via CLI
@@ -54,9 +61,11 @@ LABEL_SHRINK = 1.0
 ENDPOINT_SKIP = 12.0  # crossings this close to an edge endpoint = shared port
 STACK_TOL = 1.5      # max lateral distance for "collinear" segments
 STACK_MIN = 24.0     # min shared length before stacking is reported
-ARROW_MIN = 16.0     # min straight run before the arrowhead (excludes the
-                     # rounded-corner arc, so ≈ the official "20px from the
-                     # bend" once the arc is added back; ~2.5× an arrowhead)
+ARROW_MIN = 20.0     # min distance from the last bend to the TARGET NODE —
+                     # the official 20px rule verbatim. Measured as the
+                     # trailing straight line run + the gap to the node border
+                     # (the arrowhead), so rounded-corner arcs and arrow
+                     # length don't skew the number.
 CURVE_SAMPLES = (0.25, 0.5, 0.75)
 
 MACOS_APP = "/Applications/draw.io.app/Contents/MacOS/draw.io"
@@ -405,7 +414,7 @@ def near_any_endpoint(pt, polyline, dist=ENDPOINT_SKIP):
 
 
 def run_checks(cells, svgcells):
-    warns, infos = [], []
+    warns, notes, infos = [], [], []
 
     # classify
     edges = {cid: sc for cid, sc in svgcells.items()
@@ -487,12 +496,15 @@ def run_checks(cells, svgcells):
                             worst = max(worst, collinear_overlap(
                                 la[k], la[k + 1], lb[m], lb[m + 1]))
             if worst >= STACK_MIN:
-                warns.append(f"edges {eids[i]!r} and {eids[j]!r} overlap for "
+                notes.append(f"edges {eids[i]!r} and {eids[j]!r} overlap for "
                              f"{worst:.0f}px on the same line — they render as "
                              f"one line; separate the routes (different exit/"
                              f"entry, waypoints, or an offset corridor)")
 
-    # 4. edge-edge crossings (info)
+    # 4. edge-edge crossings (info, aggregated — a dense graph can have
+    # hundreds of pair-crossings; the useful signal is the total and the
+    # worst offenders, not one line per pair)
+    crossings = []                                # (count, i, j, first_pt)
     for i in range(len(eids)):
         for j in range(i + 1, len(eids)):
             a, b = edges[eids[i]], edges[eids[j]]
@@ -509,16 +521,27 @@ def run_checks(cells, svgcells):
                             if all(seg_len(p, q) > 4 for q in pts):
                                 pts.append(p)
             if pts:
-                where = ", ".join(f"({p[0]:.0f},{p[1]:.0f})" for p in pts[:3])
-                infos.append(f"edges {eids[i]!r} × {eids[j]!r} cross "
-                             f"{len(pts)} time(s) at {where}")
+                crossings.append((len(pts), eids[i], eids[j], pts[0]))
+    if crossings:
+        total = sum(c[0] for c in crossings)
+        per_edge = {}
+        for cnt, a, b, _ in crossings:
+            per_edge[a] = per_edge.get(a, 0) + cnt
+            per_edge[b] = per_edge.get(b, 0) + cnt
+        worst = sorted(per_edge.items(), key=lambda kv: -kv[1])[:10]
+        infos.append(f"{len(crossings)} edge pair(s) cross, {total} crossing(s) "
+                     f"total — worst edges: "
+                     + ", ".join(f"{e!r}×{n}" for e, n in worst))
+        for cnt, a, b, p in sorted(crossings, key=lambda c: -c[0]):
+            infos.append(f"edges {a!r} × {b!r} cross {cnt} time(s) "
+                         f"near ({p[0]:.0f},{p[1]:.0f})")
 
     # 5. label-label overlap (measured boxes)
     for i in range(len(tight)):
         for j in range(i + 1, len(tight)):
             (oa, ba, _), (ob, bb, _) = tight[i], tight[j]
             if oa != ob and boxes_overlap(ba, bb):
-                warns.append(f"labels of {oa!r} and {ob!r} overlap (rendered "
+                notes.append(f"labels of {oa!r} and {ob!r} overlap (rendered "
                              f"boxes) — widen spacing, wrap with &#xa;, or "
                              f"shift an edge label along its edge")
 
@@ -529,14 +552,19 @@ def run_checks(cells, svgcells):
             if nid in own_chain:
                 continue
             if boxes_overlap(box, nsc.bbox):
-                warns.append(f"label of {owner!r} overlaps node {nid!r} "
+                notes.append(f"label of {owner!r} overlaps node {nid!r} "
                              f"(rendered box) — increase pitch or wrap the label")
 
-    # 7. arrowhead landing room: trailing straight run ≥ ARROW_MIN.
-    # Accumulate backwards from the tip while the direction stays within ~15°
-    # of the final heading — rounded-corner arcs are flattened into short
-    # near-collinear samples that belong to the straight run, not the bend.
+    # 7. arrowhead landing room: last bend → target node ≥ ARROW_MIN (the
+    # official 20px rule). Trailing straight run (accumulated backwards while
+    # the direction stays within ~15° of the final heading, so rounded-corner
+    # arc samples count toward the run, not the bend) + the gap between the
+    # line end and the target border (the arrowhead's own length).
     for cid, sc in sorted(edges.items()):
+        tbox = None
+        tgt = cells.get(cid, {}).get("target")
+        if tgt and tgt in svgcells and svgcells[tgt].bbox:
+            tbox = svgcells[tgt].bbox
         for line in sc.polylines:
             if len(line) < 3:                     # straight line: no bend
                 continue
@@ -556,14 +584,21 @@ def run_checks(cells, svgcells):
                 if cos < 0.966:                   # >15° off the final heading
                     break
                 run += ln
+            if tbox is not None:                  # + arrowhead gap to the border
+                ex, ey = line[-1]
+                gx = max(tbox[0] - ex, 0, ex - tbox[2])
+                gy = max(tbox[1] - ey, 0, ey - tbox[3])
+                run += math.hypot(gx, gy)
+            else:
+                run += 6.0                        # typical arrowhead length
             if run < ARROW_MIN:
-                warns.append(f"edge {cid!r} straight run before the arrowhead "
-                             f"is {run:.0f}px (<{ARROW_MIN:.0f}px) — the "
-                             f"arrowhead lands on a bend; extend spacing or "
+                notes.append(f"edge {cid!r} last bend is only {run:.0f}px from "
+                             f"the target (<{ARROW_MIN:.0f}px rule) — the "
+                             f"arrowhead lands on the bend; extend spacing or "
                              f"move the last waypoint")
                 break
 
-    return warns, infos
+    return warns, notes, infos
 
 
 def main():
@@ -573,6 +608,8 @@ def main():
     ap.add_argument("--svg", help="pre-exported SVG (skip auto-export)")
     ap.add_argument("--strict", action="store_true",
                     help="exit non-zero on warnings too")
+    ap.add_argument("--all", action="store_true",
+                    help="list every finding (default: 15 detail lines per severity)")
     args = ap.parse_args()
 
     try:
@@ -588,12 +625,16 @@ def main():
         sys.exit("error: no data-cell-id markers in the SVG — export it with "
                  "the draw.io CLI (browser saves may differ)")
 
-    warns, infos = run_checks(cells, svgcells)
-    for w in warns:
-        print(f"warning: {w}")
-    for n in infos:
-        print(f"info: {n}")
-    print(f"{len(warns)} warning(s), {len(infos)} info(s) [rendered geometry]")
+    warns, notes, infos = run_checks(cells, svgcells)
+    limit = None if args.all else 15
+    for label, items in (("warning", warns), ("note", notes), ("info", infos)):
+        for line in items[:limit]:
+            print(f"{label}: {line}")
+        if limit is not None and len(items) > limit:
+            print(f"{label}: ... and {len(items) - limit} more {label} line(s) "
+                  f"(--all to list)")
+    print(f"{len(warns)} warning(s), {len(notes)} note(s), {len(infos)} info(s) "
+          f"[rendered geometry]")
     if args.strict and warns:
         sys.exit(1)
 

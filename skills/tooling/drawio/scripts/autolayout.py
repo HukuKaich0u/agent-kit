@@ -35,7 +35,12 @@ DEFAULT_W, DEFAULT_H = 120, 60
 NODE_STYLE = "rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
 # Orthogonal routing with dot's bends replayed as waypoints: draw.io keeps the
 # segments at right angles (no diagonal final approach into a port).
-EDGE_STYLE = "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;"
+# jettySize=22 (not auto): auto shrinks terminal stubs to ~10px in tight
+# spots, which puts the arrowhead on a bend; a 22px stub keeps the last bend
+# ≥20px from the node (the rule renderlint enforces) even on same-rank hops.
+# rounded=0 (sharp corners — the AWS-official right-angle look): a rounded
+# corner's 10px arc would eat most of the stub before the arrowhead.
+EDGE_STYLE = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=22;html=1;"
 GROUP_STYLE = ("rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#999999;"
                "verticalAlign=top;align=left;spacingLeft=8;fontStyle=2;dashed=1;")
 # Group colours come from the skill's own palette (styles/built-in/default.json)
@@ -133,9 +138,15 @@ def build_dot(graph):
     # those bends as draw.io waypoints so edges go around nodes, not through them.
     # ranksep/nodesep ≈ the skill's spacing constants (dot defaults are 36/18px
     # — too tight: corners land right on node borders and arrowheads sit on
-    # bends). 1.0in = 72px between ranks leaves a real routing corridor.
+    # bends). Scale the corridors with edge count: each parallel edge in a
+    # corridor needs a ~10px lane, so a 124-edge graph needs far more than
+    # the 72px that suits a 10-edge one.
+    n_edges = len(graph.get("edges", []))
+    ranksep = min(2.5, max(1.0, n_edges / 50.0))
+    nodesep = min(1.2, max(0.6, n_edges / 120.0))
     lines = [f"digraph G {{ rankdir={rankdir}; splines=ortho; "
-             f"ranksep=1.0; nodesep=0.6; node [shape=box fixedsize=true];"]
+             f"ranksep={ranksep:.2f}; nodesep={nodesep:.2f}; "
+             f"node [shape=box fixedsize=true];"]
     # Group nodes into (possibly nested) clusters so dot keeps each group
     # together; a node's first appearance fixes its cluster, so list members
     # before the size attributes. The cluster margin reserves room for the
@@ -354,48 +365,244 @@ def to_drawio(graph, height, pos, edge_pts, color=True):
 
     SIDE_FIXED = {"top": ("X", 0), "bottom": ("X", 1), "left": ("Y", 0), "right": ("Y", 1)}
     port_style = {}
+    port_frac = {}                                # (idx, prefix) -> (side, frac)
 
     def assign(groups, prefix):
-        for (_, side), members in groups.items():
-            members.sort()
-            n = len(members)
+        for (nid, side), members in groups.items():
+            rect = rects.get(nid)
+            if rect is None:
+                continue
             axis, fixed = SIDE_FIXED[side]
-            for i, (_, idx) in enumerate(members):
-                frac = round((i + 1) / (n + 1), 3) if n > 1 else 0.5
+            base, span = (rect[0], rect[2]) if axis == "X" else (rect[1], rect[3])
+            # Keep dot's ACTUAL attachment fraction (so the pinned port agrees
+            # with the replayed waypoints — no S-bend at the terminal), then
+            # push near-coincident ports apart so edges don't share a stem.
+            # clamp toward the middle half: a port hugging a corner (dot often
+            # attaches at 0.9+) leaves the router a <10px final approach
+            fr = sorted((max(0.25, min(0.75, (along - base) / max(span, 1))), idx)
+                        for along, idx in members)
+            vals = [f for f, _ in fr]
+            # separation floor in PIXELS (16px), not fraction — 0.12 on a 60px
+            # node side is only 7px and the stems still read as one line
+            min_sep = max(0.12, 16.0 / max(span, 1))
+            for k in range(1, len(vals)):
+                if vals[k] - vals[k - 1] < min_sep:
+                    vals[k] = vals[k - 1] + min_sep
+            if vals and vals[-1] > 0.9:            # shift the cluster back in range
+                over = vals[-1] - 0.9
+                vals = [max(0.1, v - over) for v in vals]
+            for (_, idx), v in zip(fr, vals):
+                frac = round(v, 3)
                 if axis == "X":
                     frag = f"{prefix}X={frac};{prefix}Y={fixed};"
                 else:
                     frag = f"{prefix}X={fixed};{prefix}Y={frac};"
                 port_style[idx] = port_style.get(idx, "") + \
                     f"{frag}{prefix}Dx=0;{prefix}Dy=0;"
+                port_frac[(idx, prefix)] = (side, frac)
     assign(exit_groups, "exit")
     assign(entry_groups, "entry")
 
-    for i, edge in enumerate(graph.get("edges", [])):
+    def px(pt):
+        return (snap(pt[0] * 72), snap((height - pt[1]) * 72))
+
+    all_edges = graph.get("edges", [])
+    wp = []                                        # per-edge waypoints, px coords
+    for edge in all_edges:
         # Drop the first/last points (they sit on the node borders, where
         # draw.io attaches anyway) and replay the interior bends as waypoints.
-        interior = edge_pts.get((edge["source"], edge["target"]), [])[1:-1]
+        interior = [px(p) for p in
+                    edge_pts.get((edge["source"], edge["target"]), [])[1:-1]]
+        interior = [p for k, p in enumerate(interior)
+                    if k == 0 or p != interior[k - 1]]        # dedupe repeats
         # Also drop bends hugging an endpoint node: dot places spline points on
         # the boundary, which would leave a <20px final segment — the arrowhead
         # then lands on a bend. draw.io routes the last stretch cleanly itself.
-        interior = [(x, y) for x, y in interior
-                    if not near_rect((snap(x * 72), snap((height - y) * 72)),
-                                     rects.get(edge["source"])) and
-                    not near_rect((snap(x * 72), snap((height - y) * 72)),
-                                  rects.get(edge["target"]))]
-        # The approach bend needs more clearance than a passing bend: keep the
-        # last stretch ≥ ~40px so the router's entry run dwarfs the arrowhead.
-        def px(pt):
-            return (snap(pt[0] * 72), snap((height - pt[1]) * 72))
-        while interior and near_rect(px(interior[-1]), rects.get(edge["target"]), 40):
+        interior = [p for p in interior
+                    if not near_rect(p, rects.get(edge["source"])) and
+                    not near_rect(p, rects.get(edge["target"]))]
+        # The approach bend needs more clearance than a passing bend: prune
+        # bends closer than 28px so the router's entry run (jetty 22 + arrow)
+        # clears the 20px rule. NOT more than 28: with ranksep=72 the inter-
+        # rank corridor bends sit ~36px from the nodes, and pruning those
+        # deletes the entire detour — the router then plows through the row.
+        while interior and near_rect(interior[-1], rects.get(edge["target"]), 28):
             interior.pop()
-        while interior and near_rect(px(interior[0]), rects.get(edge["source"]), 40):
+        while interior and near_rect(interior[0], rects.get(edge["source"]), 28):
             interior.pop(0)
-        if interior:
-            points = "".join(
-                f'<mxPoint x="{snap(x * 72) + dx}" y="{snap((height - y) * 72) + dy}"/>'
-                for x, y in interior
-            )
+        wp.append(interior)
+
+    def port_point(idx, edge, prefix, end_key):
+        r = rects.get(edge[end_key])
+        pf = port_frac.get((idx, prefix))
+        if r is None or pf is None:
+            return None
+        side, frac = pf
+        x, y, w, h = r
+        return {"top": (x + frac * w, y), "bottom": (x + frac * w, y + h),
+                "left": (x, y + frac * h), "right": (x + w, y + frac * h)}[side]
+
+    # Lane assignment: dot routes many edges along the SAME orthogonal rail,
+    # which renders as one line. Claim every segment's rail; when a later
+    # edge's interior segment conflicts (same axis, <6px apart, >24px shared
+    # length), nudge that segment sideways in 10px steps until free. Only
+    # waypoint-to-waypoint segments move — port-adjacent runs stay put.
+    claimed = []                                   # (axis, coord, lo, hi, edge)
+
+    def rail_blocked(axis, c, lo, hi, exclude=(), pad=6):
+        """Would a rail at this coordinate plow through a node? A shifted or
+        inserted lane must never trade a stacking note for a through-node
+        warning."""
+        for nid, r in rects.items():
+            if nid in exclude:
+                continue
+            x, y, w, h = r
+            if axis == "v":
+                if x - pad < c < x + w + pad and min(hi, y + h) - max(lo, y) > 0:
+                    return True
+            else:
+                if y - pad < c < y + h + pad and min(hi, x + w) - max(lo, x) > 0:
+                    return True
+        return False
+    for i, edge in enumerate(all_edges):
+        pts = [port_point(i, edge, "exit", "source")] + wp[i] + \
+              [port_point(i, edge, "entry", "target")]
+        pts = [p for p in pts if p is not None]
+        base = 1 if port_frac.get((i, "exit")) else 0  # wp offset inside pts
+        for k in range(len(pts) - 1):
+            (x1, y1), (x2, y2) = pts[k], pts[k + 1]
+            if abs(x1 - x2) < 1e-6 and abs(y1 - y2) < 1e-6:
+                continue
+            vert = abs(x1 - x2) <= abs(y1 - y2)
+            axis = "v" if vert else "h"
+            coord = x1 if vert else y1
+            lo, hi = (min(y1, y2), max(y1, y2)) if vert else (min(x1, x2), max(x1, x2))
+
+            def conflict(c):
+                return any(a == axis and e != i and abs(c - cc) < 6 and
+                           min(hi, chi) - max(lo, clo) > 24
+                           for a, cc, clo, chi, e in claimed)
+            movable = base <= k and k + 1 - base < len(wp[i]) and k >= 1
+            if movable and conflict(coord):
+                excl = (edge["source"], edge["target"])
+                for delta in (10, -10, 20, -20, 30, -30, 40, -40, 50, -50, 60, -60):
+                    if not conflict(coord + delta) and \
+                            not rail_blocked(axis, coord + delta, lo, hi, excl):
+                        coord += delta
+                        a_i, b_i = k - base, k + 1 - base
+                        if vert:
+                            wp[i][a_i] = (coord, wp[i][a_i][1])
+                            wp[i][b_i] = (coord, wp[i][b_i][1])
+                        else:
+                            wp[i][a_i] = (wp[i][a_i][0], coord)
+                            wp[i][b_i] = (wp[i][b_i][0], coord)
+                        break
+            claimed.append((axis, coord, lo, hi, i))
+
+    # Router-created approach rails: from the outermost waypoint the router
+    # runs at that waypoint's coordinate to reach a port (side port → vertical
+    # descent, top/bottom port → horizontal run). Two edges converging on
+    # neighbouring ports share that rail even though no waypoint segment
+    # overlaps — the 200px "one line into the database" stack. Claim these
+    # implied rails too, shifting the outermost waypoint when taken.
+    for i, edge in enumerate(all_edges):
+        if not wp[i]:
+            continue
+        for wk, prefix, end_key in ((-1, "entry", "target"), (0, "exit", "source")):
+            pf = port_frac.get((i, prefix))
+            pp = port_point(i, edge, prefix, end_key)
+            if pf is None or pp is None:
+                continue
+            wx, wy = wp[i][wk]
+            if pf[0] in ("left", "right"):
+                axis, coord = "v", wx
+                lo, hi = min(wy, pp[1]), max(wy, pp[1])
+            else:
+                axis, coord = "h", wy
+                lo, hi = min(wx, pp[0]), max(wx, pp[0])
+            if hi - lo < 24:
+                continue
+
+            def rail_conflict(c):
+                return any(a == axis and e != i and abs(c - cc) < 6 and
+                           min(hi, chi) - max(lo, clo) > 24
+                           for a, cc, clo, chi, e in claimed)
+            if rail_conflict(coord):
+                excl = (edge["source"], edge["target"])
+                for delta in (10, -10, 20, -20, 30, -30, 40, -40, 50, -50, 60, -60):
+                    if not rail_conflict(coord + delta) and \
+                            not rail_blocked(axis, coord + delta, lo, hi, excl):
+                        coord += delta
+                        wp[i][wk] = (coord, wy) if axis == "v" else (wx, coord)
+                        break
+            claimed.append((axis, coord, lo, hi, i))
+
+    # Waypoint-less edges route entirely by the runtime router: exit stub,
+    # one long run at the exit port's coordinate, then into the entry port.
+    # That long run is a rail too — when it collides with a claimed rail
+    # (e.g. another edge's descent into the same target), INSERT waypoints
+    # to pull the run onto a free lane.
+    for i, edge in enumerate(all_edges):
+        if wp[i]:
+            continue
+        pe = port_point(i, edge, "exit", "source")
+        pn = port_point(i, edge, "entry", "target")
+        fe, fn = port_frac.get((i, "exit")), port_frac.get((i, "entry"))
+        if pe is None or pn is None or fe is None or fn is None:
+            continue
+        if fe[0] in ("top", "bottom"):             # main run is vertical at exit.x
+            axis, coord = "v", pe[0]
+            lo, hi = min(pe[1], pn[1]), max(pe[1], pn[1])
+        else:                                      # main run is horizontal at exit.y
+            axis, coord = "h", pe[1]
+            lo, hi = min(pe[0], pn[0]), max(pe[0], pn[0])
+        if hi - lo < 48:                           # too short to matter/re-lane
+            claimed.append((axis, coord, lo, hi, i))
+            continue
+        excl = (edge["source"], edge["target"])
+        if rail_blocked(axis, coord, lo, hi, excl):
+            # the straight run doesn't exist — the router detours around the
+            # obstacle; our simple rail model can't reason about that path,
+            # so neither claim nor re-lane it
+            continue
+
+        def run_conflict(c):
+            return any(a == axis and e != i and abs(c - cc) < 6 and
+                       min(hi, chi) - max(lo, clo) > 24
+                       for a, cc, clo, chi, e in claimed)
+        if run_conflict(coord):
+            for delta in (10, -10, 20, -20, 30, -30, 40, -40, 50, -50, 60, -60):
+                if not run_conflict(coord + delta) and \
+                        not rail_blocked(axis, coord + delta, lo, hi, excl):
+                    c = coord + delta
+                    if axis == "v":
+                        wp[i] = [(c, lo + 24), (c, hi - 24)]
+                    else:
+                        wp[i] = [(lo + 24, c), (hi - 24, c)]
+                    coord = c
+                    break
+        claimed.append((axis, coord, lo, hi, i))
+
+    # Snap a leftover waypoint that ALMOST aligns with its port onto the port
+    # line — a few px of misalignment makes the router add a micro-jog with
+    # the arrowhead right on it.
+    for i, edge in enumerate(all_edges):
+        if not wp[i]:
+            continue
+        for wk, prefix, end_key in ((0, "exit", "source"), (-1, "entry", "target")):
+            pp = port_point(i, edge, prefix, end_key)
+            if pp is None:
+                continue
+            wx, wy = wp[i][wk]
+            if abs(wx - pp[0]) <= 12 and abs(wx - pp[0]) > 0:
+                wp[i][wk] = (pp[0], wy)
+            elif abs(wy - pp[1]) <= 12 and abs(wy - pp[1]) > 0:
+                wp[i][wk] = (wx, pp[1])
+
+    for i, edge in enumerate(all_edges):
+        if wp[i]:
+            points = "".join(f'<mxPoint x="{x + dx}" y="{y + dy}"/>'
+                             for x, y in wp[i])
             geom = (f'<mxGeometry relative="1" as="geometry">'
                     f'<Array as="points">{points}</Array></mxGeometry>')
         else:

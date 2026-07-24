@@ -489,23 +489,44 @@ def check_page(diagram):
             warns.append(f"edge {eid!r} ({e.get('source')}→{e.get('target')}) {via} passes through "
                          f"node {cid!r} — add/adjust waypoints, pin exit/entry, or move the node")
 
-    # --- bottom-labeled icons: bottom-center exit/entry strikes the label ---
+    # --- bottom-labeled icons: pinned bottom port inside the label span ---
+    # The label is centered UNDER the icon and often wider than it ("API
+    # Gateway" ≈ 77px under a 78px icon), so 0.25/0.75 exits strike it just
+    # like 0.5 does. Check the pinned port x against the estimated label span
+    # instead of hardcoding "center is bad".
     for e in edges:
         st = style_of(e)
-        for end, xk, yk, verb in (("source", "exitX", "exitY", "exits"),
-                                  ("target", "entryX", "entryY", "enters")):
+        for end, xk, yk, dxk, verb in (("source", "exitX", "exitY", "exitDx", "exits"),
+                                       ("target", "entryX", "entryY", "entryDx", "enters")):
             cell = ids.get(e.get(end))
-            if cell is None or not has_external_bottom_label(style_of(cell)):
+            if cell is None:
+                continue
+            cst = style_of(cell)
+            if not has_external_bottom_label(cst):
                 continue
             try:
                 fx, fy = float(st[xk]), float(st[yk])
             except (KeyError, ValueError):
                 continue
-            if abs(fx - 0.5) < 0.01 and abs(fy - 1.0) < 0.01:
-                warns.append(f"edge {e.get('id')!r} {verb} bottom-center of "
-                             f"bottom-labeled {e.get(end)!r} — the line strikes "
-                             f"the label text below the icon; use exitX/entryX="
-                             f"0.25 or 0.75 at Y=1, or a side port")
+            if abs(fy - 1.0) >= 0.01:              # not a bottom port
+                continue
+            r = abs_rect(cell, ids)
+            if r is None:
+                continue
+            lr = external_label_rect(cell, r, cst)
+            if lr is None:                         # no label text -> no strike
+                continue
+            try:
+                dx = float(st.get(dxk, 0))
+            except ValueError:
+                dx = 0.0
+            port_x = r[0] + fx * r[2] + dx
+            if lr[0] - 2 <= port_x <= lr[0] + lr[2] + 2:
+                warns.append(f"edge {e.get('id')!r} {verb} the bottom of "
+                             f"{e.get(end)!r} at X={fx:g}, inside its "
+                             f"{lr[2]:.0f}px-wide label span — the line strikes "
+                             f"the text; use a side port (X=0 or 1, Y=0.5) or "
+                             f"shorten/wrap the label with &#xa;")
 
     # --- edge corridors through external label zones ---
     for e in edges:
