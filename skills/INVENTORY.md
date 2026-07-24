@@ -136,6 +136,23 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 - **`tooling/bug-intake` を取り下げ、`deprecated/qa` を上流のまま復元**(2026-07-23、本数変更なし)。
   会話型issue intakeは要カスタムとして残すが、tracker設計・承認境界・`triage`との責務分担を改めて考えるまで
   skill本体を先行改造しない。これにより現時点のvendored skillはすべて上流verbatimへ戻った。
+- **残骸掃除 + 配布基盤3本のカスタム開始**(2026-07-24、本数変更なし=78本)。
+  「上流verbatimから使う順に少しずつカスタムし直す」方針の最初の着手。
+  - **残骸掃除**: 削除済みskill(aws/cloudflare/node/dotenvx/nix-setup/moonbit系/sql lint・security 等)の
+    空ディレクトリ・git管理外ファイル(`cli.ts.deno.bak`)と空カテゴリ `node/README.md` を除去。
+    SKILL.md実数は78本で不変(残骸はSKILL.mdを持たないゴミだった)。
+  - **`meta/setup-agent-kit`**: 内部 `name` が上流 `setup-matt-pocock-skills` のままで、参照側6skill
+    (code-review / to-spec / to-tickets / triage / wayfinder / ask-matt)の `/setup-matt-pocock-skills`
+    呼び出しが発火名とズレて壊れていたのを `setup-agent-kit` へ統一。タイトル・openai.yaml・
+    通常導線外の `qa` 参照も修正。→ **要カスタム表の「壊れている内容」を解消**。
+  - **`meta/skill-selector`**: `references/catalog.md` を mizchi 外部レジストリ前提から
+    **このrepo現存78本の一次catalog**へ全面再構築(install 文字列を `HukuKaich0u/agent-kit/skills/<path>` に統一、
+    状態列を ✅/🔧/⏸/🎯 に対応、削除済み skill 行を一掃、現存と完全一致)。SKILL.md のシグナル例・
+    APM 0.12/`--frozen-lockfile`・superpowers/chezmoi 参照・同期先を修正。evals も現行スタックへ作り直し。
+  - **`meta/skill-finder`**: waxa 呼び出しを Bun 版へ、自動 `iterate` を使用停止(one-shot + 人間承認)、
+    superpowers/chezmoi/nix-setup/cloudflare-deploy 参照と fork 先を現存 skill・この repo へ修正。
+    外部ソース表の `obra/superpowers` 等は探索先として維持。
+  - vendored 改造は `VENDORED.md` の「改造記録」に記録(mizchi 2本・mattpocock 7本+ローカル改名分)。
 
 ---
 
@@ -150,13 +167,14 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 
 **優先度高(使うと決まっているのに壊れているもの):**
 
-| skill | 壊れている内容 |
+| skill | 壊れている内容 / 状態 |
 |---|---|
-| tooling/code-review | `/setup-matt-pocock-skills` と `docs/agents/issue-tracker.md` 前提。旧対応=setup-agent-kit 連携+repo内spec フォールバック |
-| meta/setup-agent-kit | 中身が上流 `setup-matt-pocock-skills` のまま(skill 名・文言が mattpocock 向け) |
-| meta/waxa-eval ・ skill-finder | waxa を上流前提(npx / mizchi repo パス)で呼ぶ。ローカルは Bun 移植版 `tools/waxa`(これはリセット対象外で維持) |
-| frontend/review-ci ・ deps ・ hygiene ・ security ・ testing ・ triage | SKILL が参照する `scripts/audit-*.sh` が上流に存在しない。旧対応=自作 `.mjs` スクリプト6本(0fd8ec3) |
-| meta/skill-selector | `references/catalog.md` が mizchi の skill 一覧で、本文にも削除済みMoonBit / Gleam / Cloudflare / AWS skillの例が残る。ローカルカタログ再構築版は 0fd8ec3 |
+| meta/setup-agent-kit | ✅ **解消済み(2026-07-24)**。`name` を `setup-agent-kit` へ統一、参照側6skillの呼び出しも修正 |
+| meta/skill-selector | ✅ **解消済み(2026-07-24)**。`catalog.md` を現存78本の一次catalogへ全面再構築。SKILL.md/evals の壊れ参照も一掃 |
+| meta/skill-finder | ✅ **解消済み(2026-07-24)**。waxa を Bun 版へ、自動iterate停止、superpowers/chezmoi/nix-setup 参照を修正 |
+| tooling/code-review | 🔧 **部分解消**。`/setup-matt-pocock-skills` → `/setup-agent-kit` は修正済み。残: Spec軸の parallel subagent opt-in化・severity/根拠/対象行・findings上限の設計 |
+| meta/waxa-eval | 🔧 未着手。waxa を上流前提(npx / mizchi repo パス)で呼ぶ。自動 `iterate` の誤収束バグで使用保留。ローカルは Bun 移植版 `tools/waxa` |
+| frontend/review-ci ・ deps ・ hygiene ・ security ・ testing ・ triage | 🔧 未着手。SKILL が参照する `scripts/audit-*.sh` が上流に存在しない。旧対応=自作 `.mjs` スクリプト6本(0fd8ec3) |
 
 **新規に設計するもの:**
 
@@ -361,20 +379,16 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
   merge時のmain HEADでなく対象PRの正確なcommitを使い、上流へ `dist/` 管理を強制しない。
   自動scheduleは状態確認と変更案まで、適用は承認制とし、通常versionへ戻すexit criteriaを導入時に記録する
   中優先度の要カスタム候補。
-- **meta/skill-selector** — 今回整理したagent-kitを各projectへ安全に配る入口として残す最優先カスタム。
-  mizchi周辺の外部catalogではなく、このrepoで残したskillと `INVENTORY.md` の利用可 / 要カスタム /
-  保留 / 明示起動専用を一次catalogにする。削除済みMoonBit・Gleam・Cloudflare・AWS・dotenvx・Nix等と
-  `chezmoi-management` / superpowers参照、古いAPM 0.12 / `--frozen-lockfile` 前提を外す。
-  catalog descriptionだけを信頼せず本文・asset・依存をinstall前に確認し、近く繰り返す作業に必要な
-  2〜5本だけを理由・状態付きで提示する。合意後にAPM 0.26.0でinstallし、catalog外だけ
-  `skill-finder` へ渡す。外部候補は評価と複数projectでの実利用後にcatalogへ昇格する。
-- **meta/skill-finder** — `skill-selector` の一次catalogに適切なものがなく、外部探索を明示依頼された
-  場合だけ使う対のskillとして残す。OpenAI公式Codex plugin / skillsとAnthropic公式、原作者を優先し、
-  registry / awesome-listは発見用indexに限定する。固定trust tierや件数でなく、2〜4候補を
-  source・license・maintenance・本文 / asset / script・権限 / network / secret・重複でread-only比較する。
-  安全確認前のinstallを避け、smoke eval、重要候補のローカルBun版waxa、project pin、複数project実績後の
-  catalog昇格へ段階化する。`waxa run`、削除済み `nix-setup/evals` / chezmoi / Cloudflare、superpowers、
-  `mizchi/skills` fork先、固定model名と古いrejection logを直す高優先度カスタム候補。
+- **meta/skill-selector** — ✅ **カスタム完了(2026-07-24)**。`references/catalog.md` を現存78本の
+  一次catalog(install=`HukuKaich0u/agent-kit/skills/<path>`、状態列=✅/🔧/⏸/🎯、現存と完全一致)へ
+  全面再構築。SKILL.md のシグナル例・APM 0.12/`--frozen-lockfile`・superpowers/chezmoi 参照・
+  同期先 `mizchi/skills` を修正。evals も現行スタックへ作り直し ledger リセット。
+  残る継続課題: 外部候補を複数project実績後にcatalog昇格させる運用は今後の実運用で回す。
+- **meta/skill-finder** — ✅ **カスタム完了(2026-07-24)**。waxa 呼び出しを Bun 版
+  (`bun run src/cli.ts`、npx はフォールバック)へ、自動 `iterate` を使用停止(one-shot + 人間承認)に。
+  削除済み `nix-setup/evals` / chezmoi / cloudflare-deploy 参照、superpowers 参照、`mizchi/skills` fork先、
+  `executor: claude-cli`・`self_report` 表記を修正し ledger / rejection-log を現存 skill 前提へ。
+  外部ソース表の `obra/superpowers` 等は探索先として維持。
 - **meta/optimizing-descriptions** — 棚卸し完了後にagent-kit全体のfrontmatter `description` を横断監査する
   明示起動のbatch workflowとして残す。mizchi固有のProject=常時pushy / Meta=明示起動という二分法を、
   明示依頼・task自動・file / error / tool signal・他skill専用・保留という実際の発火方針へ置き換える。
@@ -424,18 +438,15 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 
 **存在しない skill への参照(発火すると迷子になる):**
 
-- superpowers 系参照: meta/empirical-prompt-tuning ・ optimizing-descriptions ・ retrospective-codify ・ skill-finder
+> skill-selector / skill-finder が持っていた参照は 2026-07-24 に解消済み。以下は**未着手 skill に残る分**。
+
+- superpowers 系参照: meta/empirical-prompt-tuning ・ optimizing-descriptions ・ retrospective-codify
 - pkfire 参照: tooling/justfile ・ conventional-changelog
-- 削除済み `chezmoi-management` 参照: tooling/apm-usage ・ meta/skill-selector
-- 削除済み `pi-coding-agent` 参照: meta/skill-selector/references/catalog.md
-- 削除済み `flaker-storage-cache-on-ci` 参照: meta/skill-selector/references/catalog.md
-- 削除済み Cloudflare / AWS 7本の参照: meta/skill-selector/references/catalog.md
+- 削除済み `chezmoi-management` 参照: tooling/apm-usage
 - 削除済み `cloudflare-deploy` / `aws-vault-mfa-iam` をtrigger例に使用: meta/optimizing-descriptions
-- 削除済み `node/sqlite-vec` 参照: meta/skill-selector/references/catalog.md
 - 削除済み `node-sqlite-vec` をtrigger例に使用: meta/optimizing-descriptions
-- 削除済み `sql/lint` / `sql/security` 参照: meta/skill-selector/references/catalog.md
-- 削除済み `dotenvx` 参照: meta/skill-selector/references/catalog.md ・ meta/optimizing-descriptions
-- 削除済み `nix-setup` のcatalog / eval参照: meta/skill-selector ・ meta/skill-finder ・ meta/waxa-eval
+- 削除済み `dotenvx` 参照: meta/optimizing-descriptions
+- 削除済み `nix-setup` のeval参照: meta/waxa-eval
 - `create-plan` 参照: devops/gh-fix-ci
 - 削除済み `workers-otel-utels` 参照: devops/opentelemetry ・ otel-node
 - 削除済み `mizchi-blog-style` 参照: meta/tech-article-reproducibility
@@ -578,7 +589,10 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 
 1. **壊れ参照の再修正を「使う順」に少しずつ**(全リセット後の新しい進め方)。
    上の 🔧 要カスタム表が対象リスト。旧修正は commit `0fd8ec3` から拾えるが、
-   そのままコピーせず「本当に要るか」を見てから当てる。優先候補: code-review + setup-agent-kit、waxa-eval/skill-finder、frontend audit スクリプト。
+   そのままコピーせず「本当に要るか」を見てから当てる。
+   - ✅ 済(2026-07-24): setup-agent-kit(名統一)・skill-selector(catalog再構築)・skill-finder(agent-kit整合)。
+   - 次の優先候補: **apm-usage**(APM 0.26.0準拠。selector/finder が委譲する先)、**waxa-eval**(自動iterate誤収束バグの本丸)、
+     **code-review の Spec軸残り**、frontend audit スクリプト。
 2. **「もっと良い公開資産がないか」の精査**(君の本命)。tooling/testing/backend は使うが、より優れた mizchi/mattpocock/一流の skill がないか skill-finder + waxa-eval で精査したい。特に tooling/testing から。
 3. **domain review系14本**(backend 5 + frontend 8 + tooling/code-review)は最大クラスタ。
    frontend 8本は手動起動で残したが、欠落asset参照を外すか旧自作auditを必要な分だけ回収する精査が必要。
@@ -587,4 +601,5 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
    formal-methods 2本は中身を見る価値あり。deprecated / in-progress / personal は内容を理解してから個別判断する。
 
 ※ 上流追従の仕組み(VENDORED.md + check-vendored.sh 両上流対応)は、明示的な除外を考慮して維持する。
-改造ゼロの今は、残した skill の上流差分をそのまま確認できる。
+2026-07-24 から配布基盤3本(setup-agent-kit / skill-selector / skill-finder)のカスタムを開始した。
+改造した skill は `VENDORED.md` の「改造記録」に記録し、上流差分はそこを基準に確認する。
