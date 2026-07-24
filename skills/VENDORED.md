@@ -141,7 +141,22 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 - Vendored commit: `9603c1cc8118d08bc1b3bf34cf714f62178dea3b`
 - Vendored date: 2026-07-20(完全ミラー化。初回取り込みは 2026-07-19 の 11本)
 - Upstream commit date: 2026-07-16
-- 改造: **7本**(下記「改造記録」参照)。残り26本は上流 verbatim。
+- 改造: **8本**(下記「改造記録」参照)。残り25本は上流 verbatim。
+
+### 改造記録(2026-07-25 — domain docs の既存規約優先化)
+
+`grill-with-docs` 経路の相棒 `domain-modeling` と、その配置設定を scaffold する
+`setup-agent-kit` を一体で改造。上流は `CONTEXT.md` / `docs/adr/` の配置を固定していたが、
+既存の glossary / ADR 規約を持つ repo に並行構造を作ってしまうため、
+「repo 設定(`docs/agents/domain.md`)→ 既存規約 → デフォルト」の優先順で解決するよう変更。
+あわせて CONTEXT.md の即時書き込みを差分提示→承認後反映へ改めた
+(to-spec / to-tickets と同じ承認境界方針)。ADR の3条件
+(hard to reverse / surprising / real trade-off)は上流のまま維持。
+
+| skill | 改造内容 |
+|---|---|
+| `skills/backend/domain-modeling` | SKILL.md の File structure を「Where domain docs live」(解決順つき)へ再構成、CONTEXT.md 更新を propose→confirm に変更。ADR-FORMAT.md / CONTEXT-FORMAT.md に既存規約優先の注記を追加 |
+| `skills/meta/setup-agent-kit` | Explore に別名 glossary(`GLOSSARY.md` 等)・別配置 decision log(`docs/decisions/` 等)の検出を追加。Section C を「既存規約があればそれを記録」優先へ変更し、domain.md テンプレの path 書き換え指示を追加 |
 
 ### 改造記録(2026-07-24 — 配布基盤の壊れ参照修正)
 
@@ -165,7 +180,7 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 | agent-kit の配置 | 上流パス |
 |---|---|
 | `skills/backend/codebase-design` | `skills/engineering/codebase-design` |
-| `skills/backend/domain-modeling` | `skills/engineering/domain-modeling` |
+| `skills/backend/domain-modeling` | `skills/engineering/domain-modeling`(2026-07-25 に既存規約優先・承認後反映へ改造。改造記録参照) |
 | `skills/backend/improve-codebase-architecture` | `skills/engineering/improve-codebase-architecture` |
 | `skills/meta/ask-matt` | `skills/engineering/ask-matt` |
 | `skills/meta/grill-me` | `skills/productivity/grill-me` |

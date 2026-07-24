@@ -1,5 +1,7 @@
 # ADR Format
 
+If the repo already has an ADR convention — a different directory, numbering scheme, or template (e.g. MADR) — follow that convention instead of this file. This format is the default for repos with no existing convention.
+
 ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`, `0002-slug.md`, etc.
 
 Create the `docs/adr/` directory lazily — only when the first ADR is needed.

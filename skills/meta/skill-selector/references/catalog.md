@@ -99,7 +99,7 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
 | ✅ | codebase-design | `backend/codebase-design` | 深いモジュール設計の語彙(DESIGN-IT-TWICE 込み) |
-| 🔧 | domain-modeling | `backend/domain-modeling` | 会話でドメイン用語・境界・ADR を合意し継続更新。固定配置を既存規約優先に直す要カスタム |
+| ✅ | domain-modeling | `backend/domain-modeling` | 会話でドメイン用語・境界・ADR を合意し継続更新(配置は repo設定→既存規約→デフォルトの優先順、CONTEXT.md は差分提示→承認後反映にカスタム済み) |
 | 🔧 | improve-codebase-architecture | `backend/improve-codebase-architecture` | 証拠付き findings から一候補を codebase-design + grilling で改善設計し to-spec へ。自動 Explore/HTML を外す要カスタム |
 
 ---

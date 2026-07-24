@@ -23,8 +23,8 @@ Look at the current repo to understand its starting state. Read whatever exists;
 
 - `git remote -v` and `.git/config` — is this a GitHub repo? Which one?
 - `AGENTS.md` and `CLAUDE.md` at the repo root — does either exist? Is there already an `## Agent skills` section in either?
-- `CONTEXT.md` and `CONTEXT-MAP.md` at the repo root
-- `docs/adr/` and any `src/*/docs/adr/` directories
+- `CONTEXT.md` and `CONTEXT-MAP.md` at the repo root — plus a glossary under another name (`GLOSSARY.md`, `docs/glossary.md`)
+- `docs/adr/` and any `src/*/docs/adr/` directories — plus decision logs in other homes or formats (`docs/decisions/`, `docs/architecture/decisions/`, MADR-style templates). Note the format and numbering of whatever you find.
 - `docs/specs/` — existing immutable design records
 - `docs/agents/` — does this skill's prior output already exist?
 - `.scratch/` — sign that a local-markdown issue tracker convention is already in use
@@ -58,7 +58,9 @@ If it is installed, ask exactly one question:
 
 The defaults are the five canonical roles, each label string equal to its name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. On **yes**, write them as-is. Only if the user says no — usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`) — collect the overrides so `triage` applies existing labels instead of creating duplicates.
 
-**Section C — Domain docs.** Default to **single-context** — one `CONTEXT.md` + `docs/adr/` at the repo root. This fits almost every repo; write it without asking.
+**Section C — Domain docs.** If exploration found an existing convention — a glossary under another name, decisions in another directory or format — propose recording *that* layout in `docs/agents/domain.md`. Existing conventions win over the defaults; never scaffold a parallel structure next to one the repo already has.
+
+Otherwise default to **single-context** — one `CONTEXT.md` + `docs/adr/` at the repo root. This fits almost every repo; write it without asking.
 
 Offer **multi-context** — a root `CONTEXT-MAP.md` pointing to per-context `CONTEXT.md` files — only when exploration found monorepo signals. Then confirm which layout they want.
 
@@ -115,7 +117,7 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md) — GitLab issue tracker
 - [issue-tracker-local.md](./issue-tracker-local.md) — local-markdown issue tracker
 - [triage-labels.md](./triage-labels.md) — label mapping (only if `triage` is installed)
-- [domain.md](./domain.md) — domain doc consumer rules + layout
+- [domain.md](./domain.md) — domain doc consumer rules + layout. When Section C recorded an existing convention, rewrite the paths and file-structure trees in this template to match that convention before writing.
 - [design-records.md](./design-records.md) — immutable design-record convention
 
 Before writing `docs/agents/design-records.md`, replace its `created` and `author` frontmatter placeholders with today's date and `git config user.name`. If the configured name is unavailable or is not a human name, ask the user; never copy the placeholders literally.

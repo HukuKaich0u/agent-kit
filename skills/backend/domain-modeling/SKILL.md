@@ -7,7 +7,15 @@ description: Build and sharpen a project's domain model. Use when the user wants
 
 Actively build and sharpen the project's domain model as you design. This is the *active* discipline — challenging terms, inventing edge-case scenarios, and writing the glossary and decisions down the moment they crystallise. (Merely *reading* `CONTEXT.md` for vocabulary is not this skill — that's a one-line habit any skill can do. This skill is for when you're changing the model, not just consuming it.)
 
-## File structure
+## Where domain docs live
+
+Resolve the layout in this order — first match wins:
+
+1. **Repo configuration.** If `docs/agents/domain.md` exists (written by `/setup-agent-kit`), it names where the glossary and ADRs live. Follow it.
+2. **Existing conventions.** Otherwise, look for what the repo already does before assuming anything: a glossary under another name (`GLOSSARY.md`, `docs/glossary.md`), decisions in another home or format (`docs/decisions/`, `docs/architecture/decisions/`, MADR-style templates). An existing convention wins — extend it in its own location, numbering, and template rather than creating a parallel structure.
+3. **Default layout.** Only when neither exists, use the default below.
+
+### Default layout
 
 Most repos have a single context:
 
@@ -57,9 +65,9 @@ When domain relationships are being discussed, stress-test them with specific sc
 
 When the user states how something works, check whether the code agrees. If you find a contradiction, surface it: "Your code cancels entire Orders, but you just said partial cancellation is possible — which is right?"
 
-### Update CONTEXT.md inline
+### Propose CONTEXT.md updates inline
 
-When a term is resolved, update `CONTEXT.md` right there. Don't batch these up — capture them as they happen. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).
+When a term is resolved, draft the glossary entry right there and show the user the exact edit you intend to make; apply it once they confirm. Don't batch resolutions up for the end of the session — propose each one as it happens. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) (or the repo's own glossary format, if it has one).
 
 `CONTEXT.md` should be totally devoid of implementation details. Do not treat `CONTEXT.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
 
@@ -71,4 +79,4 @@ Only offer to create an ADR when all three are true:
 2. **Surprising without context** — a future reader will wonder "why did they do it this way?"
 3. **The result of a real trade-off** — there were genuine alternatives and you picked one for specific reasons
 
-If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
+If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md) — unless the repo already has its own ADR convention (see [Where domain docs live](#where-domain-docs-live)), in which case follow that.

@@ -51,7 +51,7 @@ _Avoid_: Client, buyer, account
 - **Ordering ↔ Billing**: Shared types for `CustomerId` and `Money`
 ```
 
-The skill infers which structure applies:
+The skill infers which structure applies (after the layout resolution in SKILL.md's "Where domain docs live" — repo config and existing conventions win over these defaults):
 
 - If `CONTEXT-MAP.md` exists, read it to find contexts
 - If only a root `CONTEXT.md` exists, single context
