@@ -37,12 +37,20 @@ if [ ! -d "$SRC_DIR" ]; then
   exit 1
 fi
 
-# instruction ファイルの frontmatter (--- ... ---) を除いた本文を出す
+# instruction ファイルの frontmatter (--- ... ---) を除いた本文を出し、
+# 本文中の見出しを1段繰り下げる。
+#
+# 各 instruction は "## <name>" の下にぶら下がるので、本文が ## を使うと
+# instruction 名と同階層になり、どこまでがその instruction かが判別できなくなる。
+# ``` で囲まれたコードブロック内の # はコメントなので繰り下げない。
 strip_frontmatter() {
   awk '
     NR==1 && $0=="---" { infm=1; next }
     infm && $0=="---"   { infm=0; next }
-    !infm               { print }
+    infm               { next }
+    /^```/             { infence = !infence; print; next }
+    !infence && /^#{1,5} / { print "#" $0; next }
+    { print }
   ' "$1"
 }
 
