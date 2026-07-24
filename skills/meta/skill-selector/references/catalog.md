@@ -231,6 +231,7 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 | ✅ | grilling | `meta/grilling` | 計画・決定・アイデアを1問ずつ問い詰める primitive |
 | ✅ | grill-me | `meta/grill-me` | 文書を残さない明示的な grill の入口 |
 | ✅ | grill-with-docs | `meta/grill-with-docs` | grill しながら ADR・用語集を残す入口(domain-modeling と併用) |
+| ✅ | decision-interview | `meta/decision-interview` | 曖昧なアイデアを1問ずつの構造化インタビューで**ユーザー所有の明示的な意思決定**へ。decision ledger + 承認で締める。grilling が問い詰めなのに対しこちらは決定の明示化・記録 |
 | ✅ | handoff | `meta/handoff` | 会話を引き継ぎ文書に圧縮 |
 | 🎯🔧 | ask-matt | `meta/ask-matt` | 状況別に skill/flow を案内する router。名前・参照を直す要カスタム(通常導線外) |
 

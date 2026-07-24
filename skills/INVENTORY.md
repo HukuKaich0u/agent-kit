@@ -1,6 +1,6 @@
 # Skills Inventory(棚卸し表)
 
-agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
+agent-kit の全 skill(現在 **79本**)の棚卸しと状態管理。
 各 skill が「何をするか・出自・環境依存・重複」を一覧化し、精査の起点にする。
 
 ## この表の使い方
@@ -13,8 +13,9 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 - **🔗 統合候補** — 別の skill と機能が重なる。役割分担を明記するか片方に寄せる。
 - **🔎 上位互換を探す** — 現状で足りるが、より優れた公開 skill があれば差し替え検討(skill-finder + waxa-eval で評価)。
 
-出自: **mizchi 36・mattpocock 33・自作 8・Agents365-ai 1**(計78)。
+出自: **mizchi 36・mattpocock 33・自作 9・Agents365-ai 1**(計79)。
 ※ meta/empirical-prompt-tuning は旧自作版を mizchi 版で置換したため mizchi 由来にカウント。
+※ 自作 9本目 = meta/decision-interview(2026-07-24 追加)。
 
 ## 2026-07-20 に確定した変更
 
@@ -166,6 +167,18 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
   - **`meta/waxa-eval`**: 自動 `iterate` を使用停止(reseen≠resolved の誤収束)、Bun 版へ、パス誤り修正。
   - npm フラグ(pnpm `--frozen-lockfile` 等)・npm パッケージ名・skill-finder の外部ソース表
     `obra/superpowers` は正当な参照として保持(誤って消さない)。
+- **frontend review 8本を単発手動レビューへ自立化**(2026-07-24、本数変更なし=78本)。
+  上流の週次KPI自動運用フレーム前提で存在しない asset(`scripts/audit-*.sh`・`checklist/*`・`phase/*`・
+  `templates/*`・`data/*.json`・`.frontend-review/` 出力パス)を参照して壊れていた8本を修正。
+  中身のレビュー観点・コード例は保持し、壊れた配管だけ外した(subagent 3本で分担、Opus 本体がレビュー)。
+  audit-*.sh 実行前提 → agent が直接 rg/コードを読む、固定出力パス → 会話報告 + 依頼時 `docs/reviews/*.md`、
+  欠落 checklist/phase 参照除去、`gh issue create` 固定 → issue-tracker 準拠 or draft 提示、
+  固定閾値・特定ライブラリを相対化(React Compiler 検出・実測基準・package manager 検出等)。
+  review-triage は他7本への入口として案内を強化。→ **frontend 8本の欠落 asset 参照は解消済み**。
+- **`meta/decision-interview` を追加 → 計79本**(2026-07-24、自作9本目)。
+  曖昧なアイデアを1問ずつの構造化インタビューでユーザー所有の明示的な意思決定へ変える自作 skill。
+  decision ledger(confirmed/open/assumptions/deferred)を保ち承認で締める。`grilling`(問い詰め)や
+  in-progress の `to-questionnaire`(他者向け質問票)とは別の役割。catalog の grill 系に追加済み。
 
 ---
 
@@ -187,7 +200,7 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 | meta/skill-finder | ✅ **解消済み(2026-07-24)**。waxa を Bun 版へ、自動iterate停止、superpowers/chezmoi/nix-setup 参照を修正 |
 | tooling/code-review | 🔧 **部分解消**。`/setup-matt-pocock-skills` → `/setup-agent-kit` は修正済み。残: Spec軸の parallel subagent opt-in化・severity/根拠/対象行・findings上限の設計 |
 | meta/waxa-eval | 🔧 **部分解消(2026-07-24)**。自動 `iterate` を使用停止(reseen≠resolved 明記)、Bun 版 `bun run src/cli.ts` へ、nix-setup 参照除去。残: ledger / convergence の運用を実 eval で回して確認 |
-| frontend/review-ci ・ deps ・ hygiene ・ security ・ testing ・ triage | 🔧 未着手。SKILL が参照する `scripts/audit-*.sh` が上流に存在しない。旧対応=自作 `.mjs` スクリプト6本(0fd8ec3) |
+| frontend/review-* 8本 | ✅ **自立化完了(2026-07-24)**。欠落 `scripts/audit-*.sh`・checklist・phase・KPI パス参照を除去し、単発手動レビュー(agent が直接コードを読む)へ。旧自作 `.mjs`(0fd8ec3)は回収せず、agent 直読み方式を採用 |
 
 **新規に設計するもの:**
 
@@ -529,7 +542,7 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 
 判断不要でそのまま使えるもの。出自ごとにまとめた。
 
-### 自作(8本)— 一番信頼できる、君が書いたもの
+### 自作(9本)— 一番信頼できる、君が書いたもの
 
 - backend/review-architecture — BE構造・依存方向・境界漏れをレビュー
 - backend/review-concurrency — 非同期/並行処理の危険パターン
@@ -539,6 +552,7 @@ agent-kit の全 skill(現在 **78本**)の棚卸しと状態管理。
 - db/migration-safety — DB移行の安全性分類(◎ PG/RDS/SQLite/DynamoDB全対応)
 - lang/rust — Rustベストプラクティス
 - lang/typescript — TypeScriptベストプラクティス
+- meta/decision-interview — 曖昧なアイデアを1問ずつの構造化インタビューでユーザー所有の明示的決定へ(2026-07-24 追加。grilling=問い詰めと違い決定の明示化・記録)
 
 ※ meta/empirical-prompt-tuning は旧自作版があったが mizchi 版で置換済み(mizchi の項に移動)
 
