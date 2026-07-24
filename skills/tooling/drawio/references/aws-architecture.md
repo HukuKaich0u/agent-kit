@@ -33,7 +33,8 @@ Every `mxgraph.aws4.resourceIcon` style carries `verticalLabelPosition=bottom;ve
 
 - **A bottom port is only safe OUTSIDE the label span.** The label is centered under the icon and routinely **wider than the icon itself** (`API Gateway` = 11 ASCII ≈ 77px under a 78px icon; `ElastiCache Redis` ≈ 120px) — so `exitX=0.25/0.75` strikes the text just like bottom-center does. This is the #1 cause of "text under a line".
 - **Default for downward edges: exit a side** (`exitX=0/1;exitY=0.5..0.8`) and route through a vertical corridor beside the icon, entering the target from the top. Reserve bottom exits (`0.25/0.75`) for genuinely short labels — ≤5 ASCII or ≤3 CJK chars, whose span stays inside the middle half of the icon.
-- Decide by measurement, not by rule of thumb: label span = width estimate (ASCII ≈ 0.6×fontSize, CJK ≈ fontSize px/char), centered on the icon. `validate.py` warns on any pinned bottom port whose x lands inside that span; `renderlint.py` re-checks against the rendered label box.
+- Decide by measurement, not by rule of thumb: label span = width estimate (ASCII ≈ 0.6×fontSize, CJK ≈ fontSize px/char), centered on the icon. `validate.py` warns on any bottom port whose x lands inside that span; `renderlint.py` re-checks against the rendered label box.
+- **An unpinned edge is not a way out.** With two icons in a column and no `exitX/exitY`, draw.io's router leaves the bottom edge at center — straight through the label. (Measured: a lateral offset makes it exit a side instead, and a node above exits the top, so only the stacked case bites.) `validate.py` infers that port and warns on it; pin a side port rather than relying on the router.
 - Entering the **top** of an icon (`entryY=0`) is always safe. Side entries are safe.
 - Cross-cutting edges (logs, metrics, image pull) must not cut across the main flow: exit sideways and route through a **reserved corridor** (see below).
 
@@ -142,7 +143,7 @@ Resource icons: get exact styles with `shapesearch.py` (`python3 <this-skill-dir
 
 - `validate.py` reports 0 errors / 0 warnings (it models label zones, container bounds, edge corridors)
 - After the draft export, `renderlint.py` reports 0 warnings (it checks the **rendered** SVG: real routes through icons/labels, stacked edges, measured label collisions)
-- No pinned bottom port inside any icon's label span (side ports are the default for downward edges)
+- No bottom port inside any icon's label span — pinned, or the one the router picks for an unpinned edge between stacked icons (side ports are the default for downward edges)
 - Every labeled edge has `labelBackgroundColor`
 - No full-size empty containers; every container sized to content + padding
 - Cross-cutting hub edges share one corridor and carry at most one label

@@ -27,8 +27,10 @@ Layout (warnings — the overlap/readability class of bugs):
     points or waypoints (they render stacked)
   - labeled edges without labelBackgroundColor (unreadable where they cross
     other edges/shapes)
-  - pinned bottom ports landing inside a bottom-labeled icon's label span
-    (exact, width-estimated — the #1 "text under a line" bug)
+  - bottom ports landing inside a bottom-labeled icon's label span (exact,
+    width-estimated — the #1 "text under a line" bug). Covers pinned ports
+    and, for unpinned edges, the bottom-center port the router actually picks
+    when the other node sits directly below (horizontal spans overlap)
   - edge corridors passing through UNRELATED cells' external (below-icon)
     label zones. Own-endpoint labels are exempt: the corridor is a
     straight-line proxy and an orthogonal route from a side port detours
@@ -494,41 +496,64 @@ def check_page(diagram):
             warns.append(f"edge {eid!r} ({e.get('source')}→{e.get('target')}) {via} passes through "
                          f"node {cid!r} — add/adjust waypoints, pin exit/entry, or move the node")
 
-    # --- bottom-labeled icons: pinned bottom port inside the label span ---
+    # --- bottom-labeled icons: bottom port inside the label span ---
     # The label is centered UNDER the icon and often wider than it ("API
     # Gateway" ≈ 77px under a 78px icon), so 0.25/0.75 exits strike it just
-    # like 0.5 does. Check the pinned port x against the estimated label span
-    # instead of hardcoding "center is bad".
+    # like 0.5 does. Check the port x against the estimated label span instead
+    # of hardcoding "center is bad".
+    #
+    # Unpinned edges are checked too, via the port draw.io's router actually
+    # picks. Measured behaviour (SVG export, orthogonalEdgeStyle): the router
+    # leaves the bottom edge ONLY when the other node sits directly below —
+    # i.e. the two nodes' horizontal spans overlap. Any lateral offset makes
+    # it exit a side instead, and a node above exits the top. So infer a
+    # bottom port only in that overlap case, and place it at the center (where
+    # the measured route came out). Without this, the most natural way to
+    # write an AWS stack — two icons in a column, no exit/entry pinned — put
+    # a line straight through the label with nothing warning about it.
     for e in edges:
         st = style_of(e)
-        for end, xk, yk, dxk, verb in (("source", "exitX", "exitY", "exitDx", "exits"),
-                                       ("target", "entryX", "entryY", "entryDx", "enters")):
+        for end, other, xk, yk, dxk, verb in (
+                ("source", "target", "exitX", "exitY", "exitDx", "exits"),
+                ("target", "source", "entryX", "entryY", "entryDx", "enters")):
             cell = ids.get(e.get(end))
             if cell is None:
                 continue
             cst = style_of(cell)
             if not has_external_bottom_label(cst):
                 continue
-            try:
-                fx, fy = float(st[xk]), float(st[yk])
-            except (KeyError, ValueError):
-                continue
-            if abs(fy - 1.0) >= 0.01:              # not a bottom port
-                continue
             r = abs_rect(cell, ids)
             if r is None:
+                continue
+            try:
+                fx, fy = float(st[xk]), float(st[yk])
+                dx = float(st.get(dxk, 0) or 0)
+            except (KeyError, ValueError):
+                # unpinned: infer the router's choice from the geometry
+                ocell = ids.get(e.get(other))
+                ro = abs_rect(ocell, ids) if ocell is not None else None
+                if ro is None:
+                    continue
+                below = ro[1] > r[1] + r[3]        # other node strictly below
+                x_overlap = min(r[0] + r[2], ro[0] + ro[2]) - max(r[0], ro[0]) > 0
+                if not (below and x_overlap):
+                    continue                       # router uses a side/top port
+                fx, fy, dx = 0.5, 1.0, 0.0
+                pinned = False
+            else:
+                pinned = True
+            if abs(fy - 1.0) >= 0.01:              # not a bottom port
                 continue
             lr = external_label_rect(cell, r, cst)
             if lr is None:                         # no label text -> no strike
                 continue
-            try:
-                dx = float(st.get(dxk, 0))
-            except ValueError:
-                dx = 0.0
             port_x = r[0] + fx * r[2] + dx
             if lr[0] - 2 <= port_x <= lr[0] + lr[2] + 2:
+                where = (f"at X={fx:g}" if pinned else
+                         "at the bottom center the router picks for an "
+                         "unpinned edge to a node directly below")
                 warns.append(f"edge {e.get('id')!r} {verb} the bottom of "
-                             f"{e.get(end)!r} at X={fx:g}, inside its "
+                             f"{e.get(end)!r} {where}, inside its "
                              f"{lr[2]:.0f}px-wide label span — the line strikes "
                              f"the text; use a side port (X=0 or 1, Y=0.5) or "
                              f"shorten/wrap the label with &#xa;")
