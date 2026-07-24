@@ -1,11 +1,11 @@
 ---
 name: frontend-review-security
-description: Use when conducting a frontend security review — static analysis (risky HTML patterns, env var exposure), authentication/authorization audit (token storage, route guards, logout), and AI self-penetration testing. Runs `scripts/audit-security.sh`. For CVE triage and deprecated library detection, use `frontend-review-deps`.
+description: Use when conducting a frontend security review — static analysis (risky HTML patterns, env var exposure), authentication/authorization audit (token storage, route guards, logout), and AI self-penetration testing. Read-only desk review; run it manually per repo. For CVE triage and deprecated library detection, use `frontend-review-deps`.
 ---
 
 # Frontend Review — Security
 
-You are performing a frontend security review. The focus areas are:
+You are performing a frontend security review. This is a **read-only desk review** you run manually against a repo — there is no batch runner or scheduled cadence. The focus areas are:
 
 1. **Static** — risky HTML sinks, environment variable exposure in client bundles
 2. **Auth / Authorization** — token storage, route guards, session management
@@ -14,13 +14,13 @@ You are performing a frontend security review. The focus areas are:
 
 ## Procedure
 
-1. Run `scripts/audit-security.sh --repo <client-repo>`.
-2. Read `raw/security.json`.
-3. For each `dangerouslySetInnerHTML` / `v-html` / `.innerHTML =` hit, locate the file and judge whether the input is sanitized.
-4. Run the **Authentication & Authorization** review (see below).
-5. Run the **Env / Config** review (see below).
-6. For AI self-pentest, mentally walk through the attack scenarios below.
-7. For staging, draft the header checklist.
+1. **Find the risky sinks.** Grep the client source for `dangerouslySetInnerHTML`, `v-html`, `.innerHTML =`, `eval(`, `new Function(`, and `document.write(`. Use `rg` / `git grep`; there is no bundled audit script. For each hit, open the file and judge whether the input is sanitized.
+2. Run the **Authentication & Authorization** review (see below).
+3. Run the **Env / Config** review (see below).
+4. For AI self-pentest, mentally walk through the attack scenarios below.
+5. For staging, draft the header checklist.
+
+Detect the framework first (React / Vue / Svelte, Vite / Next.js, cookie-based vs token-based auth) so the checks below map to the actual stack — the code examples are React/Vite-flavored but the principles are framework-agnostic.
 
 ## Authentication & Authorization Review
 
@@ -126,25 +126,24 @@ Draft these for the human to run against the deployed staging URL:
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/security-review.md` with:
+Report the findings in the conversation by default. If the user wants a file, write a Markdown report at a path they choose (or `docs/reviews/security-review.md`) with:
 
-- **Static findings** (risky sinks, env var exposure)
+- **Static findings** (risky sinks, env var exposure) — each with `file:line` and the quoted hunk
 - **Auth / Authorization findings** (token storage, route guard gaps, logout issues)
 - **AI pentest notes** (each scenario: OK / finding / unable-to-determine)
 - **Staging checklist** (to be executed by the human)
-- **Issues to file** (`gh issue create` commands with titles and bodies)
+- **Issues to file** — draft titles + bodies. If the repo has an issue tracker configured (see `docs/agents/issue-tracker.md` from `setup-agent-kit`), follow that workflow; otherwise present the drafts for the human to file.
 
-Do NOT execute the `gh issue create` commands yourself — print them for the human.
+Do NOT create issues or run `gh issue create` yourself — present the drafts for the human.
 
 ## Boundaries
 
 - Do NOT attempt actual exploitation. This is a desk review.
-- Do NOT run scanners against production URLs.
+- Do NOT run scanners against production URLs. Connecting to staging for the header checklist needs the human's target + permission.
 - Do NOT touch the client source code.
+- These checks are judgement calls, not absolute rules. `SameSite=Strict`, a fixed token lifetime, and `X-Frame-Options` all carry trade-offs (CSRF vs UX, CSP `frame-ancestors` as the modern replacement) — weigh them against the actual system and current OWASP guidance rather than flagging every deviation.
 - CVE triage and trend-watch are handled by `frontend-review-deps`.
 
 ## Reference
 
-- Checklist: `10-security.md`, `25-auth-authorization.md`, `26-env-config.md`
-- Phase: `week-3-security-vrt.md`
-- OWASP: https://owasp.org/www-project-top-ten/
+- OWASP Top Ten: https://owasp.org/www-project-top-ten/

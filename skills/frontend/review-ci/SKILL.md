@@ -1,24 +1,26 @@
 ---
 name: frontend-review-ci
-description: Use when CI is slow (>10 min), flaky, or the user asks to optimize GitHub Actions for a frontend project. Analyzes `gh run list` history, identifies bottleneck steps, proposes sharding / cache / concurrency improvements. Runs `scripts/audit-ci.sh`.
+description: Use when CI is slow, flaky, or the user asks to optimize GitHub Actions for a frontend project. Read-only desk review — inspects `.github/workflows/` and `gh run list` history, identifies bottleneck steps, proposes sharding / cache / concurrency improvements.
 ---
 
 # Frontend Review — CI Optimization
 
-You are optimizing GitHub Actions CI for a frontend project. The target is **median ≤ 10 minutes, max ≤ 15 minutes**. Faster CI means developers trust it; trust is what makes the ratchet work.
+You are optimizing GitHub Actions CI for a frontend project. This is a **read-only desk review** you run manually against a repo — there is no bundled audit script. Faster CI means developers trust it; trust is what makes the ratchet work.
+
+Detect the package manager (npm / pnpm / yarn / bun) and test runners in use first — the checks below assume a common Node.js stack but the specific flags and cache paths depend on the actual tooling.
 
 ## Procedure
 
-1. Run `scripts/audit-ci.sh --repo <client-repo>`.
-2. Read `<client-repo>/.frontend-review/report/latest/raw/ci.json`.
-3. For the slowest runs, dig into step-level timing:
+1. Inventory current workflows: `rg . .github/workflows/` or read each file directly.
+2. Pull recent run history and step-level timing for the slowest runs:
    ```bash
+   gh run list --limit 20
    gh run view <run-id> --log | grep -E '^\d{4}-' | head -200
    ```
-4. Inventory current workflows under `.github/workflows/` and note:
-   - Does **every job** (lint, build, test, coverage, etc.) use a pnpm/npm store cache? A common miss: `test.yml` has cache but `lint.yml` and `pages.yml` do not.
-   - Does `actions/setup-node` use `cache: pnpm`, or is there a manual `actions/cache` block for the pnpm store? Either is fine; the key must include `hashFiles('**/pnpm-lock.yaml')`.
-   - Does `actions/cache` cache the Playwright browser store (`~/.cache/ms-playwright`)?
+3. Against the inventory, check:
+   - Does **every job** (lint, build, test, coverage, etc.) use a package-manager store cache? A common miss: `test.yml` has cache but `lint.yml` and `pages.yml` do not.
+   - Does `actions/setup-node` use `cache: pnpm` / `cache: npm` / `cache: yarn`, or is there a manual `actions/cache` block for the store? Either is fine; the key must include `hashFiles()` on the lockfile.
+   - Does `actions/cache` cache the Playwright browser store (`~/.cache/ms-playwright`) if E2E runs?
    - Is there a `concurrency:` block?
    - Are vitest / playwright sharded?
    - Are jobs serialized via `needs:` unnecessarily?
@@ -26,18 +28,18 @@ You are optimizing GitHub Actions CI for a frontend project. The target is **med
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/ci-analysis.md` with:
+Report the findings in the conversation by default. If the user wants a file, write a Markdown report at a path they choose (or `docs/reviews/ci-review.md`) with:
 
-- Current median / max duration
+- Current median / max duration (from `gh run list` / `gh run view`)
 - Slowest 3 steps in a representative failing + passing run
 - Concrete recommendations, each mapped to a line in a YAML patch (not full rewrite)
 - Estimated wins per recommendation
 
-Then produce a draft PR description that the user can copy into `gh pr create`, naming the branch `ci/optimize`.
+If the user wants a PR, produce a draft PR description they can copy into `gh pr create` — do not create the PR yourself.
 
 ## Development Iteration Timing Targets
 
-Use these as reference thresholds when diagnosing CI slowness. Any stage exceeding **2× its target** warrants a dedicated bottleneck issue.
+These are **reference starting points**, not fixed thresholds — calibrate against the project's own history (recent `gh run list` durations) and stack before flagging a regression. A stage exceeding roughly 2× its own recent baseline is a stronger signal than an absolute number below.
 
 | Stage | Target | How to measure |
 |---|---|---|
@@ -51,18 +53,14 @@ Use these as reference thresholds when diagnosing CI slowness. Any stage exceedi
 | `install` (cache hit) | < 15 s | CI step duration |
 | `build` | < 30 s | CI step duration |
 
-The **PR CI total** target is the critical gate. CI slower than 5 minutes is routinely bypassed by developers.
+The **PR CI total** is the most user-visible number — as it grows past ~5 minutes, developers tend to context-switch away and stop trusting/watching CI, though the exact tolerance varies by team.
 
 ## Bottleneck Identification Procedure
 
-1. Pull step-level timing from the slowest recent run:
-   ```bash
-   gh run view <run-id> --log | grep -E '^\d{4}-' | head -200
-   ```
-2. Identify the **single slowest job** in the DAG — only the longest path in a parallel graph determines wall-clock time.
-3. Within that job, identify the slowest step.
-4. Propose **one change per PR** — bundling multiple optimisations makes regression attribution impossible.
-5. Measure wall-clock before/after on the same branch to verify the win.
+1. From the step-level timing pulled above, identify the **single slowest job** in the DAG — only the longest path in a parallel graph determines wall-clock time.
+2. Within that job, identify the slowest step.
+3. Propose **one change per PR** — bundling multiple optimisations makes regression attribution impossible.
+4. Measure wall-clock before/after on the same branch to verify the win.
 
 ## Typical Optimisation Patterns
 
@@ -80,9 +78,4 @@ The **PR CI total** target is the critical gate. CI slower than 5 minutes is rou
 
 - Do NOT actually create the PR or push the branch — just draft the description.
 - Do NOT modify workflow YAML in the client repo; the user does that after reviewing your proposal.
-
-## Reference
-
-- Checklist: `checklist/09-ci-optimization.md`
-- Phase: `phase/week-1-ci-baseline.md`
-- Templates: `templates/github-actions/ci.yml`, `templates/github-actions/e2e.yml`
+- The timing targets and "typical fix" table above are common patterns, not universal rules — weigh each against the project's actual stack, runner tier, and test volume before recommending it.

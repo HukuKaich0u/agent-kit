@@ -1,34 +1,34 @@
 ---
 name: frontend-review-testing
-description: Use when auditing test infrastructure — vitest coverage, playwright configuration, VRT setup, coverage merging. Produces recommendations for Week 2 testing phase. Runs `scripts/audit-coverage.sh`.
+description: Use when auditing test infrastructure — test runner setup and coverage, E2E configuration, VRT setup, coverage merging. Read-only desk review; run it manually per repo.
 ---
 
 # Frontend Review — Testing
 
-You are auditing the testing posture of a frontend project. The phase is Week 2: establish vitest + playwright with synthetic coverage, keeping in mind:
+You are auditing the testing posture of a frontend project. This is a **read-only desk review** you run manually against a repo — there is no batch runner or scheduled cadence. Keep in mind:
 
-- **E2E granularity**: initially, one case per Router / server controller branch (skeleton-first, not exhaustive).
-- **Unit granularity**: component coverage is prioritized.
-- **Coverage merge**: vitest V8 + playwright V8 combined via `monocart-coverage-reports` or `istanbul-merge`.
+- **E2E scope**: prioritize the highest-risk / highest-traffic user journeys and anything with a history of regressions — not exhaustive coverage of every route or controller branch.
+- **Unit scope**: component coverage is prioritized, but weigh it against actual change risk rather than a fixed ratio.
+- **Coverage merge**: if both a unit runner and an E2E runner produce V8 coverage, note whether they're combined (e.g. via `monocart-coverage-reports` or `istanbul-merge`) — but don't require it.
 
 ## Procedure
 
-1. Run `scripts/audit-coverage.sh --repo <client-repo>`.
-2. Read `coverage/coverage-summary.json` if it exists.
-3. Inspect:
-   - `vitest.config.*` — is coverage configured? provider v8?
-   - `playwright.config.*` — projects, webServer, sharding
+1. **Detect the stack first.** There is no bundled audit script — read the repo directly. Check `package.json` for the test runner (vitest, jest, etc.), E2E tool (playwright, cypress, etc.), and package manager, so the checks below map to what's actually installed.
+2. Inspect:
+   - `vitest.config.*` / `jest.config.*` (or equivalent) — is coverage configured? which provider?
+   - `playwright.config.*` / `cypress.config.*` (or equivalent) — projects, webServer, sharding
    - `tests/`, `e2e/`, `__tests__/` — current test count and shape
    - `package.json` scripts — `test`, `test:coverage`, `test:e2e`
+   - If a coverage summary already exists (e.g. `coverage/coverage-summary.json`), read it; otherwise note that coverage numbers are unavailable without running the suite.
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/testing-review.md` with:
+Report the findings in the conversation by default. If the user wants a file, write a Markdown report at a path they choose (or `docs/reviews/testing-review.md`) with:
 
-- **Current state**: vitest configured? playwright configured? how many tests? what coverage %?
+- **Current state**: which runner(s) configured? how many tests? coverage % if available
 - **Gaps**: missing config, missing scripts, no coverage merge
 - **Recommended PRs** (3-5 max): each with title, affected files, expected coverage delta
-- **Branch coverage checklist** for the router/controller branches that should get the first E2E tests
+- **Priority test targets**: the user journeys / modules that most need first coverage, based on risk and past incidents — not a fixed branch-by-branch checklist
 
 ## Component Testing — Testing Library First
 
@@ -55,15 +55,15 @@ When `@testing-library/react` is absent from `package.json`, flag it as a gap an
 
 For atom / store tests, use the library's own test utilities (e.g. Jotai `createStore()`) rather than rendering a component — keep component tests and state logic tests separate.
 
-## In-Source Testing Pattern
+## In-Source Testing Pattern (situational)
 
-For logic-heavy `.ts` files, co-locating tests in the same file (via `if (import.meta.vitest)` in Vite projects, or a build-time dead-code strip equivalent) is often preferable to separate test files:
+For logic-heavy `.ts` files in Vite projects, co-locating tests in the same file (via `if (import.meta.vitest)`) is an option worth noting, not a default to push onto every repo:
 
 - AI agents read the source and the spec in one file context, improving generation accuracy.
 - Pure functions stay close to their invariants.
 - Production builds strip the test block via `"import.meta.vitest": "undefined"` define.
 
-Recommend this pattern when proposing new unit tests for utility/lib files.
+Only surface this as a recommendation if the project already leans this way (Vite-based, few existing separate-file conventions) or the user asks about test organization — don't flag a conventional separate-test-file layout as a gap.
 
 ## Test Failure Triage Protocol
 
@@ -87,9 +87,9 @@ This avoids tests that pass even when the integration contract breaks.
 
 ## Coverage Guidance
 
-- **Target**: 80%+ for pure lib/utility files; 60%+ for UI components.
+- Treat coverage percentages as a signal, not a target — a project-wide fixed threshold (e.g. "80% everywhere") tends to produce tests that pad the number rather than encode real specs. Judge coverage relative to the file's risk: pure lib/utility logic and code with a history of bugs deserve more scrutiny than generated or low-change-risk code.
 - **Anti-goal**: Do NOT inflate tests to reach 100%. Prefer fewer tests that encode real specs over many tests that only enumerate implementation details.
-- Generated UI components (e.g. shadcn/ui output) are coverage-exempt.
+- Generated UI components (e.g. shadcn/ui output) are typically coverage-exempt — confirm against the project's own convention if one exists.
 
 ## VRT Stability Tips
 
@@ -99,9 +99,5 @@ This avoids tests that pass even when the integration contract breaks.
 ## Boundaries
 
 - Do NOT write actual test code — propose structure and counts only.
-- Do NOT run `vitest` or `playwright` from this skill; the scripts don't execute tests, only read existing reports.
-
-## Reference
-
-- Checklist: `07-unit-test.md`, `08-e2e-playwright.md`, `15-vrt.md`, `13-kpi-tracking.md`
-- Phase: `week-2-testing.md`, `week-3-security-vrt.md`
+- Do NOT run the test suite (`vitest`, `playwright`, etc.) from this skill unless the user explicitly asks — this is a desk review of configuration and existing test shape, not a test-execution pass.
+- Do NOT touch the client source code.

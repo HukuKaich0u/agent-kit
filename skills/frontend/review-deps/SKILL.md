@@ -1,24 +1,27 @@
 ---
 name: frontend-review-deps
-description: Use when auditing dependency health — outdated packages, CVE triage with attack-vector weighting, deprecated/declining library detection (trend-watch). Runs `audit-deps.sh` and `audit-trend-watch.sh`. Pairs with `frontend-review-security` for the full security picture.
+description: Use when auditing dependency health — outdated packages, CVE triage with attack-vector weighting, deprecated/declining library detection. Read-only desk review using the project's own package manager audit tooling (npm/pnpm/yarn/bun/cargo). Pairs with `frontend-review-security` for the full security picture.
 ---
 
 # Frontend Review — Dependencies
 
-You are auditing the dependency health of a frontend project. This covers three areas:
+You are auditing the dependency health of a frontend project. This is a **read-only desk review** you run manually against a repo — there is no bundled audit script; it uses whatever audit tooling ships with the project's own package manager. This covers three areas:
 
 1. **Freshness** — outdated packages and breaking update procedures
 2. **CVE triage** — vulnerabilities weighted by actual attack vector, not just CVSS score
-3. **Trend watch** — deprecated, abandoned, or superseded libraries that should be migrated
+3. **Trend watch** — deprecated, abandoned, or superseded libraries that should be migrated (a one-off snapshot here; ongoing/longitudinal trend tracking belongs to `tech-trend-watch`)
 
 ## Procedure
 
-1. In parallel, run:
-   - `scripts/audit-deps.sh --repo <client-repo>`
-   - `scripts/audit-trend-watch.sh --repo <client-repo>`
-2. Read `raw/deps.json` and `raw/trend-watch.json`.
+1. Detect the package manager(s) in use (npm / pnpm / yarn / bun, plus Cargo.toml if there's a Rust component) from lockfiles.
+2. Run the native audit and outdated-package commands for that manager, e.g.:
+   - pnpm: `pnpm audit --prod --json`, `pnpm outdated`
+   - npm: `npm audit --omit=dev --json`, `npm outdated`
+   - yarn: `yarn npm audit --environment production`, `yarn outdated`
+   - bun: `bun audit`, `bun outdated`
+   - Rust: `cargo audit`, `cargo outdated`
 3. For each CVE finding, apply the attack-vector triage matrix below before assigning priority.
-4. For each trend-watch finding (Tier 1/2/3), confirm the installed version and assess migration cost.
+4. For trend-watch, read `package.json` (and lockfile versions) directly and judge each notable dependency against the tiers below — there is no bundled config file listing tracked libraries; use your own knowledge of the ecosystem plus a web search if uncertain about a library's current maintenance status.
 
 ## CVE Triage — Attack Vector Matrix
 
@@ -36,20 +39,20 @@ Do not use CVSS score alone. A CVSS 9.8 RCE in a devDependency has zero producti
 
 **Triage procedure:**
 
-1. Run `pnpm audit --prod` to exclude devDeps from output.
+1. Run the manager's audit command scoped to production deps only (e.g. `pnpm audit --prod`, `npm audit --omit=dev`) to exclude devDeps from output.
 2. Focus on Prototype Pollution / ReDoS / XSS — other types are low-risk for browser-only SPAs.
 3. For each remaining finding, check whether user-controlled input can reach the vulnerable code path. If not, downgrade to P2.
 4. For SSR / Edge Functions, treat RCE / Path Traversal / SSRF as P0.
-5. Document every ignored CVE in `kpi/audit-triage.md` with the reason.
+5. Document every ignored CVE with the reason in the report's "Ignored CVEs" section (see Output below).
 
 ```bash
-# Runtime-only CVEs (excludes devDeps)
+# Example: pnpm — runtime-only CVEs (excludes devDeps)
 pnpm audit --prod --audit-level=moderate --json | jq '
   .vulnerabilities | to_entries[] |
   { name: .key, severity: .value.severity,
     via: [.value.via[] | select(type=="object") | .title] }'
 
-# Prototype Pollution / ReDoS only
+# Example: pnpm — Prototype Pollution / ReDoS only
 pnpm audit --prod --json 2>/dev/null | jq -r '
   .vulnerabilities | to_entries[] |
   .value.via[] | select(type=="object") |
@@ -57,9 +60,11 @@ pnpm audit --prod --json 2>/dev/null | jq -r '
   "\(.severity) \(.title) in \(.name)"' | sort -u
 ```
 
+Adapt the `jq` filter shape to whatever JSON the detected manager's audit command emits (npm's `audit --json` and yarn's differ from pnpm's).
+
 ## Trend Watch — Library Tiers
 
-Cross-references `package.json` against `data/trend-watch-config.json`:
+This is a one-off snapshot judgment based on `package.json` and your own knowledge (plus a web search for anything uncertain) — there is no bundled config file listing tracked libraries. For ongoing/longitudinal tracking across runs, defer to the `tech-trend-watch` skill.
 
 - **Tier 1 (migrate now)**: Deprecated / abandoned / superseded — no rational reason to continue. Includes libraries where migration cost is low and a mature alternative exists, even if not officially deprecated (`jest` → vitest, `axios` → ky/fetch, `cypress` → Playwright).
 - **Tier 2 (plan migration)**: Maintenance mode / satisfaction declining / RSC-incompatible.
@@ -85,8 +90,8 @@ Before recommending a new dependency as a replacement, apply this order:
 | Number / date formatting | numeral.js | `Intl.NumberFormat`, `Intl.DateTimeFormat` |
 
 2. **Tree-shakable?** Only what is imported should end up in the bundle.
-3. **Actively maintained?** Release within the last 6 months.
-4. **Bundle impact < 5 kb gzip?** Verify with `pnpm build` and a bundle analyser.
+3. **Actively maintained?** Recent release activity — check the registry page or repo, adjusted for how critical/high-churn the library is.
+4. **Bundle impact reasonable?** Verify with the project's build command and a bundle analyser; a few kb gzip is a rough sanity check, not a hard limit.
 
 ## Breaking Update Procedure
 
@@ -97,12 +102,12 @@ Before recommending a new dependency as a replacement, apply this order:
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/deps-review.md` with:
+Report the findings in the conversation by default. If the user wants a file, write a Markdown report at a path they choose (or `docs/reviews/deps-review.md`) with:
 
 - **Outdated packages** table (name, current, latest, breaking?)
 - **CVE findings** after attack-vector triage (priority, package, type, reason for priority)
 - **Trend watch** findings by tier (Tier 1: migration now, Tier 2: plan, Tier 3: monitor)
-- **Ignored CVEs** with justification (for `kpi/audit-triage.md`)
+- **Ignored CVEs** with justification
 - **Recommended PRs**: update batches + migration starting points
 
 ## Boundaries
@@ -110,10 +115,5 @@ Write `<client-repo>/.frontend-review/report/latest/md/deps-review.md` with:
 - Do NOT assess TypeScript / lint / dead code — that's `frontend-review-hygiene`.
 - Do NOT run the AI pentest or check HTML sinks — that's `frontend-review-security`.
 - Do NOT touch source files in the client repo.
-
-## Reference
-
-- Checklist: `02-dependencies.md`, `27-dependency-audit.md`, `28-trend-watch.md`
-- Data: `data/trend-watch-config.json`, `data/trend-watch-history.json`
-- Scripts: `scripts/audit-deps.sh`, `scripts/audit-trend-watch.sh`, `scripts/fetch-trend-data.sh`
-- Phase: `week-1-ci-baseline.md`
+- The attack-vector matrix and library tiers above are judgement aids, not absolute rules — weigh them against the actual runtime target (SPA vs SSR/Edge) and how the specific library is used before assigning priority.
+- Long-running trend tracking across repeated audits is `tech-trend-watch`'s job, not this skill's.

@@ -1,31 +1,30 @@
 ---
 name: frontend-review-hygiene
-description: Use when assessing code quality hygiene — TypeScript strictness, lint violations, dead code, and duplication. Runs `audit-typescript.sh`, `audit-lint.sh`, `audit-similarity.sh`. Does NOT cover dependency freshness or CVE audit — use `frontend-review-deps` for that.
+description: Use when assessing code quality hygiene — TypeScript strictness, lint violations, dead code, and duplication. Read-only desk review using the project's own package manager and existing scripts (tsc, eslint/biome, knip, jscpd, etc). Does NOT cover dependency freshness or CVE audit — use `frontend-review-deps` for that.
 ---
 
 # Frontend Review — Hygiene
 
-You are assessing the baseline code quality hygiene of a frontend project: types, lint, dead code, and duplication. These are the KPIs that will be ratcheted each week.
+You are assessing the baseline code quality hygiene of a frontend project: types, lint, dead code, and duplication. This is a **read-only desk review** you run manually against a repo — there is no bundled audit script. Use the project's own tooling.
 
 ## Procedure
 
-1. In parallel, run:
-   - `scripts/audit-typescript.sh --repo <client-repo>`
-   - `scripts/audit-lint.sh --repo <client-repo>`
-   - `scripts/audit-similarity.sh --repo <client-repo>`
-2. Read each `raw/*.json`.
-3. Compare with the previous run if `<client-repo>/.frontend-review/kpi/baseline.json` exists.
+1. Detect the package manager (npm / pnpm / yarn / bun) from the lockfile, and check `package.json` scripts for existing `typecheck`, `lint`, and similar commands — prefer running those over inventing your own invocation.
+2. Run type / lint checks, e.g.:
+   - TypeScript: `tsc --noEmit` (or the project's `typecheck` script)
+   - Lint: the project's `lint` script (ESLint / Biome / oxlint), or `eslint . --format json` / `biome check --reporter=json` directly
+3. Dead code / unused exports: if `knip` (or similar) is already a devDependency or has a config file, run it via the package manager (e.g. `pnpm dlx knip`, `npx knip`); otherwise note that dead-code detection needs `knip` (or an equivalent) added, and fall back to `rg` for obviously unused exports if the user wants a lighter check.
+4. Duplication: if a similarity tool (`jscpd`, `sonar`, etc.) is configured, run it; otherwise do a lighter manual scan of suspiciously similar files/functions, or suggest `jscpd` as a one-off (`npx jscpd src/`).
+5. If the user has a previous report/summary to compare against, diff against it; otherwise this run establishes the baseline.
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/hygiene-summary.md` with:
+Report the findings in the conversation by default. If the user wants a file, write a Markdown report at a path they choose (or `docs/reviews/hygiene-review.md`) with:
 
-- **KPI table** covering: `any` count, `@ts-ignore` count, lint errors/warnings, knip unused files/exports/deps, similarity duplicate pairs
-- **Delta vs baseline** (mark regressions in bold; improvements with ✅)
+- **KPI table** covering: `any` count, `@ts-ignore` count, lint errors/warnings, unused files/exports/deps, duplicate pairs
+- **Delta vs previous report**, if one was supplied (mark regressions in bold; improvements with ✅)
 - **Remediation batches** grouped by impact — which items make sense to fix in one PR
-- **Do NOT include** per-file findings (those stay in the raw JSON). The report is for decisions, not code review.
-
-If the client has no baseline yet, create one: copy the current JSON to `<client-repo>/.frontend-review/kpi/baseline.json` and state this in the report.
+- **Do NOT include** exhaustive per-file findings in the summary — link/attach the raw tool output instead. The report is for decisions, not code review.
 
 ## Toolchain Role Separation
 
@@ -46,12 +45,7 @@ Auto-generated files (lock files, generated schemas, tool artefacts) must be exc
 ## Boundaries
 
 - Do NOT assess dependency freshness or CVEs — that's `frontend-review-deps`.
-- Do NOT propose code-level fixes. That's for the 5 perspective skills.
+- Do NOT propose sweeping code-level rewrites yourself; surface findings and remediation batches for the human/team to act on.
 - Do NOT touch source files in the client repo.
-- Do NOT run `audit-security.sh` — that's the security skill's job.
-
-## Reference
-
-- Checklist: `03-typescript.md`, `04-lint-format.md`, `05-deadcode-knip.md`, `06-similarity.md`, `13-kpi-tracking.md`
-- Related: `frontend-review-deps` (dependency health), `frontend-review-security` (CVEs + auth + env)
-- Phase: `week-1-ci-baseline.md`, `week-4-ai-review.md`
+- Do NOT run security-focused checks (HTML sinks, auth, env exposure) — that's `frontend-review-security`.
+- The toolchain role-separation table and KPI categories above are common patterns, not universal rules — a small project may reasonably not need all of them; weigh against actual project size and stack.

@@ -1,46 +1,51 @@
 ---
 name: frontend-review-state
-description: Use when reviewing state management architecture — classifying state types (server/URL/form/UI), checking for over-globalization, Jotai/Zustand/Redux patterns, derived state, and logout/cache invalidation. Covers checklist 23-state-management.md.
+description: Use when reviewing state management architecture — classifying state types (server/URL/form/UI), checking for over-globalization, Jotai/Zustand/Redux patterns, derived state, and logout/cache invalidation.
 ---
 
 # Frontend Review — State Management
 
-You are reviewing the state management architecture of a frontend project. The most common AI-generated problems are: putting everything in global state, storing server data in a global store instead of TanStack Query, and using coarse-grained selectors that cause the whole component tree to re-render.
+You are performing a frontend state-management architecture review. This is a **read-only desk review** you run manually against a repo — there is no bundled audit script or scheduled cadence. The most common AI-generated problems are: putting everything in global state, storing server data in a global store instead of a dedicated data-fetching layer, and using coarse-grained selectors that cause the whole component tree to re-render.
 
 ## Procedure
 
-1. Read `package.json` to identify the state management libraries in use.
+1. Read `package.json` to identify the state management libraries already in use, and detect any existing framework conventions (e.g. a Next.js app using Server Components / Server Actions for data that another stack would put in a client cache). Use `rg` / `git grep` directly; there is no bundled audit script.
 2. Grep for global state usage patterns:
    ```bash
    # Jotai
-   grep -rn "atom\|useAtom\|useAtomValue" src/ --include='*.ts' --include='*.tsx' | wc -l
+   rg "atom|useAtom|useAtomValue" src/ --include='*.ts' --include='*.tsx' -c
    # Zustand
-   grep -rn "create\b\|useStore\b" src/ --include='*.ts' --include='*.tsx' | head -20
+   rg "create\b|useStore\b" src/ --include='*.ts' --include='*.tsx' -l
    # Redux
-   grep -rn "createSlice\|useSelector\|useDispatch" src/ --include='*.ts' --include='*.tsx' | head -20
+   rg "createSlice|useSelector|useDispatch" src/ --include='*.ts' --include='*.tsx' -l
    # Context
-   grep -rn "createContext\|useContext" src/ --include='*.ts' --include='*.tsx' | head -20
+   rg "createContext|useContext" src/ --include='*.ts' --include='*.tsx' -l
    ```
 3. Sample 3–5 of the largest atom / store definitions and assess what they contain.
-4. Check for server state stored in global store (should be TanStack Query / SWR instead).
-5. Check for URL state stored in global store (should be `useSearchParams` / `nuqs`).
-6. Check for form state stored in global store (should be React Hook Form).
+4. Check for server state stored in global store (should go through whatever the project's data-fetching layer is — TanStack Query, SWR, RTK Query, or framework-native fetching — not a hand-rolled global).
+5. Check for URL state stored in global store (should be `useSearchParams` / a URL-state library, or the framework's routing primitives).
+6. Check for form state stored in global store (should be handled by a form library or local component state, per whatever the project already uses).
 
 ## State Classification
 
-Correctly classify state by type. Each type has a dedicated tool — using the wrong tool is the root cause of most state management bugs.
+Correctly classify state by type. Each type is best served by a dedicated tool — mixing them into one general-purpose global store is the root cause of most state management bugs. The specific library matters less than the classification; defer to whatever the project's existing framework/library conventions already are, and don't push a different library as "the fix" when a same-category swap would do.
 
 ```
-Server state   → TanStack Query / SWR        (not global store)
-URL state      → useSearchParams / nuqs      (not global store)
-Form state     → React Hook Form             (not global store)
-UI local       → useState / useReducer       (component-scoped)
-UI global      → Jotai / Zustand / Context   (minimum scope)
+Server state   → dedicated data-fetching/cache layer   (not a hand-rolled global store)
+                 e.g. TanStack Query, SWR, RTK Query, or framework-native fetching (Next.js Server Components/Actions, Remix loaders)
+URL state      → routing/URL-state primitives           (not global store)
+                 e.g. useSearchParams, nuqs, or the framework's router
+Form state     → form library or local component state  (not global store)
+                 e.g. React Hook Form, Formik, or the project's existing convention
+UI local       → useState / useReducer                  (component-scoped)
+UI global      → Jotai / Zustand / Redux / Context       (minimum scope, whatever the project already uses)
 ```
 
-Flag any server, URL, or form state found in a global Jotai/Zustand/Redux store. These are always bugs or design mistakes.
+Flag server, URL, or form state found in a general-purpose global store (Jotai/Zustand/Redux/Context) as a likely design mistake — the concern is the category mismatch (duplicated source of truth, missed cache invalidation, missed URL sync), not that a specific library wasn't chosen. Report the mismatch with concrete evidence (duplicated state, sync bugs, stale reads) rather than flagging on library choice alone.
 
 ## Library-Specific Checks
+
+Apply the checks below only for libraries actually present in the project. These are examples of common per-library pitfalls, not a mandate to introduce a library the project doesn't already use.
 
 ### Jotai
 
@@ -94,29 +99,35 @@ A common bug: after logout, the next user who logs in sees cached data from the 
 
 Check that the logout handler:
 1. Calls the server logout endpoint (session revocation)
-2. Clears TanStack Query / SWR cache (`queryClient.clear()`)
-3. Resets all auth-related global atoms / Zustand stores
+2. Clears the server-state cache layer in use (e.g. `queryClient.clear()` for TanStack Query, or the equivalent for SWR/RTK Query/framework cache)
+3. Resets all auth-related global state (Jotai atoms, Zustand stores, Context, or whatever the project uses)
 4. Navigates to `/login` (after clearing, not before)
 
 ## Output
 
-Write `<client-repo>/.frontend-review/report/latest/md/state-review.md` with:
+Report the findings in the conversation by default. If the user wants a file, write a Markdown report at a path they choose (or `docs/reviews/state-review.md`) with:
 
-- **State inventory**: which libraries are used, rough count of atoms/stores/contexts
-- **Misclassified state**: server/URL/form state found in global store (these are bugs)
+- **State inventory**: which libraries/patterns are used, rough count of atoms/stores/contexts
+- **Misclassified state**: server/URL/form state found in a general-purpose global store, with concrete evidence (duplicated source of truth, sync bugs, stale reads)
 - **Anti-patterns found**: with file:line references
 - **Logout/cache gap** if found
-- **Recommended PRs**: each scoped to one logical refactor
+- **Recommended PRs**: each scoped to one logical refactor, consistent with the project's existing library choices
+- **Issues to file** — draft titles + bodies. If the repo has an issue tracker configured (see `docs/agents/issue-tracker.md` from `setup-agent-kit`), follow that workflow; otherwise present the drafts for the human to file.
 
 Keep under 200 lines. File-level details stay in the raw search output, not in the report.
+
+Do NOT create issues or run `gh issue create` yourself — present the drafts for the human.
 
 ## Boundaries
 
 - Do NOT rewrite state management code. The report identifies gaps; engineering implements fixes.
 - Do NOT touch source files in the client repo.
+- These checks are judgement calls, not absolute rules. No single state library is the "correct" answer — weigh findings against the project's existing conventions and report category mismatches (wrong kind of tool) rather than library-choice preferences.
 - Rendering performance (re-renders, memo usage) is covered by `frontend-review-performance`.
 
 ## Reference
 
-- Checklist: `23-state-management.md`, `17-pure-io-separation.md`, `21-api-layer.md`
+- TanStack Query: https://tanstack.com/query/latest
+- Zustand: https://zustand.docs.pmnd.rs/
+- Jotai: https://jotai.org/
 - Related: `frontend-review-performance` (re-render profiling)
