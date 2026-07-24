@@ -143,6 +143,18 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 - Upstream commit date: 2026-07-16
 - 改造: **8本**(下記「改造記録」参照)。残り25本は上流 verbatim。
 
+### 改造記録(2026-07-25 — setup-agent-kit を setup-agent-environment へ改名)
+
+skill の役割(repo ごとの tracker / labels / domain docs / design record 規約の
+scaffold)を repo 名でなく機能で表すため、`setup-agent-kit` を
+`setup-agent-environment` へ改名した。frontmatter `name`・タイトル・
+`agents/openai.yaml` の `display_name` を変更し、参照側 10 skill
+(wayfinder / to-tickets / to-spec / code-review / triage /
+frontend review-state・review-security・review-performance / ask-matt /
+domain-modeling)と `skill-selector` catalog・`scripts/check-vendored.sh` の
+上流対応表を追従。README は `gen-skill-readme.rb` で再生成。
+以下の過去の改造記録に出る旧パス `skills/meta/setup-agent-kit` は当時の記録として残す。
+
 ### 改造記録(2026-07-25 — domain docs の既存規約優先化)
 
 `grill-with-docs` 経路の相棒 `domain-modeling` と、その配置設定を scaffold する
@@ -187,7 +199,7 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 | `skills/meta/grill-with-docs` | `skills/engineering/grill-with-docs` |
 | `skills/meta/grilling` | `skills/productivity/grilling` |
 | `skills/meta/handoff` | `skills/productivity/handoff` |
-| `skills/meta/setup-agent-kit` | `skills/engineering/setup-matt-pocock-skills`(2026-07-24 に skill 名・文言を agent-kit 用へ改造。改造記録参照) |
+| `skills/meta/setup-agent-environment` | `skills/engineering/setup-matt-pocock-skills`(2026-07-24 に `setup-agent-kit` へ改造、2026-07-25 に現名へ再改名。改造記録参照) |
 | `skills/meta/teach` | `skills/productivity/teach` |
 | `skills/meta/writing-great-skills` | `skills/productivity/writing-great-skills` |
 | `skills/testing/tdd` | `skills/engineering/tdd` |

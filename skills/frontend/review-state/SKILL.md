@@ -112,7 +112,7 @@ Report the findings in the conversation by default. If the user wants a file, wr
 - **Anti-patterns found**: with file:line references
 - **Logout/cache gap** if found
 - **Recommended PRs**: each scoped to one logical refactor, consistent with the project's existing library choices
-- **Issues to file** — draft titles + bodies. If the repo has an issue tracker configured (see `docs/agents/issue-tracker.md` from `setup-agent-kit`), follow that workflow; otherwise present the drafts for the human to file.
+- **Issues to file** — draft titles + bodies. If the repo has an issue tracker configured (see `docs/agents/issue-tracker.md` from `setup-agent-environment`), follow that workflow; otherwise present the drafts for the human to file.
 
 Keep under 200 lines. File-level details stay in the raw search output, not in the report.
 

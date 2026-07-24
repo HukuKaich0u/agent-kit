@@ -10,7 +10,7 @@ Turn the current conversation and codebase understanding into an immutable **des
 
 Current truth lives in code, tests, ADRs, and the domain glossary. Do not publish this record to an issue tracker, apply tracker labels, or update it after it is written.
 
-The design-record convention should be available at `docs/agents/design-records.md`. Run `/setup-agent-kit` if it is missing.
+The design-record convention should be available at `docs/agents/design-records.md`. Run `/setup-agent-environment` if it is missing.
 
 ## Process
 

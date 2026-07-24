@@ -140,7 +140,7 @@ Report the findings in the conversation by default. If the user wants a file, wr
 - **Concurrent feature opportunities**: interactions that block the thread
 - **Canvas/WebGL assessment** (if applicable): is high-frequency data bypassing React state?
 - **Recommended PRs**: one optimization per PR, profiling benchmark in PR description
-- **Issues to file** — draft titles + bodies. If the repo has an issue tracker configured (see `docs/agents/issue-tracker.md` from `setup-agent-kit`), follow that workflow; otherwise present the drafts for the human to file.
+- **Issues to file** — draft titles + bodies. If the repo has an issue tracker configured (see `docs/agents/issue-tracker.md` from `setup-agent-environment`), follow that workflow; otherwise present the drafts for the human to file.
 
 Keep under 200 lines. Recommendations without profiling evidence must be explicitly flagged as "unconfirmed — profile first."
 

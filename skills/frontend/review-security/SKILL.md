@@ -132,7 +132,7 @@ Report the findings in the conversation by default. If the user wants a file, wr
 - **Auth / Authorization findings** (token storage, route guard gaps, logout issues)
 - **AI pentest notes** (each scenario: OK / finding / unable-to-determine)
 - **Staging checklist** (to be executed by the human)
-- **Issues to file** — draft titles + bodies. If the repo has an issue tracker configured (see `docs/agents/issue-tracker.md` from `setup-agent-kit`), follow that workflow; otherwise present the drafts for the human to file.
+- **Issues to file** — draft titles + bodies. If the repo has an issue tracker configured (see `docs/agents/issue-tracker.md` from `setup-agent-environment`), follow that workflow; otherwise present the drafts for the human to file.
 
 Do NOT create issues or run `gh issue create` yourself — present the drafts for the human.
 

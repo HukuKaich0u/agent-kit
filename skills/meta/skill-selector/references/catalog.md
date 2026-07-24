@@ -200,7 +200,7 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 ## 実装フロー(design record → ticket → 実装 → review)
 
 **Signals**: 仕様固め・チケット分割・実装オーケストレーション。
-`setup-agent-kit` で work tracker・domain docs・design record規約を設定済みが前提。
+`setup-agent-environment` で work tracker・domain docs・design record規約を設定済みが前提。
 to-spec / to-tickets は承認境界カスタム済み(2026-07-25)。triage / implement は要カスタムが残る。
 
 | Status | Skill | Install (`skills/<path>`) | Use when |
@@ -231,7 +231,7 @@ to-spec / to-tickets は承認境界カスタム済み(2026-07-25)。triage / im
 ### skill 運用の基盤
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| 🎯 | setup-agent-kit | `meta/setup-agent-kit` | repo ごとに work tracker / triage labels / domain docs / design record規約を scaffold(engineering flow の前に一度) |
+| 🎯 | setup-agent-environment | `meta/setup-agent-environment` | repo ごとに work tracker / triage labels / domain docs / design record規約を scaffold(engineering flow の前に一度) |
 | 🎯🔧 | skill-selector | `meta/skill-selector` | この catalog から project skill を選ぶ入口(= この skill 自身) |
 | 🎯🔧 | skill-finder | `meta/skill-finder` | catalog に無いものを外部探索(Phase 2)。安全確認 + waxa eval gate |
 

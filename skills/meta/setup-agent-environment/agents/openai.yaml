@@ -1,5 +1,5 @@
 interface:
-  display_name: "Setup agent-kit Skills"
+  display_name: "Setup Agent Environment"
   short_description: "Configure tracker, docs, and record policy"
 policy:
   allow_implicit_invocation: false

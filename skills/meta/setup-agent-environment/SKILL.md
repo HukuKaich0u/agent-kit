@@ -1,10 +1,10 @@
 ---
-name: setup-agent-kit
-description: Configure this repo for the agent-kit engineering skills — set up its work tracker, triage labels, domain-doc layout, and immutable design-record convention. Run once before first use of the other engineering skills.
+name: setup-agent-environment
+description: Configure this repo's agent environment — set up its work tracker, triage labels, domain-doc layout, and immutable design-record convention. Run once before first use of the other engineering skills.
 disable-model-invocation: true
 ---
 
-# Setup agent-kit Skills
+# Setup Agent Environment
 
 Scaffold the per-repo configuration that the engineering skills assume:
 

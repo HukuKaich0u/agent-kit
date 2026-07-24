@@ -11,7 +11,7 @@ Actively build and sharpen the project's domain model as you design. This is the
 
 Resolve the layout in this order — first match wins:
 
-1. **Repo configuration.** If `docs/agents/domain.md` exists (written by `/setup-agent-kit`), it names where the glossary and ADRs live. Follow it.
+1. **Repo configuration.** If `docs/agents/domain.md` exists (written by `/setup-agent-environment`), it names where the glossary and ADRs live. Follow it.
 2. **Existing conventions.** Otherwise, look for what the repo already does before assuming anything: a glossary under another name (`GLOSSARY.md`, `docs/glossary.md`), decisions in another home or format (`docs/decisions/`, `docs/architecture/decisions/`, MADR-style templates). An existing convention wins — extend it in its own location, numbering, and template rather than creating a parallel structure.
 3. **Default layout.** Only when neither exists, use the default below.
 

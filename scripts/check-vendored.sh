@@ -38,7 +38,7 @@ declare -a MAP_MATTPOCOCK=(
   "skills/meta/grill-with-docs:skills/engineering/grill-with-docs"
   "skills/meta/grilling:skills/productivity/grilling"
   "skills/meta/handoff:skills/productivity/handoff"
-  "skills/meta/setup-agent-kit:skills/engineering/setup-matt-pocock-skills"
+  "skills/meta/setup-agent-environment:skills/engineering/setup-matt-pocock-skills"
   "skills/meta/teach:skills/productivity/teach"
   "skills/meta/writing-great-skills:skills/productivity/writing-great-skills"
   "skills/testing/tdd:skills/engineering/tdd"

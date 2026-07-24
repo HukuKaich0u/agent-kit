@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Break one approved design record into **tracer-bullet** implementation tickets. The design record is historical input, not a parent work item: never edit it, publish it to the tracker, or give it a tracker status.
 
-The issue tracker, triage labels, and design-record convention should be available under `docs/agents/`. Run `/setup-agent-kit` if they are missing.
+The issue tracker, triage labels, and design-record convention should be available under `docs/agents/`. Run `/setup-agent-environment` if they are missing.
 
 ## Process
 
