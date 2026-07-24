@@ -46,20 +46,14 @@ declare -a MAP_MATTPOCOCK=(
   "skills/tooling/diagnosing-bugs:skills/engineering/diagnosing-bugs"
   "skills/tooling/git-guardrails-claude-code:skills/misc/git-guardrails-claude-code"
   "skills/tooling/implement:skills/engineering/implement"
-  "skills/tooling/migrate-to-shoehorn:skills/misc/migrate-to-shoehorn"
   "skills/tooling/prototype:skills/engineering/prototype"
   "skills/tooling/research:skills/engineering/research"
   "skills/tooling/resolving-merge-conflicts:skills/engineering/resolving-merge-conflicts"
-  "skills/tooling/scaffold-exercises:skills/misc/scaffold-exercises"
-  "skills/tooling/setup-pre-commit:skills/misc/setup-pre-commit"
   "skills/tooling/to-spec:skills/engineering/to-spec"
   "skills/tooling/to-tickets:skills/engineering/to-tickets"
   "skills/tooling/triage:skills/engineering/triage"
   "skills/tooling/wayfinder:skills/engineering/wayfinder"
-  "skills/deprecated/design-an-interface:skills/deprecated/design-an-interface"
   "skills/deprecated/qa:skills/deprecated/qa"
-  "skills/deprecated/request-refactor-plan:skills/deprecated/request-refactor-plan"
-  "skills/deprecated/ubiquitous-language:skills/deprecated/ubiquitous-language"
   "skills/in-progress/batch-grill-me:skills/in-progress/batch-grill-me"
   "skills/in-progress/claude-handoff:skills/in-progress/claude-handoff"
   "skills/in-progress/loop-me:skills/in-progress/loop-me"
@@ -69,9 +63,51 @@ declare -a MAP_MATTPOCOCK=(
   "skills/in-progress/writing-beats:skills/in-progress/writing-beats"
   "skills/in-progress/writing-fragments:skills/in-progress/writing-fragments"
   "skills/in-progress/writing-shape:skills/in-progress/writing-shape"
-  "skills/personal/edit-article:skills/personal/edit-article"
-  "skills/personal/obsidian-vault:skills/personal/obsidian-vault"
 )
+
+# curated set から意図的に外した mizchi skill。
+# 上流の新規 skill 検知では「未取込」として扱わない。
+declare -a EXCLUDED_MIZCHI=(
+  "aws/ecs-codedeploy-blue-green"
+  "aws/ecs-service-connect-ipv6"
+  "aws/github-oidc-scoped-role"
+  "aws/vault-mfa-iam"
+  "cloudflare/access-app-setup"
+  "cloudflare/deploy"
+  "cloudflare/mbt-worker-bundle"
+  "cloudflare/workers-otel-utels"
+  "devops/flaker-storage-cache-on-ci"
+  "devops/workers-cd-rollback"
+  "frontend/review-perspectives/frontend-expert"
+  "frontend/review-perspectives/frontend-ops-expert"
+  "frontend/review-perspectives/performance-expert"
+  "frontend/review-perspectives/react-expert"
+  "frontend/review-perspectives/security-expert"
+  "frontend/review-weekly"
+  "k8s/crd-from-typed-schema"
+  "lang/gleam-practice"
+  "lang/moonbit-js-binding"
+  "lang/moonbit-practice"
+  "lang/ts2moonbit-migration"
+  "meta/mizchi-blog-style"
+  "node/pi-coding-agent"
+  "node/sqlite-vec"
+  "sql/lint"
+  "sql/security"
+  "sql/sqlc-gen-moonbit-safety"
+  "tooling/chezmoi-management"
+  "tooling/dotenvx"
+  "tooling/nix-setup"
+  "tooling/utels-project-bootstrap"
+)
+
+is_excluded_mizchi() {
+  local candidate="$1" excluded
+  for excluded in "${EXCLUDED_MIZCHI[@]}"; do
+    [ "$candidate" = "$excluded" ] && return 0
+  done
+  return 1
+}
 
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
@@ -98,10 +134,13 @@ check_upstream() {
   local head_commit
   head_commit="$(git -C "$clone_dir" rev-parse HEAD)"
 
-  # 完全ミラー上流は「上流 HEAD の SKILL.md を持つ全ディレクトリ」を対象に自動導出
+  # 上流 HEAD の SKILL.md を持つディレクトリを自動導出し、明示的な除外を飛ばす。
   if [ "$map_mode" = "mirror" ]; then
     map=()
     while read -r rel; do
+      if [ "$name" = "mizchi/skills" ] && is_excluded_mizchi "$rel"; then
+        continue
+      fi
       map+=("skills/$rel:$rel")
     done < <(git -C "$clone_dir" ls-tree -r --name-only "$head_commit" | grep '/SKILL.md$' | sed 's|/SKILL.md$||')
   fi
@@ -116,12 +155,12 @@ check_upstream() {
   fi
   echo
 
-  # 完全ミラーの場合、上流に「新しく増えた skill」も検知したい
+  # 上流に新しく増え、まだ選定していない skill も検知する。
   if [ "$map_mode" = "mirror" ]; then
     for entry in "${map[@]}"; do
       local local_path="${entry%%:*}"
       if [ ! -d "$ROOT/$local_path" ]; then
-        echo "★ 上流に新規 skill: ${entry##*:}(ローカル未取込)"
+        echo "★ 上流に新規 skill: ${entry##*:}(ローカル未選定)"
         TOTAL_CHANGED=$((TOTAL_CHANGED+1))
       fi
     done
@@ -161,4 +200,4 @@ check_upstream "mattpocock/skills" "https://github.com/mattpocock/skills.git" "$
 check_upstream "mizchi/skills"     "https://github.com/mizchi/skills.git"     "$TMP/mizchi"     "mirror"
 
 echo "=============================================="
-echo "合計: $TOTAL_CHANGED 件(上流更新 + 未取込の新規)"
+echo "合計: $TOTAL_CHANGED 件(上流更新 + 未選定の新規)"
