@@ -1,0 +1,4 @@
+interface:
+  display_name: "Decision Interview"
+  short_description: "Turn an ambiguous idea into explicit decisions"
+  default_prompt: "Use $decision-interview to turn this idea into explicit, user-approved decisions."
