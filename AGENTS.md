@@ -16,13 +16,14 @@ source of truth。ここを編集したら各ランタイムへの反映が要�
   そのため `scripts/gen-codex-agents.sh` が instructions/core を結合して
   codex 向け `~/.codex/AGENTS.md` を生成する。
 
-**どちらの反映(`apm install` / `gen-codex-agents.sh`)もユーザーが手で実行する。**
-agent が勝手に実行するものではない。agent の責務は instructions/core と
-`scripts/gen-codex-agents.sh` を正しく保つところまで。
+**両ランタイムへの反映はユーザーが手で実行する。**`just sync` で一括反映できる
+(= `apm update --yes` + `gen-codex-agents.sh`)。agent が勝手に実行するものではない。
+agent の責務は instructions/core と `scripts/gen-codex-agents.sh` を正しく保つところまで。
 
 - `gen-codex-agents.sh` は instructions を glob で拾うので、ファイルの追加・削除に
   自動追従する。instruction を増減しても スクリプト側の修正は不要。
-- 生成物が最新か検証: `scripts/gen-codex-agents.sh --check`(差分があれば非0終了)。
+- 生成物が最新か検証: `just check`(= `gen-codex-agents.sh --check`、差分があれば非0終了)。
+- レシピ一覧: `just`(= `just --list`)。
 
 ## commit 規約
 
