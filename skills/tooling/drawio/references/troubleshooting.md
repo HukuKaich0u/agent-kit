@@ -12,6 +12,7 @@ Read this when something looks wrong in the output (rendering, export, layout, e
 | Literal `\n` in label text | Use `&#xa;` for line breaks in `value` attributes |
 | Overlapping shapes | Scale spacing with complexity (200–350px); leave routing corridors. Run `scripts/validate.py` — it detects overlaps in absolute coordinates, container overflow, and icon label-zone collisions |
 | Edges crossing through shapes | Add waypoints, distribute entry/exit points, or increase spacing. `validate.py` flags blocked edge corridors deterministically |
+| Export looks tangled even though `validate.py` passed clean | validate.py lints the model; the real routes are chosen by draw.io's router at render time. Run `scripts/renderlint.py <file>.drawio` — it lints the exported SVG's actual geometry (edges through nodes/labels, stacked collinear edges, measured label collisions, crossing counts) |
 | Edge label struck through by its own line / unreadable at crossings | Add `labelBackgroundColor=#ffffff;` to the edge style; shift the label along the edge (label geometry `x` −0.6…0.6) away from bends and other labels |
 | Vertical line cuts through an AWS icon's name text | The label paints *below* the icon (outside its geometry) and the edge exits bottom-center. Exit at `exitX=0.25/0.75;exitY=1` or a side instead — see `references/aws-architecture.md` |
 | Text hidden under a shape or line | Document order = paint order. Move free text/legend cells to the end of `<root>`; never place an edge before a filled container (it vanishes under the fill) |

@@ -31,7 +31,7 @@ Every `mxgraph.aws4.resourceIcon` style carries `verticalLabelPosition=bottom;ve
 
 ## Port discipline on bottom-labeled icons
 
-- **Never `exitX=0.5;exitY=1` (bottom center)** — the vertical line strikes straight through the label text. This is the #1 cause of "text under a line".
+- **Never `exitX=0.5;exitY=1` (bottom center)** — the vertical line strikes straight through the label text. This is the #1 cause of "text under a line". (`validate.py` warns on it deterministically; `renderlint.py` re-checks the rendered route, which also catches wide labels that a 0.25/0.75 exit still strikes.)
 - Downward edge → exit at `exitX=0.25;exitY=1` or `exitX=0.75;exitY=1` (the two lines straddle the centered label), or exit a side (`exitX=0/1;exitY=0.5..0.8`).
 - Entering the **top** of an icon (`entryY=0`) is always safe. Side entries are safe.
 - Cross-cutting edges (logs, metrics, image pull) must not cut across the main flow: exit sideways and route through a **reserved corridor** (see below).
@@ -138,6 +138,7 @@ Resource icons: get exact styles with `shapesearch.py` (`python3 <this-skill-dir
 ## Pre-export checklist (AWS diagrams)
 
 - `validate.py` reports 0 errors / 0 warnings (it models label zones, container bounds, edge corridors)
+- After the draft export, `renderlint.py` reports 0 warnings (it checks the **rendered** SVG: real routes through icons/labels, stacked edges, measured label collisions — including wide labels that a 0.25/0.75 exit still strikes)
 - No `exitX=0.5;exitY=1` on any bottom-labeled icon
 - Every labeled edge has `labelBackgroundColor`
 - No full-size empty containers; every container sized to content + padding

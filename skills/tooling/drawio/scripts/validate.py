@@ -26,6 +26,15 @@ Layout (warnings — the overlap/readability class of bugs):
     points or waypoints (they render stacked)
   - labeled edges without labelBackgroundColor (unreadable where they cross
     other edges/shapes)
+  - bottom-center exits/entries on bottom-labeled icons (the line strikes the
+    label text — the #1 "text under a line" bug)
+  - edge corridors passing through external (below-icon) label zones
+  - arrowheads landing on a bend (final segment <20px; checked when waypoints
+    + a pinned entry make the path exact)
+
+Notes (informational, not counted in the gate):
+  - straight-corridor edge-crossing estimate; the rendered truth comes from
+    renderlint.py (SVG-based post-render lint) after export.
   - AWS official-style conformance (needs data/aws-icon-index.json):
     resourceIcon fillColor must equal the official category color (error),
     group frames must match an official variant (error), unknown
@@ -278,16 +287,16 @@ def edge_polyline(cell, ids, st):
 # ---------- per-page checks ----------
 
 def check_page(diagram):
-    """Return (errors, warnings) for one <diagram> page."""
+    """Return (errors, warnings, notes) for one <diagram> page."""
     name = diagram.get("name", "?")
     model = diagram.find("mxGraphModel")
     if model is None:
         if (diagram.text or "").strip():
-            return [], [f"page {name!r}: compressed, skipped (cannot lint)"]
-        return [f"page {name!r}: no <mxGraphModel>"], []
+            return [], [f"page {name!r}: compressed, skipped (cannot lint)"], []
+        return [f"page {name!r}: no <mxGraphModel>"], [], []
     root = model.find("root")
     cells = root.findall(".//mxCell") if root is not None else []
-    errors, warns = [], []
+    errors, warns, notes = [], [], []
 
     ids = {}
     for c in cells:
@@ -442,6 +451,89 @@ def check_page(diagram):
             warns.append(f"edge {eid!r} ({e.get('source')}→{e.get('target')}) {via} passes through "
                          f"node {cid!r} — add/adjust waypoints, pin exit/entry, or move the node")
 
+    # --- bottom-labeled icons: bottom-center exit/entry strikes the label ---
+    for e in edges:
+        st = style_of(e)
+        for end, xk, yk, verb in (("source", "exitX", "exitY", "exits"),
+                                  ("target", "entryX", "entryY", "enters")):
+            cell = ids.get(e.get(end))
+            if cell is None or not has_external_bottom_label(style_of(cell)):
+                continue
+            try:
+                fx, fy = float(st[xk]), float(st[yk])
+            except (KeyError, ValueError):
+                continue
+            if abs(fx - 0.5) < 0.01 and abs(fy - 1.0) < 0.01:
+                warns.append(f"edge {e.get('id')!r} {verb} bottom-center of "
+                             f"bottom-labeled {e.get(end)!r} — the line strikes "
+                             f"the label text below the icon; use exitX/entryX="
+                             f"0.25 or 0.75 at Y=1, or a side port")
+
+    # --- edge corridors through external label zones ---
+    for e in edges:
+        st = style_of(e)
+        pts = edge_polyline(e, ids, st)
+        if not pts:
+            continue
+        pinned_exit = "exitX" in st and "exitY" in st
+        pinned_entry = "entryX" in st and "entryY" in st
+        lhit = set()
+        for k in range(len(pts) - 1):
+            for lcid, lr in ext:
+                if lcid in lhit:
+                    continue
+                # own endpoints only when the endpoint is pinned (else the
+                # center-based corridor proxy would false-positive)
+                if lcid == e.get("source") and not pinned_exit:
+                    continue
+                if lcid == e.get("target") and not pinned_entry:
+                    continue
+                if seg_hits_rect(pts[k], pts[k + 1], lr, shrink=1.0):
+                    lhit.add(lcid)
+        for lcid in sorted(lhit):
+            warns.append(f"edge {e.get('id')!r} corridor passes through the "
+                         f"external label of {lcid!r} — the line strikes the "
+                         f"text; reroute (waypoints/other port) or wrap the "
+                         f"label with &#xa;")
+
+    # --- arrowhead landing room (exact only with waypoints + pinned entry) ---
+    for e in edges:
+        st = style_of(e)
+        g = e.find("mxGeometry")
+        arr = g.find("Array[@as='points']") if g is not None else None
+        if arr is None or "entryX" not in st or "entryY" not in st:
+            continue
+        pts = edge_polyline(e, ids, st)
+        if not pts or len(pts) < 3:
+            continue
+        d = math.hypot(pts[-1][0] - pts[-2][0], pts[-1][1] - pts[-2][1])
+        if d < 20:
+            warns.append(f"edge {e.get('id')!r} final segment is {d:.0f}px "
+                         f"(<20px) — the arrowhead lands on the bend; move the "
+                         f"last waypoint or increase node spacing")
+
+    # --- proxy edge-edge crossings (note only; real routes: renderlint.py) ---
+    polys = []
+    for e in edges:
+        pts = edge_polyline(e, ids, style_of(e))
+        if pts:
+            polys.append((e.get("source"), e.get("target"), pts))
+    ncross = 0
+    for i in range(len(polys)):
+        for j in range(i + 1, len(polys)):
+            sa, ta, pa = polys[i]
+            sb, tb, pb = polys[j]
+            if {sa, ta} & {sb, tb}:               # shared port: converging is normal
+                continue
+            if any(segs_intersect(pa[k], pa[k + 1], pb[m], pb[m + 1])
+                   for k in range(len(pa) - 1) for m in range(len(pb) - 1)):
+                ncross += 1
+    if ncross:
+        notes.append(f"~{ncross} edge pair(s) cross in the straight-corridor "
+                     f"approximation — reduce by moving nodes / reserving "
+                     f"corridors; run renderlint.py after export for the "
+                     f"rendered truth")
+
     # --- stacked parallel edges ---
     seen_pairs = {}
     for e in edges:
@@ -508,7 +600,7 @@ def check_page(diagram):
                     errors.append(f"cell {cid!r} group frame (grIcon {gi!r}) does not match "
                                   f"any official variant ({names}) — copy the style verbatim "
                                   f"from references/aws-architecture.md")
-    return errors, warns
+    return errors, warns, notes
 
 
 def main():
@@ -521,11 +613,14 @@ def main():
     except (ET.ParseError, OSError) as exc:
         sys.exit(f"error: cannot parse {args.file}: {exc}")
     pages = tree.getroot().findall("diagram") or [tree.getroot()]
-    errors, warns = [], []
+    errors, warns, notes = [], [], []
     for page in pages:
-        e, w = check_page(page)
+        e, w, n = check_page(page)
         errors += e
         warns += w
+        notes += n
+    for n in notes:
+        print(f"note: {n}")
     for w in warns:
         print(f"warning: {w}")
     for e in errors:
