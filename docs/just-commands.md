@@ -1,6 +1,6 @@
 ---
 created: 2026-07-24
-author: Claude Opus 4.8 (1M context)
+author: Koki Aoyagi
 type: runbook
 ---
 
