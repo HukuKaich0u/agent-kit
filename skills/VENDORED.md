@@ -36,7 +36,15 @@ type: reference
   `devops/gh-fix-ci` のみ Apache-2.0 の `LICENSE.txt` 同梱。
 - Vendored commit: `7a0d72866a0bb3e9ac3e2768c328b09ba2bc40c4`
 - Vendored date: 2026-07-20(初回 import は 2026-06-28 の `d799945`)
-- 改造: **全36本なし**(上流 verbatim)
+- 改造: **1本**(下記「改造記録」参照)。残り35本は上流 verbatim。
+
+### 改造記録(2026-07-24 — skill-selector を agent-kit 一次カタログ化)
+
+`meta/skill-selector` を上流 mizchi の外部カタログ前提から agent-kit 専用に全面改造した。
+
+| skill | 改造内容 |
+|---|---|
+| `skills/meta/skill-selector` | `references/catalog.md` を mizchi 外部レジストリの一覧から**このリポジトリ現存78本**の一次カタログへ全面再構築(install 文字列を `HukuKaich0u/agent-kit/skills/<path>` に統一、状態列を INVENTORY の ✅/🔧/⏸/🎯 に対応、削除済み MoonBit/Gleam/Cloudflare/AWS/dotenvx/Nix/pkfire/chezmoi 等の行を一掃)。SKILL.md のシグナル例・APM 0.12/`--frozen-lockfile` 記述・Related の superpowers/chezmoi 参照・同期先 `mizchi/skills` を修正。`evals/` の scenario-a/b を現行スタック(TS+Playwright / Rust+SQL)へ作り直し、ledger をリセット |
 
 **上流パスの対応**: 選定した skill を `skills/<上流パス>` にそのまま配置(リネームなし)。
 `scripts/check-vendored.sh` は上流の skill を自動検出し、明示的な除外を飛ばして残した skill の更新を確認する。

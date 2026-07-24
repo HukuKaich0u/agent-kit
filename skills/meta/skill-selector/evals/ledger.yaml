@@ -1,45 +1,8 @@
 eval: skill-selector-eval
 skill: skill-selector
-patterns:
-  - rule: >-
-      When a platform-mismatch caveat triggers a "read the underlying SKILL.md"
-      branch, the executor should have read access to the installed skill tree
-      or the upstream clone. If neither is available, surface the uncertainty
-      explicitly in the proposal rather than silently skipping the check — which
-      is what was done here.
-    seen_in:
-      - 1
-    representative_issue: >-
-      Could not read `flaker-setup` SKILL.md to verify core capability vs GH
-      Actions coupling before proposing.
-iterations:
-  - iter: 1
-    timestamp: '2026-05-09T15:35:44.271Z'
-    overall_pass_rate: 0.825
-    new_unclear_count: 1
-    reseen_count: 0
-    total_unclear: 1
-    new_rules:
-      - >-
-        When a platform-mismatch caveat triggers a "read the underlying
-        SKILL.md" branch, the executor should have read access to the installed
-        skill tree or the upstream clone. If neither is available, surface the
-        uncertainty explicitly in the proposal rather than silently skipping the
-        check — which is what was done here.
-    reseen_rules: []
-  - iter: 2
-    timestamp: '2026-05-09T15:38:57.832Z'
-    overall_pass_rate: 0.95
-    new_unclear_count: 0
-    reseen_count: 0
-    total_unclear: 0
-    new_rules: []
-    reseen_rules: []
-  - iter: 3
-    timestamp: '2026-05-09T15:47:54.999Z'
-    overall_pass_rate: 1
-    new_unclear_count: 0
-    reseen_count: 0
-    total_unclear: 0
-    new_rules: []
-    reseen_rules: []
+# 2026-07-24: catalog を agent-kit 現存78本へ全面再構築し、scenario-a/b も
+# 現行スタック(TS+Playwright / Rust+SQL)へ作り直したため、旧 catalog 前提の
+# 実行履歴(flaker-setup 等への unclear point を含む)をリセットした。
+# waxa-eval 稼働時にゼロから ledger を積み直す。
+patterns: []
+iterations: []
