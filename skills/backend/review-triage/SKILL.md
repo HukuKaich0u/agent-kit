@@ -29,7 +29,7 @@ You are starting a backend review. Your job is to classify the service, detect t
 
 ## Output
 
-Write `<repo>/.backend-review/report/latest/md/triage.md` with:
+Report the triage plan in the conversation by default. If the user wants a file, write it to a path they choose (or `docs/reviews/triage.md`) with:
 
 - **Service classification** — type(s), one line each on the evidence
 - **Stack table** — language / framework / ORM / DB engine(s) / queue / cache
@@ -42,7 +42,7 @@ Keep it under 150 lines. If you are writing findings about N+1s or transactions 
 ## Boundaries
 
 - Do NOT report domain findings; only classify and plan.
-- Do NOT modify any files outside `<repo>/.backend-review/`.
+- Do NOT modify source files — this is a read-only classification pass.
 - If the user already named a concern ("check for N+1"), skip triage and invoke that lens directly.
 
 ## Related
@@ -54,4 +54,4 @@ Keep it under 150 lines. If you are writing findings about N+1s or transactions 
 ## Agent compatibility
 
 - Claude と Codex のどちらでも使える。検出は manifest 読解と `grep` のみで、harness 固有機能に依存しない。
-- `<repo>/.backend-review/` は出力規約で、任意の作業ディレクトリに読み替えてよい。
+- 出力は会話内報告が既定。ファイルが要るときだけユーザーの指定パス(または `docs/reviews/`)へ書く。

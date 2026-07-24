@@ -15,15 +15,16 @@ Rules of this review:
 
 ## Procedure
 
-1. **Map the actual dependency graph.** Identify the modules/packages and who imports whom. For anything non-trivial use a tool rather than eyeballing:
-   - TS/JS: `npx madge --circular src/` (also `madge --summary`)
+1. **Map the actual dependency graph.** Identify the modules/packages and who imports whom. For anything non-trivial use a tool rather than eyeballing. Prefer tools already present in the repo/toolchain; introducing a new tool (including anything fetched over the network, e.g. `npx madge`) needs the human's approval first — if unavailable or unapproved, fall back to reading imports (see below) and note the precision tradeoff in the report.
+   - Rust: `cargo modules generate graph` (if `cargo-modules` is installed) or `cargo tree` for crate-level deps; otherwise grep `^use crate::\|^use super::\|^mod ` per crate
+   - TS/JS: `npx madge --circular src/` (also `madge --summary`) — only with approval per the network-tool rule above
    - Go: `go list -deps`, import cycles fail the build already — look at package granularity instead
    - Python: `grep -rn "^from \|^import "` per package, or `pydeps`
-   Record: entry points, the direction of imports, and any cycles.
+   Record: entry points, the direction of imports, and any cycles. If no tool is available or approved, read imports directly and say so in the report.
 2. **Dependency direction.** The one structural rule worth enforcing everywhere, at any size: **core business logic must not import delivery or infrastructure details.** Findings:
-   - domain/service code importing the web framework (types from express/fastify/gin/rails controllers) — logic becomes untestable without the framework and unusable from the worker/CLI
+   - domain/service code importing the web framework (types from express/fastify/gin/rails controllers, or a Rust web crate like axum/actix-web) — logic becomes untestable without the framework and unusable from the worker/CLI
    - business rules living inside route handlers/controllers when the same rule is (or will be, evidenced by a second caller) needed elsewhere
-   - circular imports between feature modules — always a finding; they make change ripple unpredictable
+   - circular imports between feature modules — always a finding; they make change ripple unpredictable (Rust workspaces: a cycle between crates fails the build, but cycles between modules within one crate do not and are still worth flagging)
 3. **Boundary leaks.** Data shapes crossing layers they shouldn't:
    - ORM entities/rows serialized directly as API responses — every schema change becomes a silent API change; accidental exposure of new columns (this is also a security finding). Check: does adding a column to the DB change any HTTP response body?
    - raw request objects passed deep into services (`req` as a parameter three calls down)
@@ -42,7 +43,7 @@ Rules of this review:
 
 ## Output
 
-Write `<repo>/.backend-review/report/latest/md/architecture-review.md` with:
+Report the findings in the conversation by default. If the user wants a file, write a Markdown report at a path they choose (or `docs/reviews/architecture-review.md`) with:
 
 - **Dependency map summary** — modules, direction, cycles (paste tool output for cycles)
 - **Findings** — each as: location → concrete cost/failure → minimal fix → effort (S/M/L)
@@ -62,9 +63,9 @@ Keep under 250 lines. If every finding says "extract a layer", restart the revie
 ## Related
 
 - `backend-review-triage` — decides whether this lens is worth running at all
-- `lang/typescript`, `lang/rust` — language-level idioms
+- `lang/rust`, `lang/go`, `lang/python`, `lang/typescript` — language-level idioms
 - `meta/retrospective-codify` — turning repeated review findings into project rules
 
 ## Agent compatibility
 
-- Claude と Codex のどちらでも使える。依存グラフの取得に `madge` 等を使うが、無ければ import 文の読解で代替可能(その場合レポートに精度の注記を入れる)。
+- Claude と Codex のどちらでも使える。依存グラフの取得に `cargo-modules`/`madge`/`pydeps` 等の既存ツールを使うが、未導入・未承認の場合は import 文の読解で代替可能(その場合レポートに精度の注記を入れる)。新規ツール導入(特にネットワーク越しの取得)は承認制。

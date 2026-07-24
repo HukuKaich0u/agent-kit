@@ -1,6 +1,6 @@
 ---
 name: backend-review-data-access
-description: 'Use when reviewing how a backend talks to its database — N+1 queries, queries inside loops, missing eager loading, overfetching, missing pagination, and index/WHERE mismatches. ORM-aware (Prisma, Drizzle, TypeORM, ActiveRecord, Django ORM, SQLAlchemy, GORM), engine-generic, with a DynamoDB variant (Scan-in-request-path, unbatched Get/Put loops, dropped pagination cursors). Evidence-first: findings must be confirmed by reading the actual query path, not pattern-matching alone.'
+description: 'Use when reviewing how a backend talks to its database — N+1 queries, queries inside loops, missing eager loading, overfetching, missing pagination, and index/WHERE mismatches. ORM-aware (Prisma, Drizzle, TypeORM, ActiveRecord, Django ORM, SQLAlchemy, GORM, SQLx, Diesel, SeaORM), engine-generic, with a DynamoDB variant (Scan-in-request-path, unbatched Get/Put loops, dropped pagination cursors). Evidence-first: findings must be confirmed by reading the actual query path, not pattern-matching alone.'
 ---
 
 # Backend Review — Data Access
@@ -32,6 +32,11 @@ The failure mode to avoid in YOUR review: reporting a "possible N+1" from a grep
 | Django ORM | `obj.fk` / `obj.set.all()` in template/loop | `select_related` / `prefetch_related` |
 | SQLAlchemy | default lazy relationship in loop | `selectinload` / `joinedload` |
 | GORM | per-row `Association` / follow-up `Find` | `Preload` |
+| SQLx (Rust) | no lazy loading — the trap is a `query!`/`query_as!` issued per iteration of a loop | rewrite as one query with `IN (...)` / a JOIN, or batch via `UNNEST`/temp table |
+| Diesel (Rust) | `belonging_to(&parent)` + `.load()` called per parent in a loop | one `belonging_to(&parents)` call, then group in memory (`.grouped_by(&parents)`), or an explicit join |
+| SeaORM (Rust) | `model.find_related(Entity).all(db)` per row in a loop | `find_with_related` / `LoaderTrait::load_many` for a single batched query |
+
+Cloudflare D1 (Workers/TS access) has no ORM lazy-loading concept — a `db.prepare(...).all()` call per loop iteration is the same explicit-query N+1 as Prisma; check for it the same way as raw SQL/JS above.
 
 4. **Overfetch and missing pagination.**
    - `SELECT *` / no `select:` on wide tables when only 2–3 columns are used.
@@ -42,16 +47,17 @@ The failure mode to avoid in YOUR review: reporting a "possible N+1" from a grep
    - `Scan` (or `Query` + broad `FilterExpression`) in a request path — filters run AFTER the read, so you pay for and read the whole table/partition; must be a `Query` on a key or GSI.
    - `GetItem`/`PutItem` inside a loop — the literal N+1; use `BatchGetItem` (≤100) / `BatchWriteItem` (≤25) with unprocessed-item retry.
    - Ignored `LastEvaluatedKey` — Query/Scan silently truncate at 1MB; a list endpoint that drops the cursor returns partial data with no error.
-   - Missing `ProjectionExpression` on wide items (the `SELECT *` equivalent), and hot-partition key design (low-cardinality or monotonically increasing partition keys) on the hottest access paths.
+   - Missing `ProjectionExpression` on wide items when the handler only needs a few attributes. **This is not the `SELECT *` overfetch fix it looks like**: `ProjectionExpression` filters the response payload after the read — RCU/WCU consumption is based on the full item size regardless of which attributes are projected out (the one exception is a GSI whose own projection is already narrower, where the *index's* stored projection, not the query-time expression, determines capacity). Flag missing `ProjectionExpression` for network-transfer and payload-size reasons only; do not claim it reduces read capacity.
+   - Hot-partition key design (low-cardinality or monotonically increasing partition keys) on the hottest access paths.
 7. **Connection handling.** One pool per process (not per request); transactions/connections released on error paths; pool size not defaulted to 1 or unbounded.
 
 ## Measure-First Principle
 
-Static reading finds candidates; query logs confirm them. For each N+1 finding, include the one-line way to prove it in this stack (Prisma `log: ['query']`, ActiveRecord log + `bullet` gem, Django `connection.queries` / debug toolbar, SQLAlchemy `echo=True`, GORM `Logger`). Recommendations that would add complexity (denormalization, caching) require measured evidence first; plain eager-loading fixes do not.
+Static reading finds candidates; query logs confirm them. For each N+1 finding, include the one-line way to prove it in this stack (Prisma `log: ['query']`, ActiveRecord log + `bullet` gem, Django `connection.queries` / debug toolbar, SQLAlchemy `echo=True`, GORM `Logger`, SQLx/Rust `RUST_LOG=sqlx=debug` or `tracing` with the `sqlx` target enabled). Recommendations that would add complexity (denormalization, caching) require measured evidence first; plain eager-loading fixes do not.
 
 ## Output
 
-Write `<repo>/.backend-review/report/latest/md/data-access-review.md` with:
+Report the findings in the conversation by default. If the user wants a file, write a Markdown report at a path they choose (or `docs/reviews/data-access-review.md`) with:
 
 - **Confirmed N+1s** — file:line, the per-item query, the eager-loading fix, how to verify by log
 - **Unbounded queries** — endpoint → query, suggested pagination shape

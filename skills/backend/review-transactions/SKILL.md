@@ -19,25 +19,29 @@ The most common AI-generated problems are: multiple dependent writes with no tra
 3. **Transaction scope — too wide.** Inside any transaction, flag: HTTP/gRPC calls, queue publishes, email sends, sleeps, file I/O, and per-item loops over unbounded input. These hold locks/connections for the duration and turn a slow dependency into a DB outage. External calls move outside; see dual-write below for the ones that "must" be inside.
 4. **Transaction scope — illusory.** ORM-specific traps where the code looks transactional but isn't:
    - queries inside a "transaction" that don't use the tx handle (Prisma: using `prisma.x` instead of the `tx` callback arg; Knex/TypeORM: missing `transacting`/manager; SQLAlchemy: second session).
+   - Rust: SQLx — a query issued against a `Pool` (or a fresh `pool.acquire()`) instead of `&mut *tx` inside a `Transaction` runs on a different pooled connection and is not part of the transaction; every statement meant to be transactional must take the `&mut Transaction`/`&mut PgConnection` handle explicitly.
+   - Rust: Diesel — `conn.transaction(|conn| { ... })` gives the closure a connection argument; a statement inside that calls out to code which grabs a *different* connection (e.g. from a pool, or a second `establish()`) silently runs outside the transaction.
    - nested transaction helpers that silently join the outer tx (ActiveRecord nested `transaction` without `requires_new`, and even then rollback via savepoint semantics).
    - transactions opened per-statement by autocommit when the author assumed a wrapping tx.
-5. **Isolation assumptions.** Identify what the code implicitly assumes and check it against the engine default:
+5. **Isolation assumptions.** Identify what the code implicitly assumes and check it against the engine default. Note: engine/SDK limits and defaults drift across versions — the `TransactWriteItems` item/size cap in the table below reflects DynamoDB's documented limits as of this writing; verify current numbers against the target engine/SDK's official docs rather than treating them as fixed knowledge.
 
 | Engine | Default isolation | Trap |
 |---|---|---|
 | Postgres | Read Committed | each statement sees a fresh snapshot; two reads in one tx can differ; RMW races are NOT prevented |
 | MySQL/InnoDB | Repeatable Read | consistent snapshot reads, but writes see current data → write skew surprises; gap locks cause unexpected deadlocks |
 | SQLite | Serializable (single writer) | no concurrency bugs, but long write tx = `SQLITE_BUSY` for everyone; keep writes short, use `BEGIN IMMEDIATE` for RMW |
-| DynamoDB | none — per-item atomic only | plain `GetItem`→`PutItem` RMW is a lost update: use `ConditionExpression` (+ version attribute) or `UpdateItem` with arithmetic; multi-item invariants need `TransactWriteItems` (≤100 items/4MB, idempotency via `ClientRequestToken`); GSIs are eventually consistent — never read-own-write through a GSI |
+| DynamoDB | none — per-item atomic only | plain `GetItem`→`PutItem` RMW is a lost update: use `ConditionExpression` (+ version attribute) or `UpdateItem` with arithmetic; multi-item invariants need `TransactWriteItems` (≤100 items/4MB — verify against current docs, idempotency via `ClientRequestToken`); GSIs are eventually consistent — never read-own-write through a GSI |
 
    Code assuming "repeatable read within a tx" on Postgres, or "my SELECT locked the row" on any engine without `FOR UPDATE`, is a finding. On DynamoDB the equivalent finding is any read-check-write in application code without a `ConditionExpression` — there is no lock to hope for.
+
+   Cloudflare D1 shares SQLite's single-writer semantics but runs them over a distributed, HTTP-fronted storage layer: `BEGIN IMMEDIATE` still serializes writes, but round-trip latency per statement is far higher than local SQLite, so a transaction that is "short" by local-SQLite standards can still hold the write lock long enough to matter — check batch/transaction size against D1's actual RTT, not local-file intuition.
 6. **Deadlock ordering.** Where multiple rows/tables are locked (explicitly or by writes), check every code path acquires them in one consistent order (e.g. always lock accounts by ascending id). Flag pairs of endpoints that write the same two tables in opposite orders.
 7. **Dual-write (DB + queue/event).** Find every place a DB write and a message publish must both happen. Publishing inside the tx (the publish is not rolled back with the tx → ghost event for a write that never happened) and publishing after commit (crash between commit and publish → event lost) are BOTH broken under failure. Durable fix: outbox table written in the same tx + relay, or CDC. Flag each dual-write and state which failure window it currently has; recommend outbox only where the business impact justifies it.
 8. **Retries × idempotency.** For every handler that can be retried (queue consumers are at-least-once by default; HTTP clients with retry middleware; webhooks), check the effect of running it twice: double-charge, double-send, duplicate rows? Require an idempotency key / unique constraint / upsert, or an explicit statement of why duplication is tolerable.
 
 ## Output
 
-Write `<repo>/.backend-review/report/latest/md/transactions-review.md` with:
+Report the findings in the conversation by default. If the user wants a file, write a Markdown report at a path they choose (or `docs/reviews/transactions-review.md`) with:
 
 - **Invariant table** — operation → writes involved → tx present? → verdict
 - **Race conditions** — file:line, interleaving that corrupts state (write it as "request A does X, request B does Y"), and the atomic fix
