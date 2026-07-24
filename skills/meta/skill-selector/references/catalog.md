@@ -206,8 +206,9 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 |---|---|---|---|
 | 🔧 | to-spec | `tooling/to-spec` | 合意済み会話を不変のdesign recordとして `docs/specs/` へ固定 |
 | 🔧 | to-tickets | `tooling/to-tickets` | design recordを vertical slice の tracer-bullet work ticketへ分割 |
+| 🔧 | to-tasks | `tooling/to-tasks` | 現session限定の2–5段階のephemeral task listへ分割 |
 | 🔧 | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める |
-| 🔧 | implement | `tooling/implement` | design record/ticket から tdd → 段階検証 → code-review をつなぐ薄い orchestrator |
+| 🔧 | implement | `tooling/implement` | work ticket/design recordまたはcurrent-session task listから tdd → 段階検証 → code-review をつなぐ薄い orchestrator |
 | 🔧 | wayfinder | `tooling/wayfinder` | 一 session で見通せない大規模案件を decision ticket の地図へ分解(明示起動) |
 
 ---

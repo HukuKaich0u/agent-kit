@@ -21,13 +21,14 @@ The route most work travels. You have an idea and want it built.
    - **`/handoff`** back what you learned, and reference it from the original idea thread.
 3. **Branch — is this a multi-session build?**
    - **Yes** → **`/to-spec`** (turn the approved thread into an immutable design record under `docs/specs/`), then **`/to-tickets`** to split that record into tracer-bullet work tickets, each declaring its **blocking edges**. On a local tracker that's one file per ticket under `.scratch/<feature>/issues/`; on a real tracker the edges become native blocking links, so any ticket whose blockers are done can be grabbed — kick off **`/implement`** per ticket, **clearing context between each one**.
+   - **No, but it needs a short ordered breakdown** → **`/to-tasks`**. It creates a 2–5 step, current-session-only task list and never writes tracker work. Then `/implement` each agreed task without clearing the context.
    - **No** → **`/implement`** right here, in the same context window.
 
-   Either way, **`/implement`** builds each issue by driving **`/tdd`** internally — one red-green slice at a time — then closes out by running **`/code-review`**, a two-axis review (Standards + Intent) of the diff, before committing. Reach for **`/tdd`** on its own when you just want to build a concrete behaviour test-first without a design record, and **`/code-review`** on its own whenever you want to review a branch or PR against a fixed point.
+   Either way, **`/implement`** builds each agreed scope by driving **`/tdd`** internally — one red-green slice at a time — then closes out by running **`/code-review`**, a two-axis review (Standards + Intent) of the diff, before committing. Reach for **`/tdd`** on its own when you just want to build a concrete behaviour test-first without a design record, and **`/code-review`** on its own whenever you want to review a branch or PR against a fixed point.
 
 ### Context hygiene
 
-Keep steps 1–3 in **one unbroken context window** — don't compact or clear until after `/to-tickets` — so the grilling, design record, and tickets all build on the same thinking. Each `/implement` then starts fresh, working from the ticket.
+Keep steps 1–3 in **one unbroken context window** — don't compact or clear until after `/to-tickets` or `/to-tasks` — so the grilling and its implementation plan build on the same thinking. Each tracker-backed `/implement` then starts fresh, working from its ticket; `/to-tasks` stays in the current context.
 
 The limit on this is the **[smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)**: the window (~120k tokens on state-of-the-art models) within which the model still reasons sharply. If a session approaches it before `/to-tickets`, don't push on degraded — `/handoff` and continue in a fresh thread.
 

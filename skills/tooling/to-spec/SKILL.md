@@ -58,7 +58,9 @@ What this decision covers and deliberately excludes.
 
 ## Decisions and rationale
 
-The choices agreed in this conversation, their trade-offs, and any rejected alternatives worth remembering. Do not include volatile file paths, code snippets, or a predicted final implementation structure.
+The choices agreed in this conversation, their trade-offs, and any rejected alternatives worth remembering. Do not include volatile file paths or a predicted final implementation structure.
+
+When prose cannot preserve an agreed decision precisely, include the smallest **decision-dense** excerpt from a prototype: a state machine, reducer, schema, or type shape. Identify it as prototype-derived and explain the decision it records. Do not include a runnable prototype, an implementation walkthrough, or ordinary production code.
 
 ## Ticketing evidence
 

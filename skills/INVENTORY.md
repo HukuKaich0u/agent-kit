@@ -372,7 +372,10 @@ agent-kit の全 skill(現在 **81本**)の棚卸しと状態管理。
   `0fd8ec3` から設計材料として回収できる。`schema-audit` のdrop candidateはcatalog外queryとproduction usageを
   確認する人間向けsignalに限定し、N+1はRust / TypeScriptのASTまたは実際のquery layerに合わせて作り直す。
   engineと導入projectが決まるまでは通常導線に載せない要カスタム候補。
-- **tooling/implement** — design record / ticketから `tdd`、段階的検証、`code-review` をつなぐ薄いorchestratorとして
+- **tooling/to-tasks** — durableなrecordやtracker issueを作るほどではない2–5段階の作業を、現session限定の
+  ephemeral task listへ分解する。Issue・label・dependencyを一切書かず、multi-session化・他agentへの委譲・
+  durableな追跡が必要になったら `to-spec` → `to-tickets` へ昇格する。
+- **tooling/implement** — work ticketとそのdesign record、または確認済みのcurrent-session task listから `tdd`、段階的検証、`code-review` をつなぐ薄いorchestratorとして
   残す。一度に一つの合意済みscope、開始時のbase commitと既存変更の保全、狭いtestから広いtestへの展開、
   review findings修正後の再検証、理解可能なvertical sliceを原則にする。実装・検証・review結果を提示し、
   commitとtracker更新は明示承認後に行うよう直す。`code-review` 修正後に使う高優先度候補。

@@ -118,6 +118,8 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [domain.md](./domain.md) — domain doc consumer rules + layout
 - [design-records.md](./design-records.md) — immutable design-record convention
 
+Before writing `docs/agents/design-records.md`, replace its `created` and `author` frontmatter placeholders with today's date and `git config user.name`. If the configured name is unavailable or is not a human name, ask the user; never copy the placeholders literally.
+
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
 ### 5. Done

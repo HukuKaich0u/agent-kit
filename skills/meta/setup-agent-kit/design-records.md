@@ -1,3 +1,9 @@
+---
+created: <YYYY-MM-DD>
+author: <git config user.name>
+type: configuration
+---
+
 # Design records
 
 Design records live in `docs/specs/YYYY-MM-DD-<slug>.md`.

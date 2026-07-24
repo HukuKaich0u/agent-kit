@@ -16,6 +16,8 @@ The issue tracker, triage labels, and design-record convention should be availab
 
 Require a path under `docs/specs/YYYY-MM-DD-<slug>.md`. Read the full design record, including its historical-record notice and any `## Supersedes` section. Verify that this path is tracked, committed, and has no staged or unstaged changes. Do not require unrelated worktree changes to be clean. If the user has only a raw conversation, an unapproved plan, or an uncommitted record, direct them to `/to-spec` first; do not create tickets from a mutable draft.
 
+For a 2–5 step breakdown that stays in the current session and must never publish tracker work, use `/to-tasks` instead. Do not use that ephemeral path as a fallback for creating issues.
+
 Treat code, tests, ADRs, and the glossary as current truth whenever they differ from the historical record. If the divergence changes the intended work, stop and ask the user to re-grill rather than silently repairing the old design.
 
 ### 2. Explore the codebase
@@ -100,4 +102,4 @@ The end-to-end behaviour this ticket makes work, from the user's perspective.
 - A reference to each blocking ticket, or "None — can start immediately".
 </issue-template>
 
-Avoid volatile file paths and code snippets in tickets. Exception: retain only the decision-rich portion of a prototype when prose cannot express a state machine, reducer, schema, or type shape precisely.
+Avoid volatile file paths, code snippets, and duplicated prototype excerpts in tickets. If a decision needs an exact state machine, reducer, schema, or type shape, reference the relevant `## Decisions and rationale` section of the design record instead.
