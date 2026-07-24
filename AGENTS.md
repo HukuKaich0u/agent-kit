@@ -23,7 +23,7 @@ agent の責務は instructions/core と `scripts/gen-codex-agents.sh` を正し
 - `gen-codex-agents.sh` は instructions を glob で拾うので、ファイルの追加・削除に
   自動追従する。instruction を増減しても スクリプト側の修正は不要。
 - 生成物が最新か検証: `just check`(= `gen-codex-agents.sh --check`、差分があれば非0終了)。
-- レシピ一覧: `just`(= `just --list`)。
+- レシピ一覧: `just`(= `just --list`)。各コマンドの説明は [`docs/just-commands.md`](docs/just-commands.md)。
 
 ## commit 規約
 
