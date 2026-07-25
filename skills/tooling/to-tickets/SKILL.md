@@ -62,8 +62,6 @@ Publish in dependency order, blockers first. Every ticket must reference the imm
 
 Apply the configured `ready-for-agent` label only to tickets marked ready in the approved breakdown. Tickets awaiting a human decision, credentials, external approval, or manual verification must make that dependency explicit and must not receive the label.
 
-Work the **frontier** — tickets whose blockers are complete — one at a time with `/implement`, clearing context between tickets.
-
 <local-ticket-template>
 
 # <NN> — <Ticket title>
