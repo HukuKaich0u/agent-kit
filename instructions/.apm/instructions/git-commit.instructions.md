@@ -1,5 +1,5 @@
 ---
-description: When to commit and how to write the message — commit as a durable record that both humans and agents can act on
+description: Commit only with the user's approval, and how to write the message — commit as a durable record that both humans and agents can act on
 ---
 
 A commit is a record that someone reads later — a teammate, or an agent
@@ -18,17 +18,28 @@ Two properties matter more than brevity:
 - **Every commit explains itself.** The reason is in the message, because the
   diff cannot contain it.
 
-## Commit now when
+## Committing requires the user's approval
 
-- a requested task is complete and verified — the default and most common trigger
-- a self-contained part of a larger task is done and verified, and leaves the
-  tree coherent on its own
-- you are about to start a risky or large rewrite of code that currently works —
-  checkpoint first so the working state stays recoverable
-- you are switching to an unrelated task while verified changes sit uncommitted
-- the session is ending or the user is taking over, and verified work is uncommitted
+Never run `git commit` on your own initiative. Task completion, a finished
+sub-step, an upcoming risky rewrite, a task switch, or the session ending —
+none of these authorize a commit by themselves. Commit only when the user has
+approved it:
 
-## Do not commit when
+- a direct instruction ("これcommitして"), or
+- a standing instruction the user gave for the current task
+  ("終わったらcommitしていい").
+
+An approval covers the change it was given for, not every later change in the
+session. When in doubt whether an earlier approval still applies, it does not —
+ask or propose instead.
+
+When work is done and verified but no approval exists, stop at the commit
+boundary and report: say the change is ready to commit, propose the split and
+the subject line(s), and leave the tree uncommitted. Do the same for
+checkpoints before a risky rewrite and at session end — suggest the commit,
+do not make it.
+
+## Even with approval, do not commit when
 
 - the relevant tests / build / lint have not been run, or are failing. Fix or
   revert first.
@@ -147,10 +158,11 @@ Body rules:
 Never `git push`, rebase or otherwise rewrite published history, force-push,
 create tags, or open PRs unless the user asks for it.
 
-`git commit --amend` has one permitted use without a request: folding a small
-follow-up (typo, missed rename site, review nit) into the immediately preceding
-commit, when that commit was created by you in this session and has not been
-pushed. In every other case — someone else's commit, a pushed commit, an older
-commit, a message rewrite the user did not ask for — amend requires an explicit
-request. Never hold a verified fix back waiting for a batch; if amend is not
-permitted, a small follow-up commit is the right call.
+`git commit --amend` is allowed without a separate amend request in exactly one
+case: the user approved committing a small follow-up (typo, missed rename site,
+review nit), and the immediately preceding commit was created by you in this
+session with the user's approval and has not been pushed — then folding the
+follow-up in via amend is fine. In every other case — someone else's commit, a
+pushed commit, an older commit, a message rewrite the user did not ask for —
+amend requires an explicit request. If amend is not permitted, propose a small
+follow-up commit instead.
