@@ -144,6 +144,3 @@ Do NOT create issues or run `gh issue create` yourself — present the drafts fo
 - These checks are judgement calls, not absolute rules. `SameSite=Strict`, a fixed token lifetime, and `X-Frame-Options` all carry trade-offs (CSRF vs UX, CSP `frame-ancestors` as the modern replacement) — weigh them against the actual system and current OWASP guidance rather than flagging every deviation.
 - CVE triage and trend-watch are handled by `frontend-review-deps`.
 
-## Reference
-
-- OWASP Top Ten: https://owasp.org/www-project-top-ten/

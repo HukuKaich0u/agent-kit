@@ -125,9 +125,3 @@ Do NOT create issues or run `gh issue create` yourself — present the drafts fo
 - These checks are judgement calls, not absolute rules. No single state library is the "correct" answer — weigh findings against the project's existing conventions and report category mismatches (wrong kind of tool) rather than library-choice preferences.
 - Rendering performance (re-renders, memo usage) is covered by `frontend-review-performance`.
 
-## Reference
-
-- TanStack Query: https://tanstack.com/query/latest
-- Zustand: https://zustand.docs.pmnd.rs/
-- Jotai: https://jotai.org/
-- Related: `frontend-review-performance` (re-render profiling)

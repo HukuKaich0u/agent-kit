@@ -154,8 +154,3 @@ Do NOT create issues or run `gh issue create` yourself — present the drafts fo
 - These checks are judgement calls, not absolute rules. Fixed item-count thresholds, "always memoize," and "never use inline callbacks" all ignore React version, compiler presence, and actual measured cost — weigh recommendations against the real stack and profiling evidence.
 - State management architecture (store design, selector granularity) is covered by `frontend-review-state`.
 
-## Reference
-
-- React DevTools Profiler: https://react.dev/learn/react-developer-tools
-- `@tanstack/react-virtual`: https://tanstack.com/virtual/latest
-- React Compiler: https://react.dev/learn/react-compiler
