@@ -28,7 +28,7 @@ Look for the originating design record and ticket, in this order:
 
 1. A path the user passed as an argument. Read that design record or fetch that ticket via `docs/agents/issue-tracker.md`.
 2. A `docs/specs/YYYY-MM-DD-<slug>.md` path in the ticket or commit messages. Fetch any referenced ticket via `docs/agents/issue-tracker.md`, then read the record locally.
-3. A matching design record under `docs/specs/`.
+3. A matching design record under `docs/specs/`. If several match, prefer the most recent date and skip any record that a newer record's `## Supersedes` section replaces.
 4. If nothing is found, ask the user where the design record or ticket is. If they say there isn't one, the **Intent** sub-agent will skip and report "no design record available".
 
 ### 3. Identify the standards sources
