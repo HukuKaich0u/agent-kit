@@ -153,7 +153,6 @@ audit script 依存は除去済みで read-only desk review として動く(2026
 
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| 🔧 | review-image | `ai/review-image` | 単画像を VLM で判定する軽量 review。script が Deno 専用で Bun 環境では実行不可・API cost 上限なし。扱いは保留(2026-07-26) |
 | 🔧 | vlmkit | `ai/vlmkit` | baseline/current の pixel・style・a11y diff を測る VRT 基盤。`@mizchi/vrt` 0.5→0.6 移行が要る要カスタム |
 
 ---

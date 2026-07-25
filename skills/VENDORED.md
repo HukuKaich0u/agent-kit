@@ -112,6 +112,14 @@ perspective 5本はdomain reviewのraw出力を専門家人格で再解釈する
 CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固有観点は、残したdomain skillを
 カスタマイズするときに必要なものだけ回収する。
 
+**除外済み(2026-07-26):**
+
+- `ai/review-image` — OpenRouter vision model で単画像を判定する Deno スクリプト2本
+  (freeform 版と CI gate 版)。スクリプトが `Deno.env` 等の Deno 専用 API 直書きで
+  Bun 環境では実行不可、API cost 上限ガードもない。ユーザーが使わないと判断したため
+  削除。VRT を組む際に必要になれば、上流から取得して waxa と同様の Bun 移植で再導入する。
+  `ai/vlmkit` 本文に例示として名前が残るが一般例のため verbatim を維持
+
 **除外済み(2026-07-24):**
 
 - `cloudflare/deploy` — Cloudflare製品全般を対象とする巨大なplatform referenceで、自分たちのaccount・
