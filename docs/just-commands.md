@@ -1,6 +1,6 @@
 ---
 created: 2026-07-24
-updated: 2026-07-25
+updated: 2026-07-26
 author: Koki Aoyagi
 type: runbook
 ---
@@ -27,9 +27,13 @@ agent-kit のタスクランナーは [`justfile`](../justfile)。
 内部では次を順番に実行する。
 
 ```bash
-cd ~/.apm && apm update --yes
+apm update -g --yes
 ./scripts/gen-codex-agents.sh
 ```
+
+`-g`(global scope)が必須。フラグなしの`apm update`はカレントを
+project扱いして`./.claude/`へdeployするため、`~/.claude/rules/`が
+更新されない(`cd ~/.apm`していても deploy 先は`~/.apm/.claude/`になる)。
 
 - Claudeの反映先: `~/.claude/rules/`
 - Codexの反映先: `~/.codex/AGENTS.md`

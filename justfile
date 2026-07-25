@@ -8,7 +8,7 @@ _default:
 
 # instructions の変更を両ランタイムへ反映
 sync:
-    cd ~/.apm && apm update --yes
+    apm update -g --yes
     ./scripts/gen-codex-agents.sh
     @echo "✅ sync 完了: Claude(~/.claude/rules) と Codex(~/.codex/AGENTS.md)へ反映した"
 
