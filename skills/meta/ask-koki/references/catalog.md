@@ -139,7 +139,7 @@ audit script 依存は除去済みで read-only desk review として動く(2026
 | ✅ | frontend-review-triage | `frontend/review-triage` | frontend レビューの入口(day-1 assessment) |
 | ✅ | frontend-review-ci | `frontend/review-ci` | CI が遅い(>10 min)/ flaky。frontend の GitHub Actions 最適化 |
 | ✅ | frontend-review-hygiene | `frontend/review-hygiene` | TypeScript strictness・lint・dead code・duplication |
-| 🔧 | frontend-review-deps | `frontend/review-deps` | 依存の健全性・CVE triage・deprecated 検出。audit の jq 例が pnpm 固定(bun/npm 例なし)。dep-lib-review との統合判断は保留 |
+| ✅ | frontend-review-deps | `frontend/review-deps` | 依存の健全性・CVE triage・deprecated 検出(npm/pnpm/yarn/bun/cargo)+ 承認制の更新実行モード(dep-lib-review を吸収統合、2026-07-26) |
 | ✅ | frontend-review-testing | `frontend/review-testing` | vitest coverage・playwright config・VRT setup |
 | ✅ | frontend-review-security | `frontend/review-security` | HTML sink・auth/token storage・route guard・env 露出 |
 | ✅ | frontend-review-state | `frontend/review-state` | state 分類(server/URL/form/UI)・anti-pattern |
@@ -191,7 +191,6 @@ audit script 依存は除去済みで read-only desk review として動く(2026
 ### 依存監査
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| 🔧 | dep-lib-review | `tooling/dep-lib-review` | 日常の依存棚卸し。pnpm/Node 専用で Rust/Bun 非対応・更新手順に承認 gate なし。frontend-review-deps との統合判断は保留(2026-07-26) |
 | 🔧 | tech-trend-watch | `tooling/tech-trend-watch` | 長期的な採否・移行判断。一次情報優先へ直す要カスタム |
 
 ---

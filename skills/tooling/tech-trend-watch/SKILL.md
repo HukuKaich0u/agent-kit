@@ -158,11 +158,10 @@ Write a review doc with:
 
 ## Boundaries
 
-- This skill covers strategic decisions, not implementation. For executing updates, use `dep-lib-review`.
+- This skill covers strategic decisions, not implementation. For executing updates, use `frontend-review-deps` (update-execution mode).
 - Do not use Tech Radar alone — it lags the JS ecosystem. Always cross-reference with State of JS/CSS.
 - "Everyone is migrating to X" is not sufficient reason to migrate. Evaluate migration cost vs. actual pain with the current tool.
 
 ## Related
 
-- `dep-lib-review` — executes the actual update (patch/minor/major batching)
-- `frontend-review-deps` — operational dependency audit with CVE triage and trend-watch scripts
+- `frontend-review-deps` — operational dependency audit (CVE triage, trend watch) plus approval-gated update execution (patch/minor/major batching)

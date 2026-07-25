@@ -37,7 +37,7 @@ type: reference
   `devops/gh-fix-ci` のみ Apache-2.0 の `LICENSE.txt` 同梱。
 - Vendored commit: `7a0d72866a0bb3e9ac3e2768c328b09ba2bc40c4`
 - Vendored date: 2026-07-20(初回 import は 2026-06-28 の `d799945`)
-- 改造: **1本**(`meta/skill-finder`。下記「改造記録」参照)。`meta/skill-selector` は 2026-07-26 に上流 verbatim へ復元(下記)。残りも上流 verbatim。
+- 改造: **2本**(`meta/skill-finder`、および `tooling/tech-trend-watch` — 2026-07-26 に削除した dep-lib-review への参照 2 箇所を frontend/review-deps へ付け替えた最小修正)。`meta/skill-selector` は 2026-07-26 に上流 verbatim へ復元(下記)。残りは上流 verbatim。
 
 ### 2026-07-26 — skill-selector を上流 verbatim へ復元、カタログは ask-koki へ移設
 
@@ -113,6 +113,13 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 カスタマイズするときに必要なものだけ回収する。
 
 **除外済み(2026-07-26):**
+
+- `tooling/dep-lib-review` — pnpm 専用の依存更新 runbook。CVE の攻撃ベクトル triage は
+  `frontend/review-deps` とほぼ同一で、固有価値だった更新バッチ戦略・codemod 手順・
+  Renovate/Dependabot 確認・anti-patterns を `frontend/review-deps` の承認制
+  update-execution モードとして吸収統合したうえで削除。参照していた
+  `tech-trend-watch`・`skill-finder`・`lang/typescript` は review-deps へ付け替えた
+
 
 - `ai/review-image` — OpenRouter vision model で単画像を判定する Deno スクリプト2本
   (freeform 版と CI gate 版)。スクリプトが `Deno.env` 等の Deno 専用 API 直書きで

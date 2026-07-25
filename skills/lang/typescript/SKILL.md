@@ -62,8 +62,7 @@ state / performance）が目的なら、専用の `frontend-review-*` skill に�
 
 ### 依存・ツール
 
-- 依存追加時は npm の最新安定版を確認し、deprecated / メンテ停止を避ける（`frontend-review-deps`
-  / `dep-lib-review` の triage が使える）。
+- 依存追加時は npm の最新安定版を確認し、deprecated / メンテ停止を避ける（`frontend-review-deps` の triage が使える）。
 - フォーマット・lint は biome か eslint+prettier。作業の区切りで型チェック（`tsc --noEmit`）と
   lint を走らせる。
 
