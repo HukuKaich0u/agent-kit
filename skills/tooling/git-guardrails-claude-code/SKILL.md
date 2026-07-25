@@ -17,6 +17,14 @@ Sets up a PreToolUse hook that intercepts and blocks dangerous git commands befo
 
 When blocked, Claude sees a message telling it that it does not have authority to access these commands.
 
+## Limitations
+
+This is an **accident-prevention layer, not a hard guarantee**. Matching is regex over the command string, so:
+
+- It can be bypassed — shell aliases, scripts that call git internally, exotic quoting.
+- It can false-positive — e.g. `git log --grep 'git push'` is blocked because the string contains `git push`. If a legitimate command gets blocked, rephrase it or temporarily disable the hook; do not weaken the patterns just to make one command pass.
+- The script requires `jq` and **fails safe**: if `jq` is missing, every intercepted command is blocked with an explanatory message until `jq` is installed or the hook is removed.
+
 ## Steps
 
 ### 1. Ask scope
