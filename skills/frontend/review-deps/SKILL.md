@@ -83,7 +83,7 @@ Before recommending a new dependency as a replacement, apply this order:
 | Use case | Avoid | Use instead |
 |---|---|---|
 | Date / time | moment, date-fns, dayjs | `Temporal` (polyfill), or `Date` for simple cases |
-| Array / object utilities | lodash, ramda | `Array.prototype.{flatMap,findLast,groupBy}`, `Object.{entries,fromEntries,groupBy}`, `structuredClone()` |
+| Array / object utilities | lodash, ramda | `Array.prototype.{flatMap,findLast}`, `Object.{entries,fromEntries,groupBy}`, `Map.groupBy`, `structuredClone()` |
 | HTTP requests | axios, request | `fetch` + `AbortController` |
 | UUID generation | uuid, nanoid | `crypto.randomUUID()` |
 | URL / query params | qs, query-string | `URL`, `URLSearchParams` |
