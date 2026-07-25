@@ -1,6 +1,6 @@
 ---
 created: 2026-07-20
-updated: 2026-07-25
+updated: 2026-07-26
 author: Koki Aoyagi
 type: reference
 ---
@@ -24,7 +24,7 @@ type: reference
   Bun 移植版を維持(上流 verbatim ではない)。
 
 上流の壊れ参照(存在しない skill への参照、mizchi/mattpocock 個人環境前提)は
-[`meta/skill-selector/references/catalog.md`](meta/skill-selector/references/catalog.md) の
+[`meta/ask-koki/references/catalog.md`](meta/ask-koki/references/catalog.md) の
 🔧 行(Use when 列)に要点を記載する。
 
 ---
@@ -37,7 +37,16 @@ type: reference
   `devops/gh-fix-ci` のみ Apache-2.0 の `LICENSE.txt` 同梱。
 - Vendored commit: `7a0d72866a0bb3e9ac3e2768c328b09ba2bc40c4`
 - Vendored date: 2026-07-20(初回 import は 2026-06-28 の `d799945`)
-- 改造: **2本**(下記「改造記録」参照)。残り34本は上流 verbatim。
+- 改造: **1本**(`meta/skill-finder`。下記「改造記録」参照)。`meta/skill-selector` は 2026-07-26 に上流 verbatim へ復元(下記)。残りも上流 verbatim。
+
+### 2026-07-26 — skill-selector を上流 verbatim へ復元、カタログは ask-koki へ移設
+
+skill 選定の実務は自作 `skills/meta/ask-koki`(router)が担う体制へ変更。
+`meta/skill-selector` は mizchi 本家の原設計(外部レジストリ横断)を参照在庫として
+verbatim で保持する。一次カタログ `references/catalog.md` は
+`skills/meta/ask-koki/references/catalog.md` へ移設し、2026-07-26 の skill 監査
+(`docs/skill-audit-2026-07-26.md`)の結果で状態列を更新した。
+下記 2026-07-24 の skill-selector 改造記録は当時の記録として残す(現状とは異なる)。
 
 ### 改造記録(2026-07-24 — skill 選定・探索の基盤を agent-kit 化)
 
@@ -163,7 +172,7 @@ Matt の flow 設計思想に由来することが名前から分かる価値を
 | `skills/meta/ask-matt` | smart zone の固定値「~120k tokens」を model 依存の説明へ置換。会話中に報告された bug / request を「草案→承認→起票→/triage」で tracker に入れる導線を追加。/implement の説明を commit・tracker 更新の承認後実行に、/improve-codebase-architecture の説明を証拠ベース設計フローに更新 |
 
 `/research`・`/teach`・`/code-review` への案内は残す(採用済みで動作する。
-残る要カスタムは品質改善であり、状態は skill-selector catalog が管理)。
+残る要カスタムは品質改善であり、状態は ask-koki catalog が管理)。
 
 ### 改造記録(2026-07-25 — improve-codebase-architecture を設計特化へ再設計)
 

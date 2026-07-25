@@ -33,26 +33,26 @@ Workflow:
 
 1. Read `references/catalog.md`.
 2. Identify project signals from three sources:
-   - **Repo files**: `package.json` / `tsconfig.json` (TypeScript / Node), `Cargo.toml` (Rust), `go.mod` (Go), `pyproject.toml` / `requirements.txt` / `setup.py` (Python), `.github/workflows/` (CI), `playwright.config.*` (Playwright), `*.sql` / `sqlc.yaml` (SQL catalog), schema migration files (DB).
+   - **Repo files**: `package.json` (Node), `moon.mod.json` (MoonBit), `gleam.toml` (Gleam), `flake.nix` (Nix), `.github/workflows/` (CI), Playwright config, `dotenvx` keystore.
    - **Stated user intent**: in-message cues like "we plan to deploy to X", "we publish a small npm utility eventually".
    - **CLAUDE.md mandates**: persistent rules in user-level `~/.claude/CLAUDE.md` or project-level `CLAUDE.md` (e.g., "task runner: justfile", "lint: ast-grep") count as signals even when the scenario text is silent. When mandate and stated intent disagree, surface the conflict to the user before installing. In the proposal, label mandate-driven rows explicitly (e.g., `# from ~/.claude/CLAUDE.md: task runner = justfile`) so a reviewer doesn't mistake them for padding.
 3. Confirm with the user before installing — propose, let them subtract. Default to fewer skills, not more. Each skill consumes context every conversation.
    - **Non-interactive contexts** (subagent dispatch, scripted automation, batch runs): emit the proposal as the deliverable and stop. The caller subtracts. Do not stall waiting for a confirmation that will not come.
-   - **Active-in-language heuristic**: if the user is actively writing code in a language that has a language skill in the catalog (`typescript`, `rust`, `go`, `python`), include it. If they only consume a single binding or dependency written in that language, hold off.
+   - **Active-in-language heuristic**: if the user is actively writing code in a language with a `<lang>-practice` skill in the catalog (e.g. `moonbit-practice`, `gleam-practice`), include it. If they only consume a single binding or dep written in that language, hold off.
    - **Platform-name caveat**: when a catalog row's description names a specific CI provider / runtime / cloud:
      - **Project platform matches**: adopt as-is. Do not re-read the underlying SKILL.md; the catalog row already answered the question.
      - **Project platform differs**: read the underlying SKILL.md before deciding. The core capability may still apply — install for that core, note "integration glue N/A." Skipping for platform mismatch alone is wrong.
      - **If you cannot read the underlying SKILL.md** (no local install, no upstream clone, no network): do NOT silently skip the check. **Surface the uncertainty in the proposal explicitly** — e.g., note "adopting `<skill>` based on its catalog description; the SKILL.md was not consulted, so the core-vs-integration split is unverified." The user can then decide whether to verify before committing the install. Silently dropping the verification leaves a bug (the wrong skill adopted, or a usable skill rejected) that no later step recovers.
-   - **Suspended rows**: rows tagged ⏸ (deprecated / in-progress) are not on the normal path. Mention them in prose only if the project genuinely needs one; do NOT put them in `apm.yml` by default.
+   - **Out-of-band rows**: rows tagged `(out-of-band)` in the catalog cannot be installed via public APM (chezmoi-local, gated, etc.). Mention them in prose if the project would benefit, but do NOT put them in `apm.yml`.
 4. Install via APM. **Read `apm-usage` first** to confirm the exact `apm.yml` syntax — the manifest format is non-trivial and field names should not be inferred from this skill alone.
    - Project scope: edit `apm.yml`, run `apm install`. Commit `apm.lock.yaml`.
    - Global scope: `apm install -g <repo>/<path>`, verify in `~/.apm/apm.yml`.
-   - **`targets:` declaration is required.** APM does not reliably fall back to a default target when no marker directory (`.claude/` / `.github/` / etc.) exists at the repo root — `apm install` errors out asking for an explicit choice. Write `targets: [claude]` (or whatever the host harness is) in `apm.yml` unconditionally; do not rely on directory auto-detection. Confirm the exact `targets:` / `target:` schema in `apm-usage` (APM 0.26.0), which is authoritative here.
-   - **`targets:` does not strictly gate deploy directories.** Even with `targets: [claude]`, APM may also write to `.agents/skills/` alongside `.claude/skills/`. Inspect the `apm install` output (`Skill integrated -> ...`) and treat every listed path as a deploy target for the gitignore decision below.
+   - **`targets:` declaration is required.** APM 0.12+ does not fall back to a default target when no marker directory (`.claude/` / `.github/` / etc.) exists at the repo root — `apm install` errors out asking for an explicit choice. Write `targets: [claude]` (or whatever the host harness is) in `apm.yml` unconditionally; do not rely on directory auto-detection.
+   - **`targets:` does not strictly gate deploy directories.** Even with `targets: [claude]`, APM 0.12+ may also write to `.agents/skills/` alongside `.claude/skills/`. Inspect the `apm install` output (`Skill integrated -> ...`) and treat every listed path as a deploy target for the gitignore decision below.
    - Pinning: catalog entries do not carry tags. Resolve a concrete tag or SHA via `apm view <repo>` (or check the upstream repo's release page) before committing `apm.yml`. Floating refs are listed under Common mistakes.
 5. **Decide the gitignore policy before the first commit.** `apm install` auto-adds `apm_modules/` to `.gitignore` but does NOT add the deploy targets. Pick one and stick to it:
    - **Commit deploy targets** (`.claude/skills/`, `.agents/skills/`, …): repo is self-contained, teammates / CI can clone without running `apm install`. Cost: file count balloons (7 skills ≈ 700 files in a recent utels install). Choose when teammates may not have APM, or when you want skill content reviewable in PRs.
-   - **Gitignore deploy targets**: leaner repo; teammates run `apm install --frozen` after clone (APM 0.26.0 — the flag is `--frozen`, not `--frozen-lockfile`). Add the exact paths emitted by `apm install` (e.g., `.claude/skills/`, `.agents/skills/`). Caveat: if the project also keeps local skills under the same directory (`.claude/skills/<local-skill>/`), gitignore only the APM-managed subpaths, not the whole directory.
+   - **Gitignore deploy targets**: leaner repo; teammates run `apm install --frozen-lockfile` after clone. Add the exact paths emitted by `apm install` (e.g., `.claude/skills/`, `.agents/skills/`). Caveat: if the project also keeps local skills under the same directory (`.claude/skills/<local-skill>/`), gitignore only the APM-managed subpaths, not the whole directory.
    - Always commit `apm.yml` and `apm.lock.yaml` regardless. Without the lockfile the install is not reproducible — the deploy-target gitignore choice only changes whether the *generated* artifacts live in git.
    - Propose the choice to the user when the install lands the first APM skills in the repo. Don't silently pick — file-count bloat vs. clone-time install are both legitimate but the trade-off is repo-specific.
 6. If a need is unmet, escalate to Phase 2. Do not skip Phase 1 — even if a search query is already forming in your head, scanning the catalog is cheaper.
@@ -82,10 +82,9 @@ Reverse failure: forcing a Phase 1 fit when the catalog truly has nothing suitab
 
 ## Maintenance of the catalog
 
-- The catalog lists **this repository's** (`HukuKaich0u/agent-kit`) own skills, not an external registry. Keep it in sync when a skill is added, removed, or renamed here — the same edit that touches `skills/` should touch `references/catalog.md`.
-- The catalog's per-row status (✅ / 🔧 / ⏸ / 🎯) is maintained in the catalog itself as the source of truth. When a row disagrees with the actual skill (SKILL.md, assets), verify against the skill and fix the catalog.
+- Catalog is part of this skill. Keep it in sync when `mizchi/skills` (and upstream skill repos referenced) gain or lose skills.
 - A skill discovered through Phase 2 (`skill-finder`) may be promoted into the catalog after it has been used in 2+ projects without issue and after passing its waxa eval.
-- Sanity check: `find skills -name SKILL.md` (excluding `tools/waxa/examples/`) should match the catalog's row count. A mismatch means the catalog drifted.
+- If the catalog feels stale, cross-check against [`mizchi/skills` README](https://github.com/mizchi/skills) before falling back to `skill-finder`.
 
 ## Common mistakes
 
@@ -97,12 +96,13 @@ Reverse failure: forcing a Phase 1 fit when the catalog truly has nothing suitab
 | Floating refs in `apm.yml` for project scope | Pin to a tag or SHA. Drift mid-feature is its own debugging hell. |
 | Re-evaluating the same rejected skill quarterly | Record the rejection reason in-repo. Don't re-search ground already covered. |
 | Silently committing (or silently gitignoring) the APM deploy targets | Surface the choice — see step 5. Default-commit can balloon the repo; default-ignore can break teammates without APM. |
-| Assuming `targets: [claude]` keeps deploy paths under `.claude/skills/` only | APM may also write to `.agents/skills/`. Read the `apm install` output and treat every path it lists as a deploy target. |
+| Assuming `targets: [claude]` keeps deploy paths under `.claude/skills/` only | APM 0.12+ may also write to `.agents/skills/`. Read the `apm install` output and treat every path it lists as a deploy target. |
 | Treating Phase 1 catalog as exhaustive | If nothing matches in ~30 seconds, escalate to Phase 2. Don't shoehorn. |
 
 ## Related
 
 - `skill-finder` — Phase 2 owner; cross-source survey + waxa eval gate when the catalog has no fit
-- `apm-usage` — actual `apm install` syntax and manifest format (APM 0.26.0)
-- `empirical-prompt-tuning` / `waxa-eval` — how to test a candidate skill before adopting it
-- `writing-great-skills` — when no existing skill fits, the design principles for writing one instead of adopting a poor match
+- `apm-usage` — actual `apm install` syntax and manifest format
+- `empirical-prompt-tuning` — how to test a candidate skill before adopting it
+- `superpowers:writing-skills` — when no existing skill fits, write one instead of adopting a poor match
+- `chezmoi-management` — for skills that must stay private (the APM-vs-chezmoi boundary)

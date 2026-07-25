@@ -96,7 +96,7 @@ apm install HukuKaich0u/agent-kit/skills/meta/grilling
 agent-kit用のinstall案内として生成している。要カスタム候補は中身を吟味してから個別に変更する。
 使うものから少しずつカスタマイズする方針で、旧カスタム版は git 履歴 `0fd8ec3` にある。
 
-各 skill の一覧と状態は [`skills/meta/skill-selector/references/catalog.md`](skills/meta/skill-selector/references/catalog.md)、
+各 skill の一覧と状態は [`skills/meta/ask-koki/references/catalog.md`](skills/meta/ask-koki/references/catalog.md)、
 出自・取り込みコミットの詳細は [`skills/VENDORED.md`](skills/VENDORED.md) を参照。
 
 上流の更新確認: `scripts/check-vendored.sh`(両上流を一括チェック、`--diff` で実 diff も表示)

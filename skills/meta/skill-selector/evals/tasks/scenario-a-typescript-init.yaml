@@ -1,34 +1,36 @@
-# Scenario A (median) — TS + Playwright + GitHub Actions project init.
-# All expected skills exist in the agent-kit catalog. Cloudflare was
-# dropped from the stack (no cloudflare skill remains in the repo).
+# Scenario A (median) — TS+pnpm+Vite+Playwright+GHA+Cloudflare project init.
+# Mirrors the empirical-prompt-tuning Iter 1+ scenario A.
 id: skill-selector-init-typescript-001
-name: TypeScript + Playwright + GitHub Actions project skill init
+name: TypeScript+pnpm+Playwright+Cloudflare project skill init
 description: |
   User starting a new TS web app needs apm.yml init via skill-selector.
-  Must run Phase 1 against the catalog and propose the critical skills
-  tied to the stated signals.
+  Must run Phase 1 against the catalog and propose at least the four
+  critical skills tied to the stated signals.
 
 tags:
   - typescript
   - playwright
+  - cloudflare
   - github-actions
   - phase-1
 
 inputs:
   prompt: |
     新規 TypeScript Web アプリを始める:
-    - Node 24, bun でパッケージ管理
+    - pnpm-based, Node 24
     - Vite + React frontend
     - Playwright for E2E
     - GitHub Actions for CI
-    - 同じ repo から小さな npm utility を publish 予定 (eventually)
+    - 同じ monorepo から小さな npm utility を publish 予定 (eventually)
+    - Cloudflare Pages deploy
 
     "initialize this project's skill set — what should go into apm.yml?"
 
 expected:
   output_contains:
-    - "typescript"
     - "playwright-test"
+    - "cloudflare-deploy"
+    - "gh-fix-ci"
     - "apm-usage"
   outcomes:
     - type: task_completed
@@ -45,16 +47,18 @@ graders:
     config:
       # Surface-literal check kept for regression sensitivity. Semantic
       # equivalence is judged by the `critical_skills_semantic` LLM grader
-      # below.
+      # below; this one may legitimately fail when the deliverable refers
+      # to the manifest tool by `apm view` instead of `apm-usage`.
       assertions:
-        - "'typescript' in output"
         - "'playwright-test' in output"
+        - "'cloudflare-deploy' in output"
+        - "'gh-fix-ci' in output"
 
   - name: pinning_mentioned
     type: text
     config:
       regex_match:
-        - "(?i)pin.*(tag|sha)|apm\\s*view|--frozen"
+        - "(?i)pin.*(tag|sha)|apm\\s*view|frozen-lockfile"
 
   # Empirical-prompt-tuning: structured self-report from the executor.
   - name: self_report_complete
@@ -71,10 +75,10 @@ graders:
     config:
       rubric: |
         deliverable は次をすべて満たしているか?
-        1. TypeScript 言語 skill (typescript) が提案されている
-        2. Playwright E2E に対応する skill (playwright-test) が提案されている
-        3. APM manifest 操作 skill (apm-usage) が提案されている、または `apm view` / `apm install` 等 APM 操作が言及され apm-usage を読む前提が暗黙にでも示されている
-        4. project scope vs global scope の判断、もしくは「per-project の `apm.yml` を編集する」等の文言で scope が暗黙に示されている
-        5. pinning (tag / SHA / `apm view` で resolve) について言及がある
-        6. playwright-test / typescript の状態(✅ / 🔧 要カスタム)を提案時に示している、または要カスタムに触れている
+        1. Playwright E2E に対応する skill (playwright-test) が提案されている
+        2. Cloudflare Pages/Workers の deploy skill (cloudflare-deploy) が提案されている
+        3. GitHub Actions PR check 修正の skill (gh-fix-ci) が提案されている
+        4. APM manifest 操作 skill (apm-usage) が提案されている、または `apm view` / `apm install` 等 APM 操作が言及され apm-usage を読む前提が暗黙にでも示されている
+        5. project scope vs global scope の判断、もしくは「per-project の `apm.yml` を編集する」等の文言で scope が暗黙に示されている
+        6. pinning (tag / SHA / `apm view` で resolve) について言及がある
         全 6 項を満たすときのみ PASS: yes。1 つでも欠けたら PASS: no。

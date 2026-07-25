@@ -1,316 +1,299 @@
----
-created: 2026-07-25
-updated: 2026-07-25
-author: Koki Aoyagi
-type: catalog
----
-
 # Curated skill catalog (Phase 1)
 
-`skill-selector` Phase 1 の一次カタログ。**このリポジトリ (`HukuKaich0u/agent-kit`) が
-現在保有している skill だけ**を載せる。外部レジストリの一覧ではない — 外部探索は
-Phase 2 (`skill-finder`) の仕事。
+Reference list for `skill-selector` Phase 1. Skills here have been vetted by mizchi for fit and quality. Group by project signal so the matching step is mechanical: detect the signal, propose the matching rows.
 
-グルーピングはプロジェクトシグナル(言語 / ツール / プロセス)別。シグナルを検出したら
-対応する行を提案する。
+If a skill belongs to multiple axes, list it under its primary one.
 
-## Install 文字列
+Install strings are written for global scope (`apm install -g <string>`). For project scope, drop the `-g` and add the same string under `dependencies.apm` in `apm.yml`.
 
-すべて `HukuKaich0u/agent-kit/skills/<path>` 形式。
+The "Install" column may also be:
 
-- **project スコープ**: `apm.yml` の `dependencies.apm` にこの文字列を追加して `apm install`。
-- **global スコープ**: `apm install -g HukuKaich0u/agent-kit/skills/<path>`。
+- `(out-of-band)` — not installable via public APM (chezmoi-local, internal-only, gated). Mention in prose when relevant; do NOT add to `apm.yml`.
+- A row whose description names a specific platform (CI provider, runtime, cloud). When the project's platform differs, the core capability may still apply — read the underlying `SKILL.md` before deciding whether to adopt.
+- A subpath that diverges from the `<owner>/<repo>/skills/<name>` convention (e.g., `moonbitlang/moonbit-agent-guide/moonbit-c-binding`). This reflects an upstream layout that does not put skills under `skills/`. Run `apm view <owner>/<repo>` (or open the upstream README) once before committing to confirm the subpath is correct.
 
-正確な `apm.yml` 構文は install 前に `apm-usage` で確認する(APM 0.26.0 系。
-`--frozen-lockfile` は存在しない、`--frozen` を使う)。
+## Tier legend
 
-## 状態列(Status)
-
-状態はこの catalog が一次情報として管理する:
-
-| 状態 | 意味 | 提案時の扱い |
-|---|---|---|
-| **✅ 使う** | 上流 verbatim / 自作で、そのまま使える | シグナル一致で通常提案 |
-| **🔧 要カスタム** | 他人の環境前提や壊れ参照が残る。使う前に修正が要る | 提案時に「要カスタム」と明示。install しても本文の壊れ参照に注意 |
-| **⏸ 保留** | 通常導線に載せない(deprecated / in-progress)。実案件で試してから昇格判断 | 原則提案しない。プロジェクトが強く必要とする場合のみ散文で言及 |
-| **🎯 明示起動** | `disable-model-invocation` またはユーザーが明示起動する前提の meta skill | 自動提案しない。ユーザーが名指しした時だけ |
-
-**要カスタムの詳細**(何が壊れているか)は各行の Use when 列に要点を書く。
-catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md・asset・依存を確認する。
-
-デフォルトは**少なく**。各 skill は毎会話 context を消費する。近く繰り返す作業に必要な
-2〜5 本だけを、理由と状態を添えて提案する。
+| Tier | Policy |
+|---|---|
+| **T0** | Always want. Suggest proactively for every mizchi repo regardless of signals. |
+| **T1** | Applicable. Suggest when the section's signals are present. |
+| **T2** | Instructed. Only when mizchi explicitly asks ("do a security review", "run waxa", etc.). Never auto-suggest. |
+| **T3** | Occasionally effective. Mention in prose if the situation closely matches; do not include in the default proposal. |
+| **T4** | Superseded or not recommended. Effective only in specific legacy/edge cases; note the preferred alternative instead. |
 
 ---
 
-## 言語 / ランタイム
+## Languages / runtimes
 
-### TypeScript / Node.js
-**Signals**: `package.json`, `tsconfig.json`, `pnpm-lock.yaml` / `bun.lock`, `node_modules/`
+### Node.js / TypeScript
+**Signals**: `package.json`, `pnpm-lock.yaml`, `tsconfig.json`, `node_modules/`
 
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| ✅ | typescript | `lang/typescript` | TypeScript を書く / レビューする — strict 型設計・命名・error handling・module/API 境界 |
-| 🔧 | otel-node | `devops/otel-node` | Node.js の OTel SDK 初期化・auto-instrumentation・esbuild ESM の silent-failure。SDK 2.x 未対応の例が残る要カスタム |
+| T1 | node-sqlite-vec | `mizchi/skills/node/sqlite-vec` | Project uses Node 24+ `node:sqlite` with `sqlite-vec` extension for vectors / RAG |
+| T1 | pi-coding-agent | `mizchi/skills/node/pi-coding-agent` | Embedding `@mariozechner/pi-coding-agent` as a coding-agent runtime in Node scripts |
+| T1 | dotenvx | `mizchi/skills/tooling/dotenvx` | Repo uses or considers `dotenvx` for env-var encryption / multi-env |
+| T1 | opentelemetry | `mizchi/skills/devops/opentelemetry` | Signal design (traces/metrics/logs), span naming, context propagation, sampling strategy, OTLP exporter config — read before writing any OTel code |
+| T1 | otel-node | `mizchi/skills/devops/otel-node` | Node.js OTel SDK setup; esbuild ESM bundle silently drops `instrumentation-*` auto-instrumentation — use when spans don't arrive after bundling |
 
-### Rust
-**Signals**: `Cargo.toml`, `*.rs`, `target/`
+### MoonBit
+**Signals**: `moon.mod.json`, `moon.pkg.json`, `_build/`, `.mooncakes/`
 
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| ✅ | rust | `lang/rust` | Rust を書く / レビューする — error handling・borrow checker・ownership・iterator vs loop・async の落とし穴 |
+| T1 | moonbit-practice | `mizchi/skills/lang/moonbit-practice` | Writing or reviewing MoonBit code (general best practices) |
+| T1 | moonbit-js-binding | `mizchi/skills/lang/moonbit-js-binding` | MoonBit project needs JS FFI (`extern "js"`) for browser / Node / npm packages |
+| T1 | moonbit-c-binding | `moonbitlang/moonbit-agent-guide/moonbit-c-binding` | MoonBit project links a C library via native FFI |
+| T1 | tuimbt-practice | `mizchi/tui.mbt/skills/tuimbt-practice` | Building terminal UI in MoonBit using `tui.mbt` |
+| T1 | mooncheat | `mizchi/js.mbt/.claude/skills/mooncheat` | MoonBit cheatsheet for syntax / corelibrary lookups while writing `.mbt` |
+| T1 | moon-component | `mizchi/moon-component/skill` | Using the `moon-component` CLI for MoonBit WIT / WebAssembly Component workflow |
+| T2 | moonbit-refactoring | `moonbitlang/moonbit-agent-guide/moonbit-refactoring` | Refactoring an existing MoonBit package idiomatically |
+| T3 | moonbit-agent-guide | `moonbitlang/moonbit-agent-guide/moonbit-agent-guide` | First-time MoonBit project setup — moon tooling, layout conventions (one-time; skip once the project is bootstrapped) |
+| T3 | vibe-scratch-workflow | `mizchi/vibe-lang` | `vibe-lang` scratch-db workflow — `vibe new` → `vibe shell-stdin --restore` → `finalize` / `normalize` / `apply` (repo-root SKILL.md; verify with `apm view`) |
 
-### Go
-**Signals**: `go.mod`, `go.sum`, `*.go`
+### Gleam
+**Signals**: `gleam.toml`, `manifest.toml`, `.gleam_version`
 
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| ✅ | go | `lang/go` | Go を書く / レビューする — error wrap・goroutine リーク防止・context 伝播・interface 設計・nil の落とし穴 |
-
-### Python
-**Signals**: `pyproject.toml`, `requirements.txt`, `setup.py`, `*.py`
-
-| Status | Skill | Install (`skills/<path>`) | Use when |
-|---|---|---|---|
-| ✅ | python | `lang/python` | Python を書く / レビューする — 型ヒント・具体的例外・mutable default・dataclass・context manager・async 落とし穴 |
-
-### 言語間移植
-**Signals**: あるランタイム/言語から別へポートする作業
-
-| Status | Skill | Install (`skills/<path>`) | Use when |
-|---|---|---|---|
-| ✅ | translate-programming-language | `lang/translate-programming-language` | oracle-driven parity で言語・ランタイムを安全に移植。fixture・shadow/canary・rollback 設計込み |
+| T1 | gleam-practice | `mizchi/skills/lang/gleam-practice` | Building or reviewing Gleam projects on the Erlang target (Wisp + Mist, OTP) |
 
 ---
 
-## Backend レビュー
+## Tooling / Infra
 
-**Signals**: サーバ / API / DB を持つ backend のレビュー依頼
+### Build / task running
+**Signals**: `justfile`, `devbox.json`, `flake.nix`, `Taskfile.yml`, `Taskfile.pkl`
 
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| ✅ | backend-review-triage | `backend/review-triage` | backend レビューの入口。repo 全体を分類し適用する domain lens を選ぶ |
-| 🔧 | backend-review-architecture | `backend/review-architecture` | 構造・依存方向・境界漏れ。`npx madge` 暗黙取得を外す要カスタム |
-| 🔧 | backend-review-concurrency | `backend/review-concurrency` | async / 並行 / batch の危険パターン。Rust/Tokio・Bun 追加の要カスタム |
-| 🔧 | backend-review-data-access | `backend/review-data-access` | N+1 / 過剰取得(DynamoDB 対応)。SQLx/Diesel/D1 追加の要カスタム |
-| 🔧 | backend-review-transactions | `backend/review-transactions` | トランザクション整合性(PG/SQLite/DynamoDB 差分)。engine 別上限を version 確認する要カスタム |
+| T0 | pkfire | `mizchi/pkfire/skills/pkfire` | Adding, editing, or troubleshooting tasks in a project that uses `pkf` / `Taskfile.pkl`; choosing pkfire over just / Taskfile.yml |
+| T1 | nix-setup | `mizchi/skills/tooling/nix-setup` | Reproducible dev environment via devbox (Nix-backed, default) or pure Nix flakes (cutting-edge customization). Includes per-language flake templates and a devbox.json template |
+| T3 | justfile | `mizchi/skills/tooling/justfile` | Existing repo already uses `just` — respect as-is; for new repos prefer pkfire |
 
-### 設計・ドメイン
-| Status | Skill | Install (`skills/<path>`) | Use when |
+### Static analysis / lint
+**Signals**: `sgconfig.yml`, ad-hoc lint requirements that ESLint/biome can't express
+
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| ✅ | codebase-design | `backend/codebase-design` | 深いモジュール設計の語彙(DESIGN-IT-TWICE 込み) |
-| ✅ | domain-modeling | `backend/domain-modeling` | 会話でドメイン用語・境界・ADR を合意し継続更新(配置は repo設定→既存規約→デフォルトの優先順、CONTEXT.md は差分提示→承認後反映にカスタム済み) |
-| ✅ | improve-codebase-architecture | `backend/improve-codebase-architecture` | 証拠付き findings から Markdown で3〜5候補を提示し、選んだ一候補を codebase-design + grilling で改善設計して to-spec へ(独立 scanner・HTML report・GUI 起動は廃止済み) |
+| T1 | ast-grep-practice | `mizchi/skills/tooling/ast-grep-practice` | Operating ast-grep as a project lint tool (rules, fix, CI) |
+| T1 | ast-grep | `ast-grep/agent-skill/ast-grep` | Writing ast-grep rules / structural search (general guide) |
+| T2 | check-similarity | `mizchi/similarity/.claude/skills/check-similarity` | Detect duplicate code via AST-based similarity; auto-selects per-language tool |
+| T2 | check-similarity-mbt | `mizchi/similarity/.claude/skills/check-similarity-mbt` | Same, MoonBit (`.mbt`) only |
+| T2 | check-similarity-py | `mizchi/similarity/.claude/skills/check-similarity-py` | Same, Python (`.py`) only |
+| T2 | check-similarity-rs | `mizchi/similarity/.claude/skills/check-similarity-rs` | Same, Rust (`.rs`) only |
+| T2 | check-similarity-ts | `mizchi/similarity/.claude/skills/check-similarity-ts` | Same, TypeScript / JavaScript only |
 
----
+### CI / GitHub Actions
+**Signals**: `.github/workflows/`, failing PR checks
 
-## Database / SQL
-
-**Signals**: schema migration, `*.sql` catalog, SQLite/D1/Postgres/DynamoDB
-
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| ✅ | db-migration-safety | `db/migration-safety` | DB 移行の安全性分類(PG/RDS/SQLite/DynamoDB 全対応) |
-| 🔧 | sql-plan-audit | `sql/plan-audit` | query plan baseline diff。engine / query layer に合わせて再設計する要カスタム。CI gate 化は保留 |
-| 🔧 | sql-schema-audit | `sql/schema-audit` | SQLite/D1 の index coverage・FK 列 index・N+1。AST/query layer に合わせて作り直す要カスタム |
+| T1 | gh-fix-ci | `mizchi/skills/devops/gh-fix-ci` | Debugging or fixing failing GitHub Actions PR checks via `gh` |
+
+### Local CI runner
+**Signals**: `actrun.toml`, running GitHub Actions workflows locally
+
+| T | Skill | Install | Use when |
+|---|---|---|---|
+| T2 | actrun | `mizchi/actrun/.claude/skills/actrun` | Reference for the `actrun` CLI — local GitHub Actions runner; workflow proposal / parsing / execution support |
+| T2 | actrun-init | `mizchi/actrun/.claude/skills/actrun-init` | Introducing actrun to a project — install, `actrun.toml`, workflow adjustments |
+| T2 | actrun-debug | `mizchi/actrun/.claude/skills/actrun-debug` | Diagnosing actrun execution failures — log analysis, root-cause, fix suggestions |
+
+### Cloudflare
+**Signals**: `wrangler.toml`, Cloudflare account, Workers / Pages deploy
+
+| T | Skill | Install | Use when |
+|---|---|---|---|
+| T1 | cloudflare-deploy | `mizchi/skills/cloudflare/deploy` | Deploying to Cloudflare Workers / Pages — wrangler commands, secrets, custom domains |
+| T1 | workers-cd-rollback | `mizchi/skills/devops/workers-cd-rollback` | Adding push-to-deploy + automatic rollback on smoke failure to a Workers GitHub Actions pipeline |
+| T1 | cloudflare-workers-otel-utels | `mizchi/skills/cloudflare/workers-otel-utels` | Adding OTLP tracing / metrics / logs and utels error tracking to a Worker without touching handler code |
+| T1 | cloudflare-mbt-worker-bundle | `mizchi/skills/cloudflare/mbt-worker-bundle` | Bundling a Worker that combines a MoonBit moon-built JS module with a TypeScript entry via wrangler |
+| T3 | cloudflare-access-app-setup | `mizchi/skills/cloudflare/access-app-setup` | Gating a Worker behind Cloudflare Access via API in one shot — app + email allowlist + service token |
+| T3 | utels-project-bootstrap | `mizchi/skills/tooling/utels-project-bootstrap` | Registering a new utels.dev project and writing the returned ingest token into a wrangler secret in one shot |
+
+### AWS
+**Signals**: ECS / Fargate service, GitHub Actions → AWS OIDC, aws-vault MFA error
+
+| T | Skill | Install | Use when |
+|---|---|---|---|
+| T1 | aws-github-oidc-scoped-role | `mizchi/skills/aws/github-oidc-scoped-role` | Wiring GitHub Actions to AWS via OIDC — `job_workflow_ref` scoping, Bedrock cross-region ARNs, `aws-marketplace` permissions, ReadOnlyAccess + Deny for AI agent roles |
+| T3 | aws-ecs-service-connect-ipv6 | `mizchi/skills/aws/ecs-service-connect-ipv6` | ECS Service Connect alias resolves to IPv6 in IPv4-only Fargate task; `network is unreachable` |
+| T3 | aws-vault-mfa-iam | `mizchi/skills/aws/vault-mfa-iam` | aws-vault session blocked by IAM MFA-required policy; `iam:*` rejected with `InvalidClientTokenId` |
+| T4 | aws-ecs-codedeploy-blue-green | `mizchi/skills/aws/ecs-codedeploy-blue-green` | Existing CodeDeploy blue/green setup that cannot be migrated — prefer ALB-native weighted routing for new setups |
+
+### Kubernetes
+**Signals**: `k8s/`, CRD YAML, zod/TypeBox/Valibot schema to CRD conversion
+
+| T | Skill | Install | Use when |
+|---|---|---|---|
+| T3 | k8s-crd-from-typed-schema | `mizchi/skills/k8s/crd-from-typed-schema` | Generating CRDs from a typed schema source (zod / TypeBox / Valibot) — Structural Schema dialect restrictions, `/status` subresource trap, metadata-prohibition rule |
+
+### Release / changelog
+**Signals**: `CHANGELOG.md`, release-please config, `.changeset/`, version-tag-driven release
+
+| T | Skill | Install | Use when |
+|---|---|---|---|
+| T1 | conventional-changelog | `mizchi/skills/tooling/conventional-changelog` | Setting up or unifying a release flow with Conventional Commits + auto changelog |
+| T3 | upstream-fix-and-pin | `mizchi/skills/tooling/upstream-fix-and-pin` | A dependency has a bug or missing feature; you need to pin a fork while waiting for upstream merge |
+| T2 | npm-release | `(out-of-band)` | Setting up npm publishing via release-please + OIDC. chezmoi-local; ask mizchi |
+
+### Dependency management
+**Signals**: `pnpm outdated` results, security alert, major ecosystem release, annual maintenance
+
+| T | Skill | Install | Use when |
+|---|---|---|---|
+| T1 | dep-lib-review | `mizchi/skills/tooling/dep-lib-review` | Auditing and updating library dependencies — patch/minor/major batching, CVE attack-vector triage, deprecated package detection, validation checklist |
+| T3 | tech-trend-watch | `mizchi/skills/tooling/tech-trend-watch` | Annual tech-stack review using State of JS/CSS + Thoughtworks Tech Radar — satisfaction×usage matrix, ADOPT/TRIAL/ASSESS/HOLD mapping, migration roadmap |
+
+### SQL / Database
+**Signals**: `sqlc.yaml`, `*.sql` query catalog, SQLite / D1 schema, `sqlc-gen-moonbit`
+
+| T | Skill | Install | Use when |
+|---|---|---|---|
+| T1 | sql-lint | `mizchi/skills/sql/lint` | Static lint pass on a sqlc-style SQL catalog — duplicate query names, missing semicolons, `SELECT *`, double-wildcard `LIKE` |
+| T1 | sql-plan-audit | `mizchi/skills/sql/plan-audit` | `EXPLAIN QUERY PLAN` baseline diff on a sqlc catalog — detect new full-table SCANs or `TEMP B-TREE` sorts introduced by a PR |
+| T1 | sql-schema-audit | `mizchi/skills/sql/schema-audit` | Index coverage + N+1 review for a SQLite/D1 schema — unused indexes, unindexed scans, `for`-loop query calls |
+| T1 | sql-security | `mizchi/skills/sql/security` | SQL injection screening in MoonBit / TS / Rust host code — flags template-literal / string-concat SQL builders |
+| T1 | sqlc-gen-moonbit-safety | `mizchi/skills/sql/sqlc-gen-moonbit-safety` | Post-generation safety gate for `sqlc-gen-moonbit` + Cloudflare D1 — BigInt-bind hang (D1 1101) and placeholder mix checks |
+| T3 | codegen-apply-verify | `mizchi/mnemo/skills/codegen-apply-verify` | Adding a `--verify` CI gate to any code-generation step — exits non-zero if generated output has drifted from committed patches |
+| T3 | d1-query-telemetry | `mizchi/mnemo/skills/d1-query-telemetry` | Adding per-D1-query OTEL child spans and slow-query `console.warn` to a Cloudflare Worker via a transparent `Proxy` wrapper |
 
 ---
 
 ## Testing / Browser
 
-**Signals**: `playwright.config.*`, `e2e/`, TDD 依頼, 画像 diff
+**Signals**: `playwright.config.*`, `e2e/`, image-diff requirements
 
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| ✅ | tdd | `testing/tdd` | red-green-refactor。test-first で機能追加・バグ修正 |
-| 🔧 | playwright-test | `testing/playwright-test` | Playwright E2E の設計・実装・review。`npx` 固定・非推奨 API 例を直す要カスタム |
-| 🔧 | playwright-cli | `testing/playwright-cli` | Playwright の安全な起動・実行。`claude-in-chrome` 前提を外す要カスタム |
+| T1 | playwright-test | `mizchi/skills/testing/playwright-test` | **Primary** for any Playwright project. Writing / reviewing E2E tests — no fixed waits, network triggers |
+| T1 | playwright-cli | `mizchi/skills/testing/playwright-cli` | **Secondary** — add only when CI sharding, codegen, or one-off `screenshot/pdf` matters. Skip when test authoring is the only concern |
+| T2 | review-image | `mizchi/skills/ai/review-image` | Reviewing screenshots / generated images via OpenRouter vision models, VRT prechecks |
+| T2 | vrt | `mizchi/vrt` | Visual Regression Testing + a11y semantic verification CLI (`vrt-test`, `vrt`, `vrt-update`, `vrt compare`, `vrt snapshot`, fix-loop, VLM model selection). Repo-root SKILL.md; verify with `apm view` |
+
+### Frontend review (suite)
+**Signals**: a frontend project where someone wants a structured review pass (CI / hygiene / deps / testing / security / state / performance / weekly cadence)
+
+| T | Skill | Install | Use when |
+|---|---|---|---|
+| T1 | frontend-review-weekly | `mizchi/skills/frontend/review-weekly` | **Orchestrator** for the weekly AI review — dispatches all 8 domain skills and the 5 perspective sub-skills |
+| T1 | frontend-review-triage | `mizchi/skills/frontend/review-triage` | Initial frontend-review assessment ("triage", day-1) — scorecard, top-3 risks, app classification |
+| T1 | frontend-review-ci | `mizchi/skills/frontend/review-ci` | CI is slow (>10 min), flaky, or you want to optimize GitHub Actions for a frontend project |
+| T1 | frontend-review-hygiene | `mizchi/skills/frontend/review-hygiene` | Code-hygiene audit — TypeScript strictness, lint, dead code, duplication |
+| T1 | frontend-review-deps | `mizchi/skills/frontend/review-deps` | Dependency health — freshness, CVE triage with attack-vector weighting, Tier 1/2/3 library detection |
+| T1 | frontend-review-testing | `mizchi/skills/frontend/review-testing` | Test-infrastructure audit — vitest coverage, playwright config, Testing Library usage, VRT setup |
+| T1 | frontend-review-security | `mizchi/skills/frontend/review-security` | Frontend security review — HTML sinks, auth/token storage, route guards, env var exposure, AI self-pentest |
+| T1 | frontend-review-state | `mizchi/skills/frontend/review-state` | State management architecture review — server/URL/form/UI classification, Jotai/Zustand/Redux anti-patterns |
+| T1 | frontend-review-performance | `mizchi/skills/frontend/review-performance` | Rendering performance review — profiler-first, memo correctness, virtual scroll, `useTransition` |
+| T2 | frontend-expert | `mizchi/skills/frontend/review-perspectives/frontend-expert` | Frontend-architect perspective sub-skill (component design, state, DOM usage) |
+| T2 | frontend-ops-expert | `mizchi/skills/frontend/review-perspectives/frontend-ops-expert` | Frontend-Ops perspective sub-skill (CI/CD, scheduler, KPI ratchet, release process) |
+| T2 | performance-expert | `mizchi/skills/frontend/review-perspectives/performance-expert` | Performance perspective sub-skill (bundle size, LCP / CLS / INP, avoidable work) |
+| T2 | react-expert | `mizchi/skills/frontend/review-perspectives/react-expert` | React-specialist perspective sub-skill (hooks, re-rendering, Suspense / RSC) |
+| T2 | security-expert | `mizchi/skills/frontend/review-perspectives/security-expert` | Security-specialist perspective sub-skill (XSS / CSRF, authz boundaries, input validation) |
 
 ---
 
-## Frontend レビュー(手動起動スイート)
+## Reliability / Flakiness
 
-**Signals**: frontend プロジェクトで構造的レビューをしたいとき。
-週次 orchestrator は廃止済み。必要な領域を**手動で**起動する。
-全 8 本とも欠落 `scripts/audit-*.sh` 参照が残る **🔧 要カスタム**(旧自作 `.mjs` は commit `0fd8ec3`)。
-
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| 🔧 | frontend-review-triage | `frontend/review-triage` | frontend レビューの入口(day-1 assessment) |
-| 🔧 | frontend-review-ci | `frontend/review-ci` | CI が遅い(>10 min)/ flaky。frontend の GitHub Actions 最適化 |
-| 🔧 | frontend-review-hygiene | `frontend/review-hygiene` | TypeScript strictness・lint・dead code・duplication |
-| 🔧 | frontend-review-deps | `frontend/review-deps` | 依存の健全性・CVE triage・deprecated 検出 |
-| 🔧 | frontend-review-testing | `frontend/review-testing` | vitest coverage・playwright config・VRT setup |
-| 🔧 | frontend-review-security | `frontend/review-security` | HTML sink・auth/token storage・route guard・env 露出 |
-| 🔧 | frontend-review-state | `frontend/review-state` | state 分類(server/URL/form/UI)・anti-pattern |
-| 🔧 | frontend-review-performance | `frontend/review-performance` | React rendering・profiler-first・memo 正当性 |
+| T1 | flaker-setup | `mizchi/flaker/skills/flaker-setup` | Introducing `@mizchi/flaker` to a repo for flaky-test detection / GitHub Actions integration |
+| T1 | flaker-management | `mizchi/flaker/skills/flaker-management` | Operating `@mizchi/flaker` after setup — day-to-day runs, sampling / quarantine review, KPI ratchet |
+| T1 | flaker-storage-cache-on-ci | `mizchi/skills/devops/flaker-storage-cache-on-ci` | Persisting flaker's DuckDB storage across GitHub Actions runs via `actions/cache@v4`; debugging "history vanished every run"; adding a new ingest source |
 
 ---
 
-## AI / VLM
+## Formal Methods / Verification
 
-**Signals**: screenshot review, visual regression testing
+**Signals**: user asks about formal methods, Z3, Alloy, TLA+, P, Dafny, MoonBit prove, Lean, Rocq, specs-vs-code reconciliation, config consistency, authz soundness, model checking, proof obligations, or turning counterexamples into domain-owner questions
 
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| 🔧 | review-image | `ai/review-image` | 単画像を VLM で判定する軽量 review。Deno→Bun 移植・model/費用上限を直す要カスタム |
-| 🔧 | vlmkit | `ai/vlmkit` | baseline/current の pixel・style・a11y diff を測る VRT 基盤。`@mizchi/vrt` 0.5→0.6 移行が要る要カスタム |
+| T1 | formal-methods-reconciler | `mizchi/skills/formal-methods/reconciler` | Extract claims from docs/code/tests/config/logs, choose the smallest appropriate verifier/model checker/prover, and translate SAT/UNSAT/traces/proof failures into domain-language decisions and regression guards |
 
 ---
 
-## DevOps / CI
+## Process / Meta
 
-**Signals**: `.github/workflows/`, failing PR checks, OTel
+### Skill / prompt authoring
 
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| 🔧 | actions-ci-tuning | `devops/actions-ci-tuning` | GitHub Actions の監査・高速化。Bun 検出・変更前承認を追加する要カスタム |
-| 🔧 | gh-fix-ci | `devops/gh-fix-ci` | 失敗した PR checks の診断・修正。read-only 調査を先行し修正は承認後の境界を維持する要カスタム |
-| 🔧 | opentelemetry | `devops/opentelemetry` | platform 非依存の OTel 設計 reference。SDK 2.x・削除済み Workers 版参照を直す要カスタム |
+| T0 | apm-usage | `mizchi/skills/tooling/apm-usage` | Adding / removing / updating skills via APM (always pair with `skill-selector`) |
+| T2 | skill-finder | `mizchi/skills/meta/skill-finder` | Cross-source survey + waxa eval gate when the catalog has no fit (Phase 2 of the selection flow) |
+| T2 | waxa-eval | `mizchi/skills/meta/waxa-eval` | Iterating on a skill's prompt with the waxa CLI — scenarios, graders, ledger, convergence |
+| T2 | optimizing-descriptions | `mizchi/skills/meta/optimizing-descriptions` | Audit + rewrite SKILL.md `description` fields per agentskills.io framework + mizchi's two-track (Meta / Project) trigger policy |
+| T2 | empirical-prompt-tuning | `mizchi/skills/meta/empirical-prompt-tuning` | Iteratively improving an agent-facing instruction via subagent execution |
+| T2 | retrospective-codify | `mizchi/skills/meta/retrospective-codify` | Converting trial-and-error lessons into ast-grep rules / skills / CLAUDE.md rules |
+| T2 | extract-glossary | `mizchi/skills/meta/extract-glossary` | Extracting domain-specific terms / repo implementation maps / onboarding Mermaid diagrams from one or more repos / GitHub orgs |
 
----
+### Personal / dotfiles
 
-## Tooling(日常)
-
-**Signals**: バグ調査 / マージ衝突 / 図 / プロトタイプ / 調査 など
-
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| ✅ | diagnosing-bugs | `tooling/diagnosing-bugs` | 難バグ・性能劣化の診断ループ |
-| ✅ | resolving-merge-conflicts | `tooling/resolving-merge-conflicts` | 進行中の git merge/rebase 衝突解消 |
-| ✅ | prototype | `tooling/prototype` | 使い捨てプロトタイプで設計判断を検証 |
-| ✅ | drawio | `tooling/drawio` | draw.io CLI で図生成(v1.19.0: SVG実描画lint・typography・tint ladder・凡例・表・60ノード級autolayoutまで検証済み) |
-| ✅ | git-guardrails-claude-code | `tooling/git-guardrails-claude-code` | 危険 git 操作を hook でブロック(**Claude Code 専用**) |
-| 🔧 | research | `tooling/research` | 軽量な一次情報調査。重量級は `deep-research` plugin と分担する要カスタム |
-| 🔧 | code-review | `tooling/code-review` | 固定点からの差分を Standards / Intent 軸で review。design recordとticketをIntentとして照合 |
-| 🔧 | ast-grep-practice | `tooling/ast-grep-practice` | project 固有の構造規則・安全な migration。ast-grep 0.44.0 で全実例を検証する要カスタム |
-| 🔧 | justfile | `tooling/justfile` | 既存 justfile の理解・安全な編集。pkfire 優先や危険例を外す要カスタム |
-| 🔧 | conventional-changelog | `tooling/conventional-changelog` | release 方式の比較入口。存在しない `npm-release` 参照等を外す要カスタム |
-| 🔧 | apm-usage | `tooling/apm-usage` | APM の manifest/lockfile/install。**APM 0.26.0 準拠へ更新する高優先要カスタム** |
-| 🔧 | upstream-fix-and-pin | `tooling/upstream-fix-and-pin` | 依存の上流 PR + 一時 override + 撤去。`~/ghq`・pnpm 専用記述を外す要カスタム |
+| T2 | chezmoi-management | `mizchi/skills/tooling/chezmoi-management` | Touching mizchi's chezmoi-managed dotfiles (`~/.claude/`, `~/.config/`, `~/.zshrc`) |
 
-### 依存監査
-| Status | Skill | Install (`skills/<path>`) | Use when |
+### Writing / publishing
+
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| 🔧 | dep-lib-review | `tooling/dep-lib-review` | 日常の依存棚卸しと承認後の更新。Bun/Rust・承認境界を直す要カスタム |
-| 🔧 | tech-trend-watch | `tooling/tech-trend-watch` | 長期的な採否・移行判断。一次情報優先へ直す要カスタム |
+| T2 | mizchi-blog-style | `mizchi/skills/meta/mizchi-blog-style` | Drafting a blog post to be published as mizchi (zenn / dev.to). Style + AI-smell detection |
+| T2 | tech-article-reproducibility | `mizchi/skills/meta/tech-article-reproducibility` | Final reproducibility check on a tech article draft before publication |
 
----
+### Migration / porting
 
-## 実装フロー(design record → ticket → 実装 → review)
-
-**Signals**: 仕様固め・チケット分割・実装オーケストレーション。
-`setup-agent-environment` で work tracker・domain docs・design record規約を設定済みが前提。
-to-spec / to-tickets / triage / implement / wayfinder は承認境界カスタム済み(2026-07-25)。
-
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| ✅ | to-spec | `tooling/to-spec` | 合意済み会話を不変のdesign recordとして `docs/specs/` へ固定(承認gate・commit手順カスタム済み) |
-| ✅ | to-tickets | `tooling/to-tickets` | design recordを vertical slice の tracer-bullet work ticketへ分割(公開前承認・ready-for-agent除外条件カスタム済み。部分公開失敗の回復手順とDAG検証は検討事項) |
-| ✅ | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める(tracker 書き込みは全文提示→承認後、外部PRコードは承認+隔離worktree実行、`.out-of-scope/` は opt-in にカスタム済み) |
-| ✅ | implement | `tooling/implement` | work ticket/design recordまたはcurrent-session task listから tdd → 段階検証 → code-review をつなぐ薄い orchestrator(commit・tracker更新は提案→承認後にカスタム済み) |
-| ✅ | wayfinder | `tooling/wayfinder` | 一 session で見通せない大規模案件を decision ticket の地図へ分解(明示起動。tracker 書き込み・subagent 起動・外部 service / credential / data 操作は提案→承認後、ticket は削除せず close / supersede、並行更新と部分失敗からの回復手順込みにカスタム済み) |
+| T3 | translate-programming-language | `mizchi/skills/lang/translate-programming-language` | Porting modules / services / APIs between programming languages with behavior parity |
 
----
+### Memory / session (mnemo)
+**Signals**: agent needs persistent cross-session memory or session journaling; `mnemo` CLI on PATH
 
-## Formal Methods
-
-**Signals**: Z3 / Alloy / TLA+ / spec-vs-code 突合・authz soundness・model checking
-
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| ⏸🔧 | formal-methods-reconciler | `formal-methods/reconciler` | 最初の小さな formal check 作成。普通の property test で足りるか先に判定する保留・要カスタム |
-| ⏸🔧 | formal-methods-drift-guard | `formal-methods/drift-guard` | reconciler の後、spec/code/model drift を保守する対の skill。同上 |
+| T1 | mnemo-retrospective | `mizchi/mnemo/skills/mnemo-retrospective` | Capturing a task-completion retrospective — at the end of a substantial coding / debug / research / deploy task when a reusable lesson was learned |
+| T2 | mnemo-cmd | `mizchi/mnemo/skills/mnemo-cmd` | Using the `mnemo` command entrypoint to inspect and mutate mnemo memory / sessions / skills / prompts |
+| T2 | mnemo-article-to-skill | `mizchi/mnemo/skills/mnemo-article-to-skill` | Turning an article, blog post, paper, or pasted long-form note into a hosted mnemo skill draft |
+| T2 | mnemo-session-journal | `mizchi/mnemo/skills/session/mnemo-session-journal` | `mnemo` for creating / appending / inspecting / resolving / searching session records |
+| T2 | mnemo-skill-select | `mizchi/mnemo/skills/mnemo-skill-select` | Selecting agent skills from hosted mnemo (list / search uploaded skills, then load matching local) |
+| T3 | dotenvx-in-actions | `mizchi/mnemo/skills/dotenvx-in-actions` | Sourcing secrets in GitHub Actions from a dotenvx-encrypted `.env` committed to the repo — gated by a single repo secret (private key) |
+| T3 | worker-deploy-auto-rollback | `mizchi/mnemo/skills/worker-deploy-auto-rollback` | GitHub Actions manual-trigger CD for a Cloudflare Worker with automatic rollback on smoke failure |
 
----
+### Security review (suite)
+**Signals**: user asks for a security review of a web application repository
 
-## Process / Meta(明示起動が基本)
-
-このリポジトリの運用そのものを扱う meta skill。**自動提案しない** — ユーザーが名指しした時だけ。
-
-### skill 運用の基盤
-| Status | Skill | Install (`skills/<path>`) | Use when |
+| T | Skill | Install | Use when |
 |---|---|---|---|
-| 🎯 | setup-agent-environment | `meta/setup-agent-environment` | repo ごとに work tracker / triage labels / domain docs / design record規約を scaffold(engineering flow の前に一度) |
-| 🎯🔧 | skill-selector | `meta/skill-selector` | この catalog から project skill を選ぶ入口(= この skill 自身) |
-| 🎯🔧 | skill-finder | `meta/skill-finder` | catalog に無いものを外部探索(Phase 2)。安全確認 + waxa eval gate |
-
-> `apm-usage`(`tooling/apm-usage`)は上の **Tooling(日常)** 節に記載。APM の manifest/lockfile 構文が必要なときに参照する。
-
-### skill / prompt の品質
-| Status | Skill | Install (`skills/<path>`) | Use when |
-|---|---|---|---|
-| 🎯🔧 | optimizing-descriptions | `meta/optimizing-descriptions` | frontmatter `description` の横断監査 |
-| 🎯🔧 | empirical-prompt-tuning | `meta/empirical-prompt-tuning` | fresh-agent の固定 scenario で skill/instruction を評価・改善 |
-| 🎯🔧 | waxa-eval | `meta/waxa-eval` | waxa CLI で skill prompt を評価。**自動 iterate は使用保留**の要カスタム |
-| 🎯🔧 | retrospective-codify | `meta/retrospective-codify` | 再発しそうな教訓を rule / skill / CLAUDE.md へ恒久化 |
-| 🎯🔧 | writing-great-skills | `meta/writing-great-skills` | skill を書く / 直すときの設計原則 reference |
-| 🎯🔧 | extract-glossary | `meta/extract-glossary` | 複数 repo から用語・repo map・onboarding 資料を根拠付きで抽出 |
-
-### 計画を詰める(grill 系)
-| Status | Skill | Install (`skills/<path>`) | Use when |
-|---|---|---|---|
-| ✅ | grilling | `meta/grilling` | 計画・決定・アイデアを1問ずつ問い詰める primitive |
-| ✅ | grill-me | `meta/grill-me` | 文書を残さない明示的な grill の入口 |
-| ✅ | grill-with-docs | `meta/grill-with-docs` | grill しながら ADR・用語集を残す入口(domain-modeling と併用) |
-| ✅ | decision-interview | `meta/decision-interview` | 曖昧なアイデアを1問ずつの構造化インタビューで**ユーザー所有の明示的な意思決定**へ。decision ledger + 承認で締める。grilling が問い詰めなのに対しこちらは決定の明示化・記録 |
-| ✅ | handoff | `meta/handoff` | 会話を引き継ぎ文書に圧縮 |
-| 🎯 | ask-matt | `meta/ask-matt` | 状況別に skill/flow を案内する router(名前は検討の上で現状維持。固定 context 上限・会話型 issue intake 導線・改造済み skill との記述整合をカスタム済み) |
-
-### 記事・再現性(明示起動)
-| Status | Skill | Install (`skills/<path>`) | Use when |
-|---|---|---|---|
-| 🎯🔧 | teach | `meta/teach` | 複数 session で学習 workspace を蓄積。承認境界を直す要カスタム |
-| 🎯🔧 | tech-article-reproducibility | `meta/tech-article-reproducibility` | how-to/tutorial 記事の公開前再現性チェック。mizchi 固有 path 等を直す要カスタム |
-
----
-
-## ⏸ 保留(通常導線に載せない)
-
-deprecated / in-progress。実案件で一度試してから昇格または削除を判断する。
-**原則 catalog 提案に入れない** — プロジェクトが強く必要とする場合のみ散文で言及する。
-
-| Status | Skill | Install (`skills/<path>`) | 位置づけ |
-|---|---|---|---|
-| ⏸🔧 | qa | `deprecated/qa` | 会話型の不具合受付を issue へ固定。tracker 運用を吟味するまで原形維持 |
-| ⏸ | batch-grill-me | `in-progress/batch-grill-me` | 独立質問をラウンド単位でまとめる grill の実験版 |
-| ⏸ | claude-handoff | `in-progress/claude-handoff` | 会話要約を `claude --bg` で背景 agent 起動 |
-| ⏸ | loop-me | `in-progress/loop-me` | 反復業務を workflow 仕様へ落とす |
-| ⏸🔧 | setup-ts-deep-modules | `in-progress/setup-ts-deep-modules` | dependency-cruiser で public entry を機械的に守る。優先度高の要カスタム候補 |
-| ⏸ | to-questionnaire | `in-progress/to-questionnaire` | 答えきれない決定を他者向け質問票にする |
-| ⏸🔧 | wizard | `in-progress/wizard` | 手順を再現可能な対話 script へ。秘密情報まわりを安全化するまで保留 |
-| ⏸ | writing-fragments | `in-progress/writing-fragments` | 執筆の explore 段階(素材採掘) |
-| ⏸ | writing-shape | `in-progress/writing-shape` | 執筆の exploit 段階(段落構築) |
-| ⏸ | writing-beats | `in-progress/writing-beats` | essay 向け beat 単位の構築 |
+| T2 | security-review | `mizchi/security-review/skills/security-review` | **Orchestrator** — runs the three sub-skills in order |
+| T2 | security-review-whitebox | `mizchi/security-review/skills/security-review-whitebox` | Static + source-code review with language-appropriate scanners |
+| T2 | security-review-blackbox | `mizchi/security-review/skills/security-review-blackbox` | OWASP ZAP baseline + optional authenticated active scan against a localhost target |
+| T2 | security-review-exploit | `mizchi/security-review/skills/security-review-exploit` | Confirming whitebox hypotheses via live HTTP probes or PoC |
 
 ---
 
 ## Deliberately not in catalog
 
-以下の軸は設計上 catalog 行を持たない。Phase 2 へエスカレーションしない — 一度きりの
-setup であって、繰り返す skill 型のニーズではない。framework docs でインラインに解決する。
+Some axes have no catalog row by design. Do **not** escalate to Phase 2 for these — they are one-off setup tasks, not recurring skill-shaped needs. Solve inline with framework docs.
 
-| 軸 | 理由 |
+| Axis | Reason no skill |
 |---|---|
-| Vite / React / Next.js の scaffolding | 一度きりの setup。framework docs で十分。繰り返すパターン(E2E/build/CI)は他の行がカバー |
-| 単発の config 変換(webpack→Vite, Jest→Vitest) | 一度きりの migration。AI 支援でインライン処理 |
-| 単発のデータ移行 / backfill | 繰り返さない |
-| ORM / DB client 一般 | project 固有すぎる。具体的な運用痛点があるものだけ載せる |
+| Vite / React / Next.js / Solid frontend scaffolding | One-off setup; framework docs are sufficient. Recurring patterns (E2E, build, CI) are covered by other catalog rows. |
+| Single-shot config conversions (e.g., webpack → Vite, Jest → Vitest) | One-off migration; AI-aided porting handles this inline. |
+| Ad-hoc data migrations / one-time backfills | One-off; doesn't recur. |
+| ORMs / DB clients in general | Too project-specific; only listed when a concrete operational pain has been encoded (e.g., `node-sqlite-vec`). |
 
----
+If you find yourself wanting a skill on one of these axes, that's a Phase 2 escalation candidate — but verify the need is recurring across multiple sessions before searching.
 
 ## When the catalog has no fit
 
-どの行も一致せず、ニーズが**繰り返す**なら `skill-finder` skill 経由で Phase 2 へ。
-GitHub topic 検索をインラインで走らせない。`skill-finder` が source priority と
-waxa eval gate を担う。
+If no row matches and the need is recurring, escalate via the `skill-finder` skill. It codifies the source priority (Anthropic official → claude-skill-registry → VoltAgent/awesome-agent-skills → ComposioHQ → obra/superpowers → GitHub topic) and gates adoption through a mandatory waxa eval. Do not run a GitHub topic search inline.
 
 ## Catalog hygiene
 
-- ここに行がある = **このリポジトリに実在する** skill である。外部候補は Phase 2 の
-  `skill-finder` を通し、複数 project での実利用と waxa eval 通過後にだけ昇格する。
-- skill を追加・削除・改名したら、同じ編集でこの catalog の行も更新する。
-- 状態(✅/🔧/⏸/🎯)はこの catalog が一次情報。実体(SKILL.md・asset)と乖離を
-  見つけたら、実体を確認したうえでこの catalog を直す。
-- `find skills -name SKILL.md` の結果とこの表の行数が一致するのが健全な状態
-  (`tools/waxa/examples/` の fixture skill は対象外)。
+- A row here means: someone has actually used this skill on a real project and it pulled its weight.
+- When a new skill enters `mizchi/skills` (or an upstream repo this catalog references), add a row only after the first real use in a project.
+- When a skill is removed or deprecated, drop the row in the same edit.
+- Skills sourced through `skill-finder` are promoted here only after a passing waxa eval AND use in 2+ projects.
+- If you find yourself frequently citing a Phase-2 result, that's the trigger to promote it: open a PR adding it to this file with the project signal that triggered the match.

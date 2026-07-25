@@ -1,41 +1,43 @@
-# Scenario B (edge) — Rust + SQL catalog + Go service + Buildkite CI.
-# Tests that Phase 1:
-# - selects the catalog rows that match (rust, sql-schema-audit)
-# - handles off-catalog signals (Go service has no catalog row → Phase 2
-#   rubric or explicit defer) without padding the install list
-# - excludes gh-fix-ci for a non-GitHub-Actions CI (Buildkite)
+# Scenario B (edge) — MoonBit+C-FFI + Rust gRPC + Buildkite + flaky tests.
+# Mirrors the empirical-prompt-tuning Iter 1+ scenario B. Tests:
+# - Phase 1 still selects the catalog rows that match (moonbit-c-binding,
+#   flaker-setup)
+# - Rust gRPC has no catalog row → either escalate to Phase 2 with rubric
+#   or explicitly state "no skill needed yet"
+# - Buildkite signal is correctly excluded from gh-fix-ci (GH-Actions only)
 id: skill-selector-edge-monorepo-001
-name: Rust + SQL catalog + Go service + Buildkite monorepo
+name: MoonBit C-FFI + Rust gRPC + Buildkite monorepo
 description: |
   Mid-stream monorepo with mixed signals; user names two pain points but
-  also has off-catalog signals (Go service, Buildkite). Verifies the
+  also has off-catalog signals (Rust gRPC, Buildkite). Verifies the
   selector handles "no catalog match" without padding.
 
 tags:
+  - moonbit
+  - c-ffi
   - rust
-  - sql
-  - go
+  - grpc
   - buildkite
   - phase-2
 
 inputs:
   prompt: |
     monorepo に複数 stack:
-    - Rust の主要サービス(`Cargo.toml`、`*.rs` 多数)
-    - SQLite スキーマ + sqlc スタイルの `*.sql` query catalog
-    - Go の補助 gRPC service
+    - MoonBit native-FFI package + C library (libxml2) — `extern "c"` 既にあり
+    - Rust gRPC service
     - Buildkite-hosted CI (NOT GitHub Actions)
+    - 全 monorepo で flaky-test 追跡したい
 
     Pain points:
-    (a) Rust のレビューで所有権・async 周りの見落としが多い
-    (b) PR ごとに SQLite の query plan が悪化していないか確かめたい
+    (a) C bindings の追加が repetitive で error-prone
+    (b) flaky test と genuine failure の判別ができない
 
     "I want to add the right skills now. We don't have any installed yet."
 
 expected:
   output_contains:
-    - "rust"
-    - "sql-plan-audit"
+    - "moonbit-c-binding"
+    - "flaker-setup"
   outcomes:
     - type: task_completed
 
@@ -50,25 +52,25 @@ graders:
     type: code
     config:
       assertions:
-        - "'rust' in output"
-        - "'sql-plan-audit' in output"
+        - "'moonbit-c-binding' in output"
+        - "'flaker-setup' in output"
 
   # gh-fix-ci の判定 (Buildkite なので install しない) は LLM judge
   # `edge_handling_semantic` 側でカバーする。code grader で or 連結 +
   # `output.lower()` のような Python idiom を表現するのが煩雑なため。
 
-  - name: go_gracefully_handled
+  - name: rust_gracefully_handled
     type: text
     config:
       # Either Phase 2 escalation with rubric, or explicit non-adoption.
       regex_match:
-        - "(?i)(phase\\s*2|skill-finder|search.*github|topic:claude-skill|no skill needed|defer)"
+        - "(?i)(phase\\s*2|search.*github|topic:claude-skill|no skill needed|defer)"
 
   - name: pinning_mentioned
     type: text
     config:
       regex_match:
-        - "(?i)pin.*(tag|sha)|apm\\s*view|--frozen"
+        - "(?i)pin.*(tag|sha)|apm\\s*view|frozen-lockfile"
 
   # Empirical-prompt-tuning: structured self-report from the executor.
   - name: self_report_complete
@@ -79,19 +81,18 @@ graders:
       max_retries: 2
 
   # LLM-as-Judge: catches semantic equivalents and the edge-specific
-  # judgment (Buildkite signal handled correctly + Go escalation phrased
-  # as Phase 2 rubric or explicit defer).
+  # judgment (Buildkite signal handled correctly + Rust escalation
+  # phrased as Phase 2 rubric or explicit defer).
   - name: edge_handling_semantic
     type: llm
     config:
       rubric: |
         deliverable は次の 5 項目をすべて満たしているか?
-        1. Rust レビュー痛点 (a) を `rust` skill で解決すると示している
-        2. SQLite query plan 痛点 (b) を `sql-plan-audit` で解決すると示している
-           (`sql-schema-audit` の併記は可)
-        3. Go gRPC service について、catalog 不在を認識した上で次のいずれか:
-           (a) Phase 2 escalation (`skill-finder`) の検索/評価ルーブリックを記述、または
+        1. MoonBit + C FFI 痛点 (a) を `moonbit-c-binding` で解決すると示している
+        2. flaky test 痛点 (b) を `flaker-setup` で解決すると示している
+        3. Rust gRPC service について、catalog 不在を認識した上で次のいずれか:
+           (a) Phase 2 escalation の検索/評価ルーブリックを記述、または
            (b) 「near-term の recurring need ではない」と明示的に defer
-        4. Buildkite CI signal について `gh-fix-ci` を install しない判断 (理由: GitHub Actions only) を明示
+        4. Buildkite CI signal について `gh-fix-ci` を install しない判断 (理由: GHA-only) を明示
         5. project scope (per-repo `apm.yml`) を選び、pinning (tag/SHA、`apm view` で resolve) を言及
         全 5 項を満たすときのみ PASS: yes。1 つでも欠けたら PASS: no。
