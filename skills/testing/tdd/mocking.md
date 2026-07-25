@@ -1,5 +1,12 @@
 # When to Mock
 
+The rules here are language-agnostic; code examples are TypeScript. The boundary-mocking idiom per stack:
+
+- **Rust** — accept a trait, pass a hand-written test double; no runtime mocking framework needed.
+- **Go** — accept a small interface, pass a fake implementation from the test.
+- **Python** — `pytest` `monkeypatch` / `unittest.mock.patch` at the boundary module.
+- **TypeScript** — `vi.mock` / `bun test`'s `mock()` on the boundary module.
+
 Mock at **system boundaries** only:
 
 - External APIs (payment, email, etc.)

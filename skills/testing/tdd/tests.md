@@ -1,5 +1,7 @@
 # Good and Bad Tests
 
+The principles here are language-agnostic; the examples are TypeScript for brevity. Map them to the project's stack — `cargo test` (Rust), `go test` (Go), `pytest` (Python), `bun test` / vitest (TypeScript) — rather than skipping them because the syntax differs.
+
 ## Good Tests
 
 **Integration-style**: Test through real interfaces, not mocks of internal parts.
