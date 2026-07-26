@@ -1,94 +1,95 @@
 ---
 name: to-tickets
-description: Break an approved immutable design record into tracer-bullet implementation tickets with explicit blocking edges, then publish only those work tickets to the configured tracker. Use after to-spec for a multi-session build; do not create or update a tracker issue for the design record.
+description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker — edges as text in one file per ticket locally, or native blocking links on a real tracker.
 disable-model-invocation: true
 ---
 
 # To Tickets
 
-Break one approved design record into **tracer-bullet** implementation tickets. The design record is historical input, not a parent work item: never edit it, publish it to the tracker, or give it a tracker status.
+Break a plan, spec, or conversation into a set of **tickets** — tracer-bullet vertical slices, each declaring the tickets that **block** it.
 
-The issue tracker, triage labels, and design-record convention should be available under `docs/agents/`. Run `/setup-agent-environment` if they are missing.
+The issue tracker and triage label vocabulary should have been provided to you — run `/setup-agent-environment` if not.
 
 ## Process
 
 ### 1. Gather context
 
-Require a path under `docs/specs/YYYY-MM-DD-<slug>.md`. Read the full design record, including its historical-record notice and any `## Supersedes` section. Verify that this path is tracked, committed, and has no staged or unstaged changes. Do not require unrelated worktree changes to be clean. If the user has only a raw conversation, an unapproved plan, or an uncommitted record, direct them to `/to-spec` first; do not create tickets from a mutable draft.
+Work from whatever is already in the conversation context. If the user passes a reference (a spec path, an issue number or URL) as an argument, fetch it and read its full body and comments.
 
-For a small implementation that stays in the current session, skip this skill entirely: break it into a few confirmed steps in the conversation and `/implement` them. Do not create tracker issues for work that small.
+### 2. Explore the codebase (optional)
 
-Treat code, tests, ADRs, and the glossary as current truth whenever they differ from the historical record. If the divergence changes the intended work, stop and ask the user to re-grill rather than silently repairing the old design.
+If you have not already explored the codebase, do so to understand the current state of the code. Ticket titles and descriptions should use the project's domain glossary vocabulary, and respect ADRs in the area you're touching.
 
-### 2. Explore the codebase
-
-Explore the relevant code if needed. Use the glossary vocabulary and respect ADRs. Look for prefactoring that makes the implementation easier: make the change easy, then make the easy change.
+Look for opportunities to prefactor the code to make the implementation easier. "Make the change easy, then make the easy change."
 
 ### 3. Draft vertical slices
 
-Break the work into **tracer-bullet** tickets.
+Break the work into **tracer bullet** tickets.
 
 <vertical-slice-rules>
 
-- Each slice cuts a narrow but COMPLETE path through every relevant layer — vertical, not a horizontal layer-only task.
-- A completed slice is independently demoable or verifiable.
-- Each slice fits in one fresh context window.
-- Each acceptance criterion traces to the design record's ticketing evidence and can be proven by code or tests where appropriate.
-- Do any necessary prefactoring first.
+- Each slice cuts a narrow but COMPLETE path through every layer (schema, API, UI, tests) — vertical, NOT a horizontal slice of one layer
+- A completed slice is demoable or verifiable on its own
+- Each slice is sized to fit in a single fresh context window
+- Any prefactoring should be done first
+
 </vertical-slice-rules>
 
-Give each ticket its **blocking edges**. A ticket with no blockers can start immediately.
+Give each ticket its **blocking edges** — the other tickets that must complete before it can start. A ticket with no blockers can start immediately.
 
-**Wide refactors are the exception to vertical slicing.** Sequence a mechanical change with broad blast radius as expand–contract: expand without breaking callers, migrate call sites in green batches, then contract after every migration is complete. Each phase or batch is a ticket with explicit blockers.
+**Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change — rename a column, retype a shared symbol — whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket — green is promised only there.
 
-### 4. Get approval
+### 4. Quiz the user
 
 Present the proposed breakdown as a numbered list. For each ticket, show:
 
-- **Title**
-- **Blocked by**
-- **What it delivers**
-- **Acceptance evidence**
-- **Ready for agent?** — `yes` only when no human decision, secret, external authority, or manual-only verification remains
+- **Title**: short descriptive name
+- **Blocked by**: which other tickets (if any) must complete first
+- **What it delivers**: the end-to-end behaviour this ticket makes work
 
-Ask whether the granularity and blocking edges are correct, and whether any tickets should be merged or split. Do not publish anything until the user approves the complete breakdown and the intended tracker writes.
+Ask the user:
 
-### 5. Publish only approved work tickets
+- Does the granularity feel right? (too coarse / too fine)
+- Are the blocking edges correct — does each ticket only depend on tickets that genuinely gate it?
+- Should any tickets be merged or split further?
 
-Publish in dependency order, blockers first. Every ticket must reference the immutable design-record path. Do not create a tracker issue for the design record and do not modify the record.
+Iterate until the user approves the breakdown.
 
-- **Local tracker** — write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`. Derive `<feature-slug>` from the design-record filename. List local blocker numbers and titles.
-- **Real tracker** — create one issue per ticket in dependency order. Use native blocking links when the platform supports them; otherwise write `Blocked by` references in the ticket body.
+### 5. Publish the tickets to the configured tracker
 
-Apply the configured `ready-for-agent` label only to tickets marked ready in the approved breakdown. Tickets awaiting a human decision, credentials, external approval, or manual verification must make that dependency explicit and must not receive the label.
+Publish the approved tickets. **How** depends on the tracker `/setup-agent-environment` configured — the tickets are the same either way, only the shape of the blocking edges changes:
+
+- **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below — one ticket per file, never a single combined file.
+- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction.
+
+Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
+
+Do NOT close or modify any parent issue.
 
 <local-ticket-template>
 
 # <NN> — <Ticket title>
 
-**Design record:** `docs/specs/YYYY-MM-DD-<slug>.md`
+**What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective — not a layer-by-layer implementation list.
 
-**What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective.
+**Blocked by:** the numbers/titles of the tickets that gate this one, or "None — can start immediately".
 
-**Blocked by:** ticket numbers/titles that gate this one, or "None — can start immediately".
+**Status:** ready-for-agent
 
-**Status:** <ready-for-agent or the configured non-agent-ready state>
+- [ ] Acceptance criterion 1
+- [ ] Acceptance criterion 2
 
-## Acceptance criteria
-
-- [ ] Criterion 1
-- [ ] Criterion 2
 </local-ticket-template>
 
 <issue-template>
 
-## Design record
+## Parent
 
-`docs/specs/YYYY-MM-DD-<slug>.md`
+A reference to the parent issue on the tracker (if the source was an existing issue, otherwise omit this section).
 
 ## What to build
 
-The end-to-end behaviour this ticket makes work, from the user's perspective.
+The end-to-end behaviour this ticket makes work, from the user's perspective — not layer-by-layer implementation.
 
 ## Acceptance criteria
 
@@ -98,6 +99,7 @@ The end-to-end behaviour this ticket makes work, from the user's perspective.
 ## Blocked by
 
 - A reference to each blocking ticket, or "None — can start immediately".
+
 </issue-template>
 
-Avoid volatile file paths, code snippets, and duplicated prototype excerpts in tickets. If a decision needs an exact state machine, reducer, schema, or type shape, reference the relevant `## Decisions and rationale` section of the design record instead.
+In either form, avoid specific file paths or code snippets — they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.

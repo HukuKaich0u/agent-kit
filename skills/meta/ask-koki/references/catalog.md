@@ -100,7 +100,7 @@ catalog の説明だけを信頼せず、install 前に対象 skill の SKILL.md
 |---|---|---|---|
 | ✅ | codebase-design | `backend/codebase-design` | 深いモジュール設計の語彙(DESIGN-IT-TWICE 込み) |
 | ✅ | domain-modeling | `backend/domain-modeling` | 会話でドメイン用語・境界・ADR を合意し継続更新(配置は repo設定→既存規約→デフォルトの優先順、CONTEXT.md は差分提示→承認後反映にカスタム済み) |
-| ✅ | improve-codebase-architecture | `backend/improve-codebase-architecture` | 証拠付き findings から Markdown で3〜5候補を提示し、選んだ一候補を codebase-design + grilling で改善設計して to-spec へ(独立 scanner・HTML report・GUI 起動は廃止済み) |
+| ✅ | improve-codebase-architecture | `backend/improve-codebase-architecture` | 証拠付き findings から Markdown で3〜5候補を提示し、選んだ一候補を codebase-design + grilling で改善設計して to-spec へ渡す(独立 scanner・HTML report・GUI 起動は廃止済み) |
 
 ---
 
@@ -181,7 +181,7 @@ audit script 依存は除去済みで read-only desk review として動く(2026
 | ✅ | drawio | `tooling/drawio` | draw.io CLI で図生成(v1.19.0: SVG実描画lint・typography・tint ladder・凡例・表・60ノード級autolayoutまで検証済み) |
 | ✅ | git-guardrails-claude-code | `tooling/git-guardrails-claude-code` | 危険 git 操作を hook でブロック(**Claude Code 専用**) |
 | ✅ | research | `tooling/research` | 軽量な一次情報調査(単一質問・少数一次情報源)。重量級は `deep-research` plugin へ回す分担基準込み |
-| ✅ | code-review | `tooling/code-review` | 固定点からの差分を Standards / Intent 軸で review。design recordとticketをIntentとして照合 |
+| ✅ | code-review | `tooling/code-review` | 固定点からの差分を Standards / Spec 軸の並列 subagent で review(Fowler の smell baseline 込み)。上流 verbatim |
 | 🔧 | ast-grep-practice | `tooling/ast-grep-practice` | project 固有の構造規則・安全な migration。ast-grep 0.44.0 で全実例を検証する要カスタム |
 | 🔧 | justfile | `tooling/justfile` | 既存 justfile の理解・安全な編集。pkfire 優先や危険例を外す要カスタム |
 | 🔧 | conventional-changelog | `tooling/conventional-changelog` | release 方式の比較入口。存在しない `npm-release` 参照等を外す要カスタム |
@@ -195,18 +195,20 @@ audit script 依存は除去済みで read-only desk review として動く(2026
 
 ---
 
-## 実装フロー(design record → ticket → 実装 → review)
+## 実装フロー(spec → ticket → 実装 → review)
 
 **Signals**: 仕様固め・チケット分割・実装オーケストレーション。
-`setup-agent-environment` で work tracker・domain docs・design record規約を設定済みが前提。
-to-spec / to-tickets / triage / implement / wayfinder は承認境界カスタム済み(2026-07-25)。
+`setup-agent-environment` で work tracker・triage labels・domain docs を設定済みが前提。
+to-spec / to-tickets / code-review は 2026-07-26 に上流 verbatim へ復元(design record 化を撤回。
+まず本家のまま使い込んでから改めて設計する方針)。triage / implement / wayfinder は
+承認境界カスタムのみ維持。
 
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| ✅ | to-spec | `tooling/to-spec` | 合意済み会話を不変のdesign recordとして `docs/specs/` へ固定(承認gate・commit手順カスタム済み) |
-| ✅ | to-tickets | `tooling/to-tickets` | design recordを vertical slice の tracer-bullet work ticketへ分割(公開前承認・ready-for-agent除外条件カスタム済み。部分公開失敗の回復手順とDAG検証は検討事項) |
+| ✅ | to-spec | `tooling/to-spec` | 会話を spec(PRD)へ統合し tracker へ publish。上流 verbatim |
+| ✅ | to-tickets | `tooling/to-tickets` | spec / plan / 会話を vertical slice の tracer-bullet ticket へ分割し blocking edge を張る。上流 verbatim |
 | ✅ | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める(tracker 書き込みは全文提示→承認後、外部PRコードは承認+隔離worktree実行、`.out-of-scope/` は opt-in にカスタム済み) |
-| ✅ | implement | `tooling/implement` | work ticket/design recordまたはcurrent-session task listから tdd → 段階検証 → code-review をつなぐ薄い orchestrator(commit・tracker更新は提案→承認後にカスタム済み) |
+| ✅ | implement | `tooling/implement` | spec / ticket から tdd → 段階検証 → code-review をつなぐ薄い orchestrator(commit・tracker更新は提案→承認後にカスタム済み) |
 | ✅ | wayfinder | `tooling/wayfinder` | 一 session で見通せない大規模案件を decision ticket の地図へ分解(明示起動。tracker 書き込み・subagent 起動・外部 service / credential / data 操作は提案→承認後、ticket は削除せず close / supersede、並行更新と部分失敗からの回復手順込みにカスタム済み) |
 
 ---
@@ -229,7 +231,7 @@ to-spec / to-tickets / triage / implement / wayfinder は承認境界カスタ�
 ### skill 運用の基盤
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| 🎯 | setup-agent-environment | `meta/setup-agent-environment` | repo ごとに work tracker / triage labels / domain docs / design record規約を scaffold(engineering flow の前に一度) |
+| 🎯 | setup-agent-environment | `meta/setup-agent-environment` | repo ごとに issue tracker / triage labels / domain docs を scaffold(engineering flow の前に一度) |
 | 🎯 | ask-koki | `meta/ask-koki` | project ごとの skill 選定・導入の入口。この catalog を signal で読み、2〜5本を install 文字列つきで提案(catalog の管理主体) |
 | ⏸ | skill-selector | `meta/skill-selector` | mizchi 本家 verbatim の参照在庫(外部レジストリ横断の原設計)。選定の実務は ask-koki が担う |
 | 🎯🔧 | skill-finder | `meta/skill-finder` | catalog に無いものを外部探索(Phase 2)。安全確認 + waxa eval gate。one-shot 評価は未実証(ledger 空) |

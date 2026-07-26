@@ -162,19 +162,54 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 
 - Source: https://github.com/mattpocock/skills
 - License: MIT (Copyright (c) 2026 Matt Pocock)
-- Vendored commit: `9603c1cc8118d08bc1b3bf34cf714f62178dea3b`
+- Vendored commit: `ed37663cc5fbef691ddfecd080dff42f7e7e350d`
+  (2026-07-26 に `9603c1c` から更新。差分は `to-tickets` 末尾の
+  `/implement` 案内 1 行の削除のみで、agent-kit 側でも `7f2d0ef` で
+  同じ行を重複記述として削っていたため、取り込みで verbatim 一致に戻る)
 - Vendored date: 2026-07-20(完全ミラー化。初回取り込みは 2026-07-19 の 11本)
 - Upstream commit date: 2026-07-16
-- 改造: **11本**(下記「改造記録」参照)。残り22本は上流 verbatim。
+- 改造: 下記「改造記録」参照。design record 系の改造は 2026-07-26 に撤回した(次節)。
+
+### 改造記録(2026-07-26 — design record 化を撤回し開発フローを上流へ復帰)
+
+`to-spec` を「tracker 上の可変 PRD」から「`docs/specs/` の不変 design record」へ
+作り替え、`to-tickets` / `code-review` / `implement` / `ask-matt` /
+`setup-agent-environment` をそれに追従させていたが、**撤回した**。
+
+理由: matt の開発フロー(grill → to-spec → to-tickets → implement → code-review)は
+skill 単体ではなく flow 全体で辻褄が合う設計で、中核概念だけ差し替えると全体の前提が
+ずれる。実際に `to-spec` からは上流が中核に置いていた `## User Stories`
+(「extremely extensive」)と `## Testing Decisions` が丸ごと落ち、`code-review` の
+Intent 軸が照合する acceptance evidence の担い手が record から ticket へ移っていた。
+この設計変更が精度に効いているかを**上流版を使い込む前に**判断できないため、
+まず上流のまま運用して痛みを実測してから改めて設計し直す(ユーザー判断)。
+
+復元は上流完全ミラー commit `c623ea6` の verbatim から行った。
+
+| skill | 内容 |
+|---|---|
+| `skills/tooling/to-spec` | 上流 verbatim へ復元(PRD を tracker へ publish)。差分は `/setup-agent-environment` 参照のみ |
+| `skills/tooling/to-tickets` | 同上。入力の design record 必須化・`ready-for-agent` の条件付与も撤回 |
+| `skills/tooling/code-review` | 同上。第2軸を Intent から **Spec** へ戻し、spec 探索順(issue 参照 → 引数 → `docs/`/`specs/`/`.scratch/`)も上流へ |
+| `skills/tooling/implement` | design record 参照を削除し上流本文へ。**承認境界(commit 提案→承認、push 禁止)は維持** |
+| `skills/meta/ask-matt` | main flow / context hygiene / wayfinder hand off の記述を上流へ。smart zone の model 依存表記・会話中 bug の起票導線・improve-codebase-architecture 記述は維持 |
+| `skills/meta/setup-agent-environment` | design-record 規約の scaffold(`design-records.md`、`## Agent skills` の該当ブロック、issue-tracker 3種の「design records は docs/specs」注記)を削除し上流構成へ。改名と既存規約検出は維持 |
+| `skills/backend/improve-codebase-architecture` | hand off 先の `/to-spec` 説明を上流表現へ |
+
+自作 `tooling/to-tasks`(design record 運用の重さを補う軽量経路として新設し
+`6f2425a` で削除済み)は**復活させない**。上流は小さい仕事を `/implement` 直行で
+受けており、design record を撤回した以上この層の存在理由がないため。
 
 ### 改造記録(2026-07-25 — wayfinder の安全化)
 
 destination / decision ticket / fog of war の設計と明示起動専用は維持したまま、
-2026-07-04 監査が挙げた安全化を適用した。
+2026-07-04 監査が挙げた安全化を適用した。当初あわせて変更した ticket の単位
+(「100K token session」→「人間が一度に理解・review できる一決定」)は、
+安全化ではなく flow 設計に属する判断のため 2026-07-26 に上流へ戻した。
 
 | skill | 改造内容 |
 |---|---|
-| `skills/tooling/wayfinder` | 「The human owns the map」節を追加し、destination・map 本文・ticket 群と blocking edge・次に扱う frontier・resolution・map 更新の各 tracker 書き込みを提示→承認後に変更。research subagent / branch 作成を opt-in 化。外部 service・credential・権限・data 操作は ticket type を問わず個別承認。ticket の削除を廃止し close / supersede+comment で履歴保持。ticket の単位を「100K token session」から「人間が一度に理解・review できる一決定」へ変更。並行更新に対する再読込・idempotent 書き込みと、多段書き込みの部分失敗時に map へ進捗 comment を残して再開可能にする手順を追加 |
+| `skills/tooling/wayfinder` | 「The human owns the map」節を追加し、destination・map 本文・ticket 群と blocking edge・次に扱う frontier・resolution・map 更新の各 tracker 書き込みを提示→承認後に変更。research subagent / branch 作成を opt-in 化。外部 service・credential・権限・data 操作は ticket type を問わず個別承認。ticket の削除を廃止し close / supersede+comment で履歴保持。並行更新に対する再読込・idempotent 書き込みと、多段書き込みの部分失敗時に map へ進捗 comment を残して再開可能にする手順を追加 |
 
 ### 改造記録(2026-07-25 — ask-matt の router 記述を現行 flow へ整合)
 
@@ -217,8 +252,8 @@ tracker への comment / label / close が本文提示なしに行われる点�
 
 ### 改造記録(2026-07-25 — setup-agent-kit を setup-agent-environment へ改名)
 
-skill の役割(repo ごとの tracker / labels / domain docs / design record 規約の
-scaffold)を repo 名でなく機能で表すため、`setup-agent-kit` を
+skill の役割(repo ごとの tracker / labels / domain docs の scaffold)を
+repo 名でなく機能で表すため、`setup-agent-kit` を
 `setup-agent-environment` へ改名した。frontmatter `name`・タイトル・
 `agents/openai.yaml` の `display_name` を変更し、参照側 10 skill
 (wayfinder / to-tickets / to-spec / code-review / triage /
@@ -246,6 +281,10 @@ domain-modeling)と `skill-selector` catalog・`scripts/check-vendored.sh` の
 
 上流 `setup-matt-pocock-skills` の skill 名を agent-kit 用に `setup-agent-kit` へ統一し、
 それを参照する skill の `/setup-matt-pocock-skills` 呼び出しを `/setup-agent-kit` に直した。
+
+⚠️ この表のうち **design record 化に関する記述は 2026-07-26 に撤回済み**
+(先頭の「design record 化を撤回し開発フローを上流へ復帰」節を参照)。
+当時の記録として残す。skill 名の参照修正だけが現在も有効。
 
 | skill | 改造内容 |
 |---|---|
@@ -275,17 +314,17 @@ domain-modeling)と `skill-selector` catalog・`scripts/check-vendored.sh` の
 | `skills/meta/teach` | `skills/productivity/teach` |
 | `skills/meta/writing-great-skills` | `skills/productivity/writing-great-skills` |
 | `skills/testing/tdd` | `skills/engineering/tdd` |
-| `skills/tooling/code-review` | `skills/engineering/code-review`(2026-07-24 に `/setup-agent-kit` 参照へ修正。Spec軸の残りカスタムは継続) |
+| `skills/tooling/code-review` | `skills/engineering/code-review`(2026-07-26 に上流 verbatim へ復元。差分は `/setup-agent-environment` 参照のみ) |
 | `skills/tooling/diagnosing-bugs` | `skills/engineering/diagnosing-bugs` |
 | `skills/tooling/git-guardrails-claude-code` | `skills/misc/git-guardrails-claude-code`(Claude Code 専用) |
 | `skills/tooling/implement` | `skills/engineering/implement`(2026-07-25 に commit・tracker 更新を承認後へ改造。改造記録参照) |
 | `skills/tooling/prototype` | `skills/engineering/prototype` |
 | `skills/tooling/research` | `skills/engineering/research` |
 | `skills/tooling/resolving-merge-conflicts` | `skills/engineering/resolving-merge-conflicts` |
-| `skills/tooling/to-spec` | `skills/engineering/to-spec` |
-| `skills/tooling/to-tickets` | `skills/engineering/to-tickets` |
-| `skills/tooling/triage` | `skills/engineering/triage`(2026-07-24 に design record 軸へ、2026-07-25 に承認境界・外部 PR 隔離・`.out-of-scope/` opt-in へ改造。改造記録参照) |
-| `skills/tooling/wayfinder` | `skills/engineering/wayfinder`(2026-07-24 に design record 軸へ、2026-07-25 に承認境界・opt-in subagent・履歴保持・部分失敗回復へ改造。改造記録参照) |
+| `skills/tooling/to-spec` | `skills/engineering/to-spec`(2026-07-26 に上流 verbatim へ復元。差分は `/setup-agent-environment` 参照のみ) |
+| `skills/tooling/to-tickets` | `skills/engineering/to-tickets`(2026-07-26 に上流 verbatim へ復元。差分は `/setup-agent-environment` 参照のみ) |
+| `skills/tooling/triage` | `skills/engineering/triage`(2026-07-25 に承認境界・外部 PR 隔離・`.out-of-scope/` opt-in へ改造。改造記録参照) |
+| `skills/tooling/wayfinder` | `skills/engineering/wayfinder`(2026-07-25 に承認境界・opt-in subagent・履歴保持・部分失敗回復へ改造。改造記録参照) |
 | `skills/deprecated/qa` | `skills/deprecated/qa` ⚠️ 上流deprecated。要カスタム候補として原形を維持 |
 | `skills/in-progress/batch-grill-me` | `skills/in-progress/batch-grill-me` |
 | `skills/in-progress/claude-handoff` | `skills/in-progress/claude-handoff` |
