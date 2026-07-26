@@ -65,4 +65,4 @@ Run the `/domain-modeling` skill alongside to keep the domain model current — 
 
 ### 4. Hand off
 
-When the design is agreed and the work won't fit the current session, run `/to-spec` to fix it as an immutable design record; a small change can go straight to implementation in-session.
+When the design is agreed and the work won't fit the current session, run `/to-spec` to turn it into a spec; a small change can go straight to implementation in-session.

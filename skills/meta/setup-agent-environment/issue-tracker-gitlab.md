@@ -1,6 +1,6 @@
 # Issue tracker: GitLab
 
-Actionable work tickets for this repo live as GitLab issues. Use the [`glab`](https://gitlab.com/gitlab-org/cli) CLI for all operations. Immutable design records live under `docs/specs/`, not in GitLab Issues.
+Issues and PRDs for this repo live as GitLab issues. Use the [`glab`](https://gitlab.com/gitlab-org/cli) CLI for all operations.
 
 ## Conventions
 

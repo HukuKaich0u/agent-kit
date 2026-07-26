@@ -1,6 +1,6 @@
 # Issue tracker: GitHub
 
-Actionable work tickets for this repo live as GitHub issues. Use the `gh` CLI for all operations. Immutable design records live under `docs/specs/`, not in GitHub Issues.
+Issues and PRDs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
 
 ## Conventions
 

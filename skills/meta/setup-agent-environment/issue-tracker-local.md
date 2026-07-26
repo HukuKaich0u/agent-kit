@@ -1,6 +1,6 @@
 # Issue tracker: Local Markdown
 
-Actionable work tickets for this repo live as markdown files in `.scratch/`. Immutable design records live under `docs/specs/`, not in `.scratch/`.
+Issues and specs (you may know a spec as a PRD) for this repo live as markdown files in `.scratch/`.
 
 ## Conventions
 
