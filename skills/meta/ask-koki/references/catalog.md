@@ -202,14 +202,51 @@ audit script 依存は除去済みで read-only desk review として動く(2026
 to-spec / to-tickets は 2026-07-26 に上流 verbatim へ復元(design record 化を撤回)。
 code-review は実運用で判明したcommit前working treeの欠落を2026-07-27に修正した。
 triage / implement / wayfinder は承認境界等のカスタムを維持。
+batch-tickets は自作(2026-07-27)。to-tickets の verbatim を保つため別 skill にした。
+skill 単体には次工程を呼ぶ記述が無いため、flow の接続は `setup-agent-environment`
+が `docs/agents/development-flow.md` + `## Agent skills` へ書き出して担う
+(batch-tickets 導入時のみ)。implement は spec の Delivery plan を読む。
 
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
 | ✅ | to-spec | `tooling/to-spec` | 会話を spec(PRD)へ統合し tracker へ publish。上流 verbatim |
 | ✅ | to-tickets | `tooling/to-tickets` | spec / plan / 会話を vertical slice の tracer-bullet ticket へ分割し blocking edge を張る。上流 verbatim |
+| ✅ | batch-tickets | `tooling/batch-tickets` | to-tickets の後、ticket を人間が1 PR として review できる Delivery batch へ束ね、batch 境界と merge 順を承認のうえ親 spec に記録(自作。明示起動) |
 | ✅ | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める(tracker 書き込みは全文提示→承認後、外部PRコードは承認+隔離worktree実行、`.out-of-scope/` は opt-in にカスタム済み) |
 | ✅ | implement | `tooling/implement` | spec / ticket から tdd → 段階検証 → code-review をつなぐ薄い orchestrator(commit・tracker更新は提案→承認後にカスタム済み) |
 | ✅ | wayfinder | `tooling/wayfinder` | 一 session で見通せない大規模案件を decision ticket の地図へ分解(明示起動。tracker 書き込み・subagent 起動・外部 service / credential / data 操作は提案→承認後、ticket は削除せず close / supersede、並行更新と部分失敗からの回復手順込みにカスタム済み) |
+
+#### to-tickets と batch-tickets の使い分け
+
+同じ「分割」の語で紛らわしいが、**単位を誰のために切るか**が違う。両者は競合せず直列に繋がる。
+
+| | to-tickets | batch-tickets |
+|---|---|---|
+| 誰のための単位 | **agent** — fresh context 1回で完結するサイズ | **人間** — 1つの review narrative として一度に理解できるサイズ |
+| 成果物 | tracker 上の ticket 群 + blocking edge | 親 spec への `## Delivery plan` comment(batch・branch・merge 順) |
+| 出力の粒度 | 細かいほど良い(agent の実行性が上がる) | 粗いほど良い(review 回数が減る) |
+
+`to-tickets` だけを入れると、10 ticket → 10 PR に機械的に落ちて review 負荷が
+ticket 数に比例して増える。`batch-tickets` はその比例を切る層。逆に
+`batch-tickets` だけでは分割の入力が無いので、**単独では入れない**。
+
+**両方入れる**: spec 1本から複数 ticket が出て、人間が PR review するチーム開発。
+`implement` / `code-review` と組んで spec → ticket → batch → PR の流れになる。
+
+**to-tickets だけで足りる**: PR review する人間が実質いない個人 repo、ticket が
+常に1〜2本で終わる小規模 repo、trunk-based で PR を挟まない運用。batch が常に
+1個なら plan comment は無駄なので提案しない。
+
+**wayfinder との違い**: wayfinder は spec を書く前段(何を決めるべきか不明な段階の
+decision ticket 地図)。batch-tickets は spec と ticket が確定した後段。
+同じ案件で両方使うことはあるが、同時には使わない。
+
+**提案時に必ず添える一手**: batch-tickets を入れるなら
+`setup-agent-environment` の再実行(Section D)も同じ提案に含める。skill の
+SKILL.md には次工程を呼ぶ記述が無く、install しただけでは to-tickets の後に
+呼ばれない。Section D が `docs/agents/development-flow.md` と CLAUDE.md /
+AGENTS.md の `## Agent skills` に流れを書き、それを読んだ agent が繋ぐ。
+既に setup 済みの repo でも Section D は未実行なので、この再実行は必須。
 
 ---
 
@@ -231,7 +268,7 @@ triage / implement / wayfinder は承認境界等のカスタムを維持。
 ### skill 運用の基盤
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| 🎯 | setup-agent-environment | `meta/setup-agent-environment` | repo ごとに issue tracker / triage labels / domain docs を scaffold(engineering flow の前に一度) |
+| 🎯 | setup-agent-environment | `meta/setup-agent-environment` | repo ごとに issue tracker / triage labels / domain docs / 開発フローを scaffold(engineering flow の前に一度。Section D は batch-tickets 導入時のみ走り、`docs/agents/development-flow.md` と `## Agent skills` に flow を書いて skill 間を繋ぐ) |
 | 🎯 | ask-koki | `meta/ask-koki` | project ごとの skill 選定・導入の入口。この catalog を signal で読み、2〜5本を install 文字列つきで提案(catalog の管理主体) |
 | ⏸ | skill-selector | `meta/skill-selector` | mizchi 本家 verbatim の参照在庫(外部レジストリ横断の原設計)。選定の実務は ask-koki が担う |
 | 🎯🔧 | skill-finder | `meta/skill-finder` | catalog に無いものを外部探索(Phase 2)。安全確認 + waxa eval gate。one-shot 評価は未実証(ledger 空) |

@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 Implement the work described by the user in the spec or tickets.
 
+Before starting, read the parent spec. If it carries a Delivery plan, work on the branch that plan assigns to this ticket's batch, and don't start a ticket whose batch is blocked by an unmerged one. If the repo records a development flow for agents (`docs/agents/development-flow.md` or an equivalent section in `AGENTS.md` / `CLAUDE.md`), follow it — it decides branch naming and whether pull requests are per ticket or per batch.
+
 Use /tdd where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.

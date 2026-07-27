@@ -42,7 +42,7 @@ Default to **2–5 skills**. Every installed skill costs context in every conver
 
 Skills are designed to chain; say which chain applies:
 
-- **Implementation flow** — `setup-agent-environment` once per repo, then `grill-with-docs` / `grill-me` → `to-spec` → `to-tickets` → `implement` → `code-review`. If you propose one link, say where the others come in — and hand the details to `/ask-matt`.
+- **Implementation flow** — `setup-agent-environment` once per repo, then `grill-with-docs` / `grill-me` → `to-spec` → `to-tickets` → (`batch-tickets`) → `implement` → `code-review`. If you propose one link, say where the others come in — and hand the details to `/ask-matt`. `batch-tickets` is conditional, not automatic: it earns its place only where a human reviews pull requests and one spec yields enough tickets that per-ticket PRs would swamp them. Never propose it without `to-tickets`, and read the catalog's 使い分け table before recommending either — the two slice for different consumers (agent context vs. human review), and proposing the wrong one is a routing error, not a preference.
 - **Review suites** — entry through the triage skill (`backend-review-triage` / `frontend-review-triage`), which picks the domain lenses. Propose the triage skill, not five lenses.
 - **Language idioms** — `lang/*` skills load per-language guidance ambiently; they pair with everything above.
 

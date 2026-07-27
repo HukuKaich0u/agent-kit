@@ -1,0 +1,5 @@
+interface:
+  display_name: "Batch Tickets"
+  short_description: "Group tickets into reviewable batch PRs"
+policy:
+  allow_implicit_invocation: false

@@ -170,6 +170,35 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 - Upstream commit date: 2026-07-16
 - 改造: 下記「改造記録」参照。design record 系の改造は 2026-07-26 に撤回した(次節)。
 
+### 改造記録(2026-07-27 — Delivery batch 層の追加と flow 接続を setup へ寄せる)
+
+自作 `tooling/batch-tickets`(ticket を人間が 1 PR として review できる batch へ
+束ねる)を追加した。`to-tickets` が切る単位は agent の fresh context に合わせた
+もので、人間の review 単位と一致しない。そのまま PR にすると review 負荷が ticket
+数に比例して増える。ai-agent-workforce-core の実運用文書から repo 固有部分
+(`dev`→`main` release、SemVer、pnpm / Terraform、merge commit 方針)を除いて
+skill 化した。
+
+`to-tickets` 本体に節を足す案は採らなかった。2026-07-26 に上流 verbatim へ復元
+した方針を再び崩すため。また ticket 分解と PR 単位への束ねは工程として別で、
+skill 境界としても分かれるのが自然。
+
+**flow の接続は skill 本体に書かず `setup-agent-environment` に寄せた。** 上流は
+`to-tickets` 末尾の `/implement` 案内 1 行を `ed37663` で削除しており(上記
+Vendored commit 注記)、skill 単体が次工程を名指ししない設計を取っている。この
+設計は保ったまま、repo 側の `docs/agents/development-flow.md` と CLAUDE.md /
+AGENTS.md の `## Agent skills` に flow を書き出すことで接続する。2026-07-26 に
+削除した design-record 規約の scaffold と同じ場所に再び独自ブロックを足すが、
+今回書くのは特定の spec 運用ではなく「どの skill がどの順で何を出すか」であり、
+`batch-tickets` を install した repo でのみ生成される(Section D は skill 未
+導入なら skip)。
+
+| skill | 内容 |
+|---|---|
+| `skills/tooling/batch-tickets` | 新規自作。batch 境界規則、承認後の親 spec への plan 記録(local tracker は `.scratch/<feature-slug>/delivery-plan.md`)、plan は単一で in-place 更新、`to-tickets` が全 ticket へ付けた `ready-for-agent` を先頭 batch へ絞る |
+| `skills/meta/setup-agent-environment` | Section D(開発フロー)を追加。`batch-tickets` 導入時のみ実行し、branch 命名と PR base を確認して `docs/agents/development-flow.md` と `## Agent skills` の `### Development flow` を生成。seed template `development-flow.md` を同梱。Explore に skill 導入検出と default branch / 既存 branch 命名の調査を追加 |
+| `skills/tooling/implement` | ticket 着手前に親 spec の Delivery plan と repo の開発フロー記述を読み、batch の branch で作業する指示を追加(承認境界のカスタムは維持) |
+
 ### 改造記録(2026-07-27 — commit 前の working tree review を接続)
 
 `ask-matt` / `implement` は実装後に `code-review` を実行し、その結果を含めて

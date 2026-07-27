@@ -27,6 +27,8 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `docs/agents/` — does this skill's prior output already exist?
 - `.scratch/` — sign that a local-markdown issue tracker convention is already in use
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
+- Is the `batch-tickets` skill installed? (same check.) This decides whether Section D runs at all. Also note whether `to-tickets` and `implement` are installed — Section D's flow description only mentions the steps that exist here.
+- The default branch and the base of recent pull requests (`git symbolic-ref refs/remotes/origin/HEAD`, `gh pr list --state merged --limit 5 --json baseRefName` where a tracker CLI is available) — plus existing branch names (`git branch -a`), which may already encode a naming convention worth keeping.
 - Monorepo signals — a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. Present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
 
 ### 2. Present findings and ask
@@ -62,12 +64,28 @@ Otherwise default to **single-context** — one `CONTEXT.md` + `docs/adr/` at th
 
 Offer **multi-context** — a root `CONTEXT-MAP.md` pointing to per-context `CONTEXT.md` files — only when exploration found monorepo signals. Then confirm which layout they want.
 
+**Section D — Development flow.** Skip this section entirely if the `batch-tickets` skill isn't installed (exploration told you). Without it there is no batch layer to describe, and the skills chain directly.
+
+> Explainer: The skills chain, but nothing in an individual skill's instructions names the next one. Recording the flow here is what makes an agent mid-task read `to-tickets → batch-tickets` instead of jumping straight to `implement` and opening one PR per ticket.
+
+When it is installed, confirm two things:
+
+> Batch branch naming: `spec/<spec-number>-b<batch-number>-<slug>` (recommended, unless this repo already has a convention)
+
+If exploration found an existing branch naming convention, propose that instead — an existing convention wins.
+
+> PR base branch: [the default branch exploration found]
+
+Take the answer from exploration rather than asking, unless the repo has both a `dev`-style integration branch and a `main`, in which case ask which one batch PRs target.
+
+Do not record merge method, release versioning, or deploy policy here. Those are repo policy that changes independently of the agent flow; this file describes only how work moves from spec to merged PR.
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
-- The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
+- The contents of `docs/agents/issue-tracker.md` and `docs/agents/domain.md`, plus `docs/agents/triage-labels.md` (only when `triage` is installed) and `docs/agents/development-flow.md` (only when `batch-tickets` is installed)
 
 Let them edit before writing.
 
@@ -99,9 +117,17 @@ The block:
 ### Domain docs
 
 [one-line summary of layout — "single-context" or "multi-context"]. See `docs/agents/domain.md`.
+
+### Development flow
+
+`to-tickets` sizes tickets for an agent's context; `batch-tickets` groups them
+into the batches a human reviews as one PR. Ticket count is not PR count. Read the
+parent spec's Delivery plan before claiming a ticket. See `docs/agents/development-flow.md`.
 ```
 
 Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.md`, only when `triage` is installed and Section B ran. When it isn't, both are omitted.
+
+Include the `### Development flow` sub-block, and write `docs/agents/development-flow.md`, only when `batch-tickets` is installed and Section D ran. When it isn't, both are omitted. Unlike the other sub-blocks this one carries the rule inline rather than only pointing at the file — an agent that is mid-flow and about to open a PR per ticket needs the correction where it is already reading, not one hop away.
 
 Then write the docs files using the seed templates in this skill folder as a starting point:
 
@@ -110,6 +136,7 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [issue-tracker-local.md](./issue-tracker-local.md) — local-markdown issue tracker
 - [triage-labels.md](./triage-labels.md) — label mapping (only if `triage` is installed)
 - [domain.md](./domain.md) — domain doc consumer rules + layout. When Section C recorded an existing convention, rewrite the paths and file-structure trees in this template to match that convention before writing.
+- [development-flow.md](./development-flow.md) — the flow through the skills, the two slicing units, and where each artifact is recorded (only if `batch-tickets` is installed). Before writing, adjust it to this repo: drop flow steps whose skills aren't installed, substitute the branch naming and PR base branch confirmed in Section D, and — for a local-markdown tracker — replace the Delivery plan's home with `.scratch/<feature-slug>/delivery-plan.md`, since there are no issue comments to hold it.
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
