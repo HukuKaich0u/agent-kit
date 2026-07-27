@@ -1,6 +1,6 @@
 ---
 created: 2026-07-20
-updated: 2026-07-26
+updated: 2026-07-27
 author: Koki Aoyagi
 type: reference
 ---
@@ -170,6 +170,20 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 - Upstream commit date: 2026-07-16
 - 改造: 下記「改造記録」参照。design record 系の改造は 2026-07-26 に撤回した(次節)。
 
+### 改造記録(2026-07-27 — commit 前の working tree review を接続)
+
+`ask-matt` / `implement` は実装後に `code-review` を実行し、その結果を含めて
+commit 案をユーザーへ提示する順序を定めている。一方、上流 `code-review` は
+`git diff <fixed-point>...HEAD` の commit 済み差分しか扱わず、`implement` から
+呼ぶと未 commit の実装が review 対象に入らない。description が明記する
+work-in-progress review とも矛盾していたため、実運用で確認した不整合として
+必要最小限の customization を加えた。
+
+| skill | 内容 |
+|---|---|
+| `skills/tooling/code-review` | working tree と branch / PR の2 modeを明記。working tree mode は staged / unstaged / untracked をすべて対象にし、`implement` context の ticket / spec を最優先の照合元にする |
+| `skills/tooling/implement` | commit 前の working-tree modeを明示し、元ticket / specとuntracked fileをreviewへ渡す |
+
 ### 改造記録(2026-07-26 — design record 化を撤回し開発フローを上流へ復帰)
 
 `to-spec` を「tracker 上の可変 PRD」から「`docs/specs/` の不変 design record」へ
@@ -314,7 +328,7 @@ domain-modeling)と `skill-selector` catalog・`scripts/check-vendored.sh` の
 | `skills/meta/teach` | `skills/productivity/teach` |
 | `skills/meta/writing-great-skills` | `skills/productivity/writing-great-skills` |
 | `skills/testing/tdd` | `skills/engineering/tdd` |
-| `skills/tooling/code-review` | `skills/engineering/code-review`(2026-07-26 に上流 verbatim へ復元。差分は `/setup-agent-environment` 参照のみ) |
+| `skills/tooling/code-review` | `skills/engineering/code-review`(working tree / branch の2 modeと、commit前ticket照合をカスタマイズ) |
 | `skills/tooling/diagnosing-bugs` | `skills/engineering/diagnosing-bugs` |
 | `skills/tooling/git-guardrails-claude-code` | `skills/misc/git-guardrails-claude-code`(Claude Code 専用) |
 | `skills/tooling/implement` | `skills/engineering/implement`(2026-07-25 に commit・tracker 更新を承認後へ改造。改造記録参照) |

@@ -1,6 +1,6 @@
 ---
 created: 2026-07-25
-updated: 2026-07-26
+updated: 2026-07-27
 author: Koki Aoyagi
 type: catalog
 ---
@@ -181,7 +181,7 @@ audit script 依存は除去済みで read-only desk review として動く(2026
 | ✅ | drawio | `tooling/drawio` | draw.io CLI で図生成(v1.19.0: SVG実描画lint・typography・tint ladder・凡例・表・60ノード級autolayoutまで検証済み) |
 | ✅ | git-guardrails-claude-code | `tooling/git-guardrails-claude-code` | 危険 git 操作を hook でブロック(**Claude Code 専用**) |
 | ✅ | research | `tooling/research` | 軽量な一次情報調査(単一質問・少数一次情報源)。重量級は `deep-research` plugin へ回す分担基準込み |
-| ✅ | code-review | `tooling/code-review` | 固定点からの差分を Standards / Spec 軸の並列 subagent で review(Fowler の smell baseline 込み)。上流 verbatim |
+| ✅ | code-review | `tooling/code-review` | working treeまたは固定点からのbranch差分を Standards / Spec 軸の並列subagentでreview(Fowlerのsmell baseline込み) |
 | 🔧 | ast-grep-practice | `tooling/ast-grep-practice` | project 固有の構造規則・安全な migration。ast-grep 0.44.0 で全実例を検証する要カスタム |
 | 🔧 | justfile | `tooling/justfile` | 既存 justfile の理解・安全な編集。pkfire 優先や危険例を外す要カスタム |
 | 🔧 | conventional-changelog | `tooling/conventional-changelog` | release 方式の比較入口。存在しない `npm-release` 参照等を外す要カスタム |
@@ -199,9 +199,9 @@ audit script 依存は除去済みで read-only desk review として動く(2026
 
 **Signals**: 仕様固め・チケット分割・実装オーケストレーション。
 `setup-agent-environment` で work tracker・triage labels・domain docs を設定済みが前提。
-to-spec / to-tickets / code-review は 2026-07-26 に上流 verbatim へ復元(design record 化を撤回。
-まず本家のまま使い込んでから改めて設計する方針)。triage / implement / wayfinder は
-承認境界カスタムのみ維持。
+to-spec / to-tickets は 2026-07-26 に上流 verbatim へ復元(design record 化を撤回)。
+code-review は実運用で判明したcommit前working treeの欠落を2026-07-27に修正した。
+triage / implement / wayfinder は承認境界等のカスタムを維持。
 
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
