@@ -79,9 +79,12 @@ Size is not the criterion. Coherence is.
 ## Subject line
 
 - Format: `type(scope): 日本語で簡潔に説明`
-- Types: `feat` / `fix` / `docs` / `refactor` / `test` / `chore`. Choose by the
-  effect on the codebase, not by which files moved — a prose-only edit to a
-  behavioral spec is `docs`; a rename with no behavior change is `refactor`.
+- Types: `build` / `cd` / `chore` / `ci` / `docs` / `feat` / `fix` / `perf` /
+  `refactor` / `revert` / `style` / `test`. These are the standard Conventional
+  Commits types plus `cd`; use `ci` for continuous integration and `cd` for
+  continuous delivery or deployment. Choose by the effect on the codebase, not
+  by which files moved — a prose-only edit to a behavioral spec is `docs`; a
+  rename with no behavior change is `refactor`.
 - Name something specific: the file, symbol, error, or feature the change is
   about. `fix(auth): 期限切れトークンで TokenExpiredError が500になる不具合を修正`
   identifies the change; `fix(auth): 参照を修正` identifies nothing, and neither a
