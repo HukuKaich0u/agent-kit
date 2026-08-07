@@ -17,10 +17,10 @@ Format: one entry per candidate, dated. Include the rubric axis that failed and 
 - **Footprint**: borderline — body + `agents/` + `eval-viewer/` + `scripts/` + `references/` cross-references, demand-loaded but heavy
 - **Fit**: passes (matches "create / edit / optimize / eval / benchmark a skill" use cases)
 - **Non-redundancy**: **FAILS** — overlaps with agent-kit's existing meta stack:
-  - skill design principles / vocabulary → `writing-great-skills`
+  - skill design principles / vocabulary → `writing-for-agents`
   - skill iteration methodology → `empirical-prompt-tuning`
   - eval loop CLI / scenarios / ledger → `waxa-eval` + `tools/waxa/`
   - description-optimization loop → covered by `optimizing-descriptions` + the `empirical-prompt-tuning` description / body consistency check
 - **Decision**: **Reject for catalog promotion**.
-- **Project-pin escape hatch**: a project that produces large numbers of skills *and* has none of `writing-great-skills` / `empirical-prompt-tuning` / `waxa-eval` installed could project-pin this with `apm install <repo>/skills/skill-creator#b9e19e6f4477`. agent-kit's catalog already carries all three coverage skills, so this exception is unlikely here.
-- **Re-evaluate trigger**: only if `writing-great-skills` / `empirical-prompt-tuning` / `waxa-eval` are all removed from the catalog. Otherwise this entry stands indefinitely.
+- **Project-pin escape hatch**: a project that produces large numbers of skills *and* has none of `writing-for-agents` / `empirical-prompt-tuning` / `waxa-eval` installed could project-pin this with `apm install <repo>/skills/skill-creator#b9e19e6f4477`. agent-kit's catalog already carries all three coverage skills, so this exception is unlikely here.
+- **Re-evaluate trigger**: only if `writing-for-agents` / `empirical-prompt-tuning` / `waxa-eval` are all removed from the catalog. Otherwise this entry stands indefinitely.

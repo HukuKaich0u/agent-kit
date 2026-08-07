@@ -1,6 +1,6 @@
 ---
 created: 2026-07-25
-updated: 2026-07-27
+updated: 2026-08-07
 author: Koki Aoyagi
 type: catalog
 ---
@@ -177,7 +177,8 @@ audit script 依存は除去済みで read-only desk review として動く(2026
 |---|---|---|---|
 | ✅ | diagnosing-bugs | `tooling/diagnosing-bugs` | 難バグ・性能劣化の診断ループ |
 | ✅ | resolving-merge-conflicts | `tooling/resolving-merge-conflicts` | 進行中の git merge/rebase 衝突解消 |
-| ✅ | prototype | `tooling/prototype` | 使い捨てプロトタイプで設計判断を検証 |
+| ✅ | prototype | `tooling/prototype` | 使い捨てプロトタイプで設計判断を検証(logic 系は単一 self-contained HTML demo を成果物に、検証後は `prototype/<name>` branch へ証跡保存) |
+| ✅ | wizard | `tooling/wizard` | 人間にしか実行できない手順(インフラ provisioning・credential / CI secrets 設定・外部 dashboard 操作・一回きりの移行)を対話式 bash script 化。model-invoked、書き出し前に stage list を確認(2026-08 に上流 in-progress から昇格) |
 | ✅ | drawio | `tooling/drawio` | draw.io CLI で図生成(v1.19.0: SVG実描画lint・typography・tint ladder・凡例・表・60ノード級autolayoutまで検証済み) |
 | ✅ | git-guardrails-claude-code | `tooling/git-guardrails-claude-code` | 危険 git 操作を hook でブロック(**Claude Code 専用**) |
 | ✅ | research | `tooling/research` | 軽量な一次情報調査(単一質問・少数一次情報源)。重量級は `deep-research` plugin へ回す分担基準込み |
@@ -209,7 +210,7 @@ skill 単体には次工程を呼ぶ記述が無いため、flow の接続は `s
 
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| ✅ | to-spec | `tooling/to-spec` | 会話を spec(PRD)へ統合し tracker へ publish。上流 verbatim |
+| ✅ | to-spec | `tooling/to-spec` | 会話を spec へ統合し tracker へ publish。上流 verbatim |
 | ✅ | to-tickets | `tooling/to-tickets` | spec / plan / 会話を vertical slice の tracer-bullet ticket へ分割し blocking edge を張る。上流 verbatim |
 | ✅ | batch-tickets | `tooling/batch-tickets` | to-tickets の後、ticket を人間が1 PR として review できる Delivery batch へ束ね、batch 境界と merge 順を承認のうえ親 spec に記録(自作。明示起動) |
 | ✅ | triage | `tooling/triage` | 既存 issue/PR を triage role の state machine で進める(tracker 書き込みは全文提示→承認後、外部PRコードは承認+隔離worktree実行、`.out-of-scope/` は opt-in にカスタム済み) |
@@ -282,16 +283,18 @@ AGENTS.md の `## Agent skills` に流れを書き、それを読んだ agent �
 | 🎯🔧 | empirical-prompt-tuning | `meta/empirical-prompt-tuning` | fresh-agent の固定 scenario で skill/instruction を評価・改善 |
 | 🎯🔧 | waxa-eval | `meta/waxa-eval` | waxa CLI で skill prompt を評価。**自動 iterate は使用保留**の要カスタム |
 | 🎯🔧 | retrospective-codify | `meta/retrospective-codify` | 再発しそうな教訓を rule / skill / CLAUDE.md へ恒久化 |
-| 🎯🔧 | writing-great-skills | `meta/writing-great-skills` | skill を書く / 直すときの設計原則 reference |
+| 🎯🔧 | writing-for-agents | `meta/writing-for-agents` | agent が読む文書全般(skill・AGENTS.md / CLAUDE.md・pointer 先 doc)を書く / 直すときの設計原則 reference。skill 固有 mechanics は同梱 SKILL-MECHANICS.md(2026-08 に writing-great-skills から改名・model-invoked 化) |
 | 🎯🔧 | extract-glossary | `meta/extract-glossary` | 複数 repo から用語・repo map・onboarding 資料を根拠付きで抽出 |
 
 ### 計画を詰める(grill 系)
 | Status | Skill | Install (`skills/<path>`) | Use when |
 |---|---|---|---|
-| ✅ | grilling | `meta/grilling` | 計画・決定・アイデアを1問ずつ問い詰める primitive |
+| ✅ | grilling | `meta/grilling` | 計画・決定・アイデアを問い詰める primitive。前提の揃った質問(frontier)を round 単位でまとめて出し、環境で調べられる事実は background subagent へ回す(1問ずつへの opt-out は global CLAUDE.md 1行) |
 | ✅ | grill-me | `meta/grill-me` | 文書を残さない明示的な grill の入口 |
 | ✅ | grill-with-docs | `meta/grill-with-docs` | grill しながら ADR・用語集を残す入口(domain-modeling と併用) |
 | ✅ | decision-interview | `meta/decision-interview` | 曖昧なアイデアを1問ずつの構造化インタビューで**ユーザー所有の明示的な意思決定**へ。decision ledger + 承認で締める。grilling が問い詰めなのに対しこちらは決定の明示化・記録 |
+| ✅ | to-questionnaire | `meta/to-questionnaire` | 自分では答えられない決定を、答えられる相手向けの Markdown 質問票にする(grill-me の逆向き。2026-08 に上流 in-progress から昇格) |
+| ✅ | wait-what | `meta/wait-what` | 直前の回答が伝わらなかったときの一語矯正。文脈補足+平易な言い換えで re-pitch する3行 skill(2026-08 上流新規) |
 | ✅ | handoff | `meta/handoff` | 会話を引き継ぎ文書に圧縮 |
 | 🎯 | ask-matt | `meta/ask-matt` | 状況別に skill/flow を案内する router(名前は検討の上で現状維持。固定 context 上限・会話型 issue intake 導線・改造済み skill との記述整合をカスタム済み) |
 
@@ -310,13 +313,9 @@ deprecated / in-progress。実案件で一度試してから昇格または削�
 
 | Status | Skill | Install (`skills/<path>`) | 位置づけ |
 |---|---|---|---|
-| ⏸🔧 | qa | `deprecated/qa` | 会話型の不具合受付を issue へ固定。tracker 運用を吟味するまで原形維持 |
-| ⏸ | batch-grill-me | `in-progress/batch-grill-me` | 独立質問をラウンド単位でまとめる grill の実験版 |
 | ⏸ | claude-handoff | `in-progress/claude-handoff` | 会話要約を `claude --bg` で背景 agent 起動 |
 | ⏸ | loop-me | `in-progress/loop-me` | 反復業務を workflow 仕様へ落とす |
 | ⏸🔧 | setup-ts-deep-modules | `in-progress/setup-ts-deep-modules` | dependency-cruiser で public entry を機械的に守る。優先度高の要カスタム候補 |
-| ⏸ | to-questionnaire | `in-progress/to-questionnaire` | 答えきれない決定を他者向け質問票にする |
-| ⏸🔧 | wizard | `in-progress/wizard` | 手順を再現可能な対話 script へ。秘密情報まわりを安全化するまで保留 |
 | ⏸ | writing-fragments | `in-progress/writing-fragments` | 執筆の explore 段階(素材採掘) |
 | ⏸ | writing-shape | `in-progress/writing-shape` | 執筆の exploit 段階(段落構築) |
 | ⏸ | writing-beats | `in-progress/writing-beats` | essay 向け beat 単位の構築 |

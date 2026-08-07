@@ -1,12 +1,12 @@
 ---
 name: code-review
-description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/PRD asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
+description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
 ---
 
 Two-axis review of either uncommitted working-tree changes or committed changes since a fixed point:
 
 - **Standards** — does the code conform to this repo's documented coding standards?
-- **Spec** — does the code faithfully implement the originating issue / PRD / spec?
+- **Spec** — does the code faithfully implement the originating issue / spec?
 
 Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
@@ -44,12 +44,12 @@ should fail here — not inside the sub-agents.
 
 Look for the originating spec, in this order:
 
-1. An issue, PRD, or spec passed explicitly, including the ticket in the current
+1. An issue or spec passed explicitly, including the ticket in the current
    `/implement` context — fetch tracker items via
    `docs/agents/issue-tracker.md`.
 2. Issue references in commit messages (`#123`, `Closes #45`, GitLab `!67`,
    etc.) when reviewing committed changes.
-3. A PRD/spec file under `docs/`, `specs/`, or `.scratch/` matching the branch
+3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch
    name or feature.
 4. If nothing is found, ask the user where the spec is. If they say there isn't
    one, the **Spec** sub-agent will skip and report "no spec available".
@@ -79,8 +79,6 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 - **Refused Bequest** — a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
 ### 4. Spawn both sub-agents in parallel
-
-Send a single message with two `Agent` tool calls. Use the `general-purpose` subagent for both.
 
 **Standards sub-agent prompt** — include:
 

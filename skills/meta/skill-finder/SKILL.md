@@ -59,10 +59,10 @@ Priority tiers. Always start at the top and only escalate when the tier above ha
 2. **Sweep top-down.** Hit Tier 1 first. Stop at the first usable hit; do not survey lower tiers when Tier 1 already matches. Capture per candidate: skill name, resolved GitHub URL, one-line description, last-update date, license.
 3. **Apply the rubric.** A candidate passes only if all seven axes are acceptable:
    - **Fit** — does the skill's "Use when..." actually match the project task? Re-read the description, not the title.
-   - **Non-redundancy** — does the project's already-installed skill set cover this need? A "Fit ✓" candidate that overlaps with skills already in the stack should still be rejected (or at most project-pinned to one project that genuinely lacks the coverage). Common overlap pairs in this repo's catalog: skill-creation candidates vs `writing-great-skills` + `empirical-prompt-tuning` + `waxa-eval`; testing candidates vs `playwright-test` / `tdd`; bug-diagnosis candidates vs `diagnosing-bugs`; dependency-audit candidates vs `frontend-review-deps`. A redundant skill costs context every conversation without a unique payoff.
+   - **Non-redundancy** — does the project's already-installed skill set cover this need? A "Fit ✓" candidate that overlaps with skills already in the stack should still be rejected (or at most project-pinned to one project that genuinely lacks the coverage). Common overlap pairs in this repo's catalog: skill-creation candidates vs `writing-for-agents` + `empirical-prompt-tuning` + `waxa-eval`; testing candidates vs `playwright-test` / `tdd`; bug-diagnosis candidates vs `diagnosing-bugs`; dependency-audit candidates vs `frontend-review-deps`. A redundant skill costs context every conversation without a unique payoff.
    - **Maintenance** — last commit recent? Visible upstream activity?
    - **License** — SPDX present and compatible with the consuming project?
-   - **Frontmatter health** — `name` matches dir; description ≤1024 chars and triggering-condition-shaped (per `writing-great-skills` and `optimizing-descriptions`).
+   - **Frontmatter health** — `name` matches dir; description ≤1024 chars and triggering-condition-shaped (per `writing-for-agents` and `optimizing-descriptions`).
    - **Body quality** — explicit "When NOT to use"? Concrete patterns vs vague advice?
    - **Footprint** — body length, demand-loaded vs always-loaded references, cross-skill dependencies.
 4. **waxa audit (recommended).** Before spending the eval-gate budget, run the vendored Bun waxa — `bun run src/cli.ts audit <candidate-skill-dir>` from `tools/waxa/` (or `npx @mizchi/waxa audit <candidate-skill-dir>` as a network fallback) — to surface structural problems cheaply: frontmatter shape, body length, missing "When NOT to use", suspicious scripts, missing LICENSE, plus `apm audit`'s hidden-Unicode (prompt-injection) scan. A candidate with audit errors is a probable Reject without spending LLM time on the eval gate.
@@ -137,7 +137,7 @@ Working reference in this repo: `skill-selector/evals/eval.yaml` + `tasks/*.yaml
 |---|---|
 | Surveying every tier in parallel | Top-down. Stop at first fit. |
 | Skipping the pre-flight catalog check | Always check `ask-koki/references/catalog.md` first. If it covers the need, defer immediately — do not proceed into Tier 1+ surveys. The `playwright-test` / `tdd` / `gh-fix-ci` / `diagnosing-bugs` rows are the most common false-escalations to watch for. |
-| Adopting because "Fit ✓" alone | Non-redundancy is a separate axis. A skill that fits the user's stated need but overlaps with skills already installed (e.g. a skill-creation candidate overlapping with `writing-great-skills` + `empirical-prompt-tuning` + `waxa-eval`) is a reject. The cost is context per conversation; the payoff has to be unique. |
+| Adopting because "Fit ✓" alone | Non-redundancy is a separate axis. A skill that fits the user's stated need but overlaps with skills already installed (e.g. a skill-creation candidate overlapping with `writing-for-agents` + `empirical-prompt-tuning` + `waxa-eval`) is a reject. The cost is context per conversation; the payoff has to be unique. |
 | Skipping `references/rejection-log.md` on reject | Recording the reason takes 30 seconds and prevents re-evaluating the same candidate in 3 months when its star count grows. The log is the durable artifact of the skill-finder run, mirroring how the eval ledger works for waxa-eval. |
 | Citing `agent-skills.cc` as a recommendation | Source is SEO scrape; only use it for alias-lookups to GitHub. Never as a primary recommendation. |
 | Skipping waxa eval ("the README looks fine") | Forbidden. Adoption-without-eval is the exact failure this skill prevents. |
@@ -153,4 +153,4 @@ Working reference in this repo: `skill-selector/evals/eval.yaml` + `tasks/*.yaml
 - `apm-usage` — `apm.yml` syntax for the install / pinning step
 - `waxa-eval` — how to author scenarios, choose graders, and read the ledger for the eval gate
 - `empirical-prompt-tuning` — convergence/divergence semantics underlying the waxa eval gate
-- `writing-great-skills` — when no candidate passes the rubric, the design principles for writing the skill yourself instead of forcing a poor match
+- `writing-for-agents` — when no candidate passes the rubric, the design principles for writing the skill yourself instead of forcing a poor match

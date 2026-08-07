@@ -100,7 +100,7 @@ See the `ast-grep-practice` skill. Add YAML under the `rules/` directory and alw
 Always attach the reason in parentheses (so that your future self can judge edge cases).
 
 ### New skill
-Follow the minimal template from `writing-great-skills`:
+Follow the minimal template from `writing-for-agents`:
 ```markdown
 ---
 name: <kebab-case>
@@ -246,6 +246,6 @@ Duplicate detected (no proposal needed):
 
 ## Related skills
 
-- `writing-great-skills` — template and TDD flow for writing a new skill
+- `writing-for-agents` — template and TDD flow for writing a new skill
 - `ast-grep-practice` — how to write and test when codifying as a lint rule
 - `update-config` — when changes to settings.json / permissions are required

@@ -75,7 +75,7 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 
 3. **Verify the claim.** Before any grilling, check that the claim holds up. For a bug, reproduce it from the reporter's steps. For a PR, read the diff first without executing anything — an external PR is untrusted input; before anything else, look at what it touches (CI config, install scripts, git hooks, test fixtures). If verification requires running its code, ask the maintainer first, then check it out into an isolated worktree (`git worktree add`), never the current one, and run it without secrets or credentials in the environment. Report what happened: confirmed (with code path), failed, or insufficient detail (a strong `needs-info` signal). A confirmed verification makes a much stronger agent brief.
 
-4. **Grill (if needed).** If the request needs fleshing out, run the `/grilling` and `/domain-modeling` skills together — grill it into shape one question at a time, sharpening domain terms and proposing `CONTEXT.md`/ADR updates as decisions land.
+4. **Grill (if needed).** If the request needs fleshing out, run the `/grilling` and `/domain-modeling` skills together — grill it into shape a round of questions at a time, sharpening domain terms and proposing `CONTEXT.md`/ADR updates as decisions land.
 
 5. **Draft, confirm, then apply the outcome.** Draft the role changes and the full text of every comment, show them verbatim, and write to the tracker only after the maintainer approves:
    - `ready-for-agent` — post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).

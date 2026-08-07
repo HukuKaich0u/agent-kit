@@ -287,6 +287,6 @@ A real flow often uses both: `empirical` for the in-session Iter 0 + first dispa
 ## Related
 
 - `empirical-prompt-tuning` — methodology this skill operationalizes; see scope table above for responsibility split
-- `writing-great-skills` — TDD framing for skills; pairs with this skill (write skill → eval → fix)
+- `writing-for-agents` — TDD framing for skills; pairs with this skill (write skill → eval → fix)
 - `skill-finder` — uses waxa-eval as the adoption gate for cross-source candidates
 - `skills/tools/waxa/README.md` — CLI argument reference (this repo's Bun port)

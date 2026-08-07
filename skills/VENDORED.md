@@ -1,6 +1,6 @@
 ---
 created: 2026-07-20
-updated: 2026-07-27
+updated: 2026-08-07
 author: Koki Aoyagi
 type: reference
 ---
@@ -158,17 +158,75 @@ CWV / bundle / React hooks / RSC / CVE reachability / release hygiene等の固�
 
 ---
 
-## mattpocock/skills(33本)
+## mattpocock/skills(32本)
 
 - Source: https://github.com/mattpocock/skills
 - License: MIT (Copyright (c) 2026 Matt Pocock)
-- Vendored commit: `ed37663cc5fbef691ddfecd080dff42f7e7e350d`
-  (2026-07-26 に `9603c1c` から更新。差分は `to-tickets` 末尾の
-  `/implement` 案内 1 行の削除のみで、agent-kit 側でも `7f2d0ef` で
-  同じ行を重複記述として削っていたため、取り込みで verbatim 一致に戻る)
-- Vendored date: 2026-07-20(完全ミラー化。初回取り込みは 2026-07-19 の 11本)
-- Upstream commit date: 2026-07-16
-- 改造: 下記「改造記録」参照。design record 系の改造は 2026-07-26 に撤回した(次節)。
+- Vendored commit: `84fdeffd12f2ee307994d1eb6feb48173b6e0502`
+  (2026-08-07 に `ed37663` から更新。上流 v1.2.0〜1.2.3、106 commit 分。
+  取り込みの詳細は下記 2026-08-07 の改造記録)
+- Vendored date: 2026-08-07(完全ミラー化は 2026-07-20。初回取り込みは 2026-07-19 の 11本)
+- Upstream commit date: 2026-08-06
+- 改造: 下記「改造記録」参照。design record 系の改造は 2026-07-26 に撤回した。
+
+### 改造記録(2026-08-07 — 上流 v1.2.0〜1.2.3 の一括取り込み)
+
+上流 `ed37663..84fdeff`(106 commit)を取り込んだ。方法は「上流 diff を
+patch / 3-way merge でローカルへ適用」で、既存のローカル改造は保持した。
+conflict は各 1〜2 箇所で、次の方針で解決した:
+
+- `tooling/code-review` — 上流の PRD→spec 用語統一と subagent 呼び出しの
+  harness 中立化(Claude Code 固有のツール名削除)を採用。working tree /
+  branch の 2 mode と spec 探索順(implement context 優先)のカスタムは維持
+- `meta/ask-matt` — 上流の phase boundary decision tree
+  (`PHASE-BOUNDARIES.md` 新規同梱)、wayfinder 誤用 2 パターンへの警告、
+  handoff の役割限定、`/grilling`・`/resolving-merge-conflicts`・
+  `/wizard`・`/to-questionnaire`・`/wait-what` への route を採用。
+  smart zone の model 依存表記・会話中 bug の起票導線・implement の
+  承認境界記述・`/setup-agent-environment` 参照のカスタム 4 点は維持。
+  escape hatch は上流に合わせ `/handoff` から「phase boundary で
+  `/compact`」へ変更(handoff 限定化と整合するため)
+- `tooling/triage` — 上流の grill round 化の文言と、ローカルの
+  「CONTEXT.md/ADR 更新は propose」承認境界を合成
+- `tooling/wayfinder` — 上流の Grilling type 文言と italics 表記を採用。
+  Task type の外部 service / credential / data 承認例外は維持
+- `backend/improve-codebase-architecture` — 上流の変更は Explore subagent
+  呼び出しの harness 中立化だが、ローカルは 2026-07-25 の再設計で
+  subagent 自動起動自体を廃止済みのため、ローカル本文を維持
+- `meta/setup-agent-environment` — issue tracker explainer と triage
+  labels の単一質問化・local tracker の 1 ticket 1 file 化を採用。
+  Section C/D 等のカスタムは維持
+
+上流の構造変更にも追従した:
+
+- **改名**: `meta/writing-great-skills` → `meta/writing-for-agents`
+  (上流 breaking rename)。対象が skill から「agent が読む文書全般」へ
+  広がり、GLOSSARY.md は SKILL.md へ統合、skill 固有 mechanics は
+  `SKILL-MECHANICS.md` へ分離、model-invoked 化。参照側 6 file
+  (retrospective-codify / empirical-prompt-tuning / waxa-eval /
+  skill-finder 本文+rejection-log / optimizing-descriptions)と
+  ask-koki catalog・`scripts/check-vendored.sh` を追従。
+  `docs/skill-audit-2026-07-26.md` は当時の記録のため旧名のまま
+- **昇格**: `in-progress/wizard` → `tooling/wizard`(上流 engineering、
+  model-invoked 化・time estimate 削除)、`in-progress/to-questionnaire`
+  → `meta/to-questionnaire`(上流 productivity)。従来ローカルで wizard に
+  付けていた「秘密情報の安全化まで保留」は、上流昇格版の hidden secret
+  entry と書き出し前 stage list 確認を確認のうえ解除(ユーザー判断)
+- **新規採用**: `meta/wait-what`(冗長回答の一語矯正、上流 productivity)
+- **削除追従**: `deprecated/qa`(上流は triage / to-tickets に吸収済みと
+  して削除。2026-07-20 の「要カスタム候補として原形維持」判断を上書き)、
+  `in-progress/batch-grill-me`(grilling 本体の round-by-round 化に吸収)。
+  いずれもユーザー承認済み
+
+**訂正**: `testing/tdd`(mocking.md / tests.md 冒頭の Rust / Go / Python /
+TypeScript スタック注記)と `tooling/prototype`(SKILL.md step 6 の
+commit 提案→承認境界)にはローカル改造があったが、この表に未記録だった
+(2026-07-26 の監査時の修正とみられる)。今回の取り込みでも維持しており、
+ここに記録する。
+
+検証: `scripts/check-vendored.sh` で上流 HEAD との差分が既知のローカル
+改造のみであることを確認し、`ruby scripts/gen-skill-readme.rb` で README を
+再生成した。
 
 ### 改造記録(2026-07-27 — Delivery batch 層の追加と flow 接続を setup へ寄せる)
 
@@ -355,7 +413,9 @@ domain-modeling)と `skill-selector` catalog・`scripts/check-vendored.sh` の
 | `skills/meta/handoff` | `skills/productivity/handoff` |
 | `skills/meta/setup-agent-environment` | `skills/engineering/setup-matt-pocock-skills`(2026-07-24 に `setup-agent-kit` へ改造、2026-07-25 に現名へ再改名。改造記録参照) |
 | `skills/meta/teach` | `skills/productivity/teach` |
-| `skills/meta/writing-great-skills` | `skills/productivity/writing-great-skills` |
+| `skills/meta/to-questionnaire` | `skills/productivity/to-questionnaire`(2026-08-07 に上流昇格へ追従し in-progress から移動) |
+| `skills/meta/wait-what` | `skills/productivity/wait-what`(2026-08-07 に新規採用) |
+| `skills/meta/writing-for-agents` | `skills/productivity/writing-for-agents`(2026-08-07 に上流 rename へ追従。旧 `writing-great-skills`) |
 | `skills/testing/tdd` | `skills/engineering/tdd` |
 | `skills/tooling/code-review` | `skills/engineering/code-review`(working tree / branch の2 modeと、commit前ticket照合をカスタマイズ) |
 | `skills/tooling/diagnosing-bugs` | `skills/engineering/diagnosing-bugs` |
@@ -368,16 +428,19 @@ domain-modeling)と `skill-selector` catalog・`scripts/check-vendored.sh` の
 | `skills/tooling/to-tickets` | `skills/engineering/to-tickets`(2026-07-26 に上流 verbatim へ復元。差分は `/setup-agent-environment` 参照のみ) |
 | `skills/tooling/triage` | `skills/engineering/triage`(2026-07-25 に承認境界・外部 PR 隔離・`.out-of-scope/` opt-in へ改造。改造記録参照) |
 | `skills/tooling/wayfinder` | `skills/engineering/wayfinder`(2026-07-25 に承認境界・opt-in subagent・履歴保持・部分失敗回復へ改造。改造記録参照) |
-| `skills/deprecated/qa` | `skills/deprecated/qa` ⚠️ 上流deprecated。要カスタム候補として原形を維持 |
-| `skills/in-progress/batch-grill-me` | `skills/in-progress/batch-grill-me` |
+| `skills/tooling/wizard` | `skills/engineering/wizard`(2026-08-07 に上流昇格へ追従し in-progress から移動) |
 | `skills/in-progress/claude-handoff` | `skills/in-progress/claude-handoff` |
 | `skills/in-progress/loop-me` | `skills/in-progress/loop-me` |
 | `skills/in-progress/setup-ts-deep-modules` | `skills/in-progress/setup-ts-deep-modules` |
-| `skills/in-progress/to-questionnaire` | `skills/in-progress/to-questionnaire` |
-| `skills/in-progress/wizard` | `skills/in-progress/wizard` |
 | `skills/in-progress/writing-beats` | `skills/in-progress/writing-beats` |
 | `skills/in-progress/writing-fragments` | `skills/in-progress/writing-fragments` |
 | `skills/in-progress/writing-shape` | `skills/in-progress/writing-shape` |
+
+**除外済み(2026-08-07):**
+
+- `skills/deprecated/qa` — 2026-07-20 は要カスタム候補として原形維持としていたが、
+  上流が 2026-08-05 に「triage / to-tickets に吸収済み」として削除したため追従(ユーザー承認)
+- `skills/in-progress/batch-grill-me` — grilling 本体の round-by-round 化に吸収され上流削除。追従
 
 **除外済み(2026-07-20):**
 

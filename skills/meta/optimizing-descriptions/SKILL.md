@@ -30,7 +30,7 @@ Meta-skill, explicit invocation only. Triggers:
 Do NOT use for:
 
 - Single-skill ad-hoc edits during normal skill authoring.
-- Newly written skills that haven't been used yet (write the description as part of `writing-great-skills`; tune only after observed mistriggering).
+- Newly written skills that haven't been used yet (write the description as part of `writing-for-agents`; tune only after observed mistriggering).
 
 ## Two-track policy
 
@@ -181,7 +181,7 @@ If you do run the empirical step by hand, follow agentskills.io's specifics:
 ## Related
 
 - `agentskills.io/skill-creation/optimizing-descriptions` — upstream methodology document (the framework this skill operationalizes).
-- `writing-great-skills` — when creating a new skill from scratch; description is one of several components. Use this skill (`optimizing-descriptions`) only after the skill exists and has been observed.
+- `writing-for-agents` — when creating a new skill from scratch; description is one of several components. Use this skill (`optimizing-descriptions`) only after the skill exists and has been observed.
 - `waxa-eval` — for measuring trigger accuracy empirically (when `waxa trigger` lands).
 - `waxa audit <skill>` — picks up the surface frontmatter issues (length, name shape, basic trigger-condition phrasing) that this audit also flags; useful as a fast pre-check.
 - `skill-finder` — the rubric there includes "frontmatter-health" which overlaps with this skill's universal checklist; skill-finder uses `optimizing-descriptions` patterns implicitly when evaluating an external skill candidate.
