@@ -14,9 +14,11 @@ the same tag score, prefers ones whose title contains the query terms verbatim
 with it). The bundled index (data/shape-index.json.gz) is the upstream draw.io
 shape data — see data/SHAPE-INDEX-NOTICE.md.
 
-For AWS queries, exact official-name/alias hits consult data/aws-icon-index.json
+For AWS queries, exact official-name/alias hits consult data/aws-icon-index.json.gz
 first and return the official name, category color and style; generic search is
-the fallback.
+the fallback. Official SVGs ship compressed in assets/aws.tar.gz; when a hit has
+no mxgraph.aws4 counterpart, the needed SVG is extracted on demand to a temp
+cache and its path printed for embedding.
 
 Usage:
   python3 shapesearch.py "aws lambda" [--limit N] [--json]
@@ -28,8 +30,29 @@ import os
 import re
 import sys
 
-INDEX = os.path.join(os.path.dirname(__file__), "..", "data", "shape-index.json.gz")
-AWS_INDEX = os.path.join(os.path.dirname(__file__), "..", "data", "aws-icon-index.json")
+ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), ".."))
+INDEX = os.path.join(ROOT, "data", "shape-index.json.gz")
+AWS_INDEX = os.path.join(ROOT, "data", "aws-icon-index.json.gz")
+ASSETS_TGZ = os.path.join(ROOT, "assets", "aws.tar.gz")
+
+
+def svg_path(rel):
+    """Resolve an index `svg` path ("assets/aws/...") to a readable file.
+
+    Prefers an unpacked assets/ tree if present; otherwise extracts the single
+    member from assets/aws.tar.gz into a per-user temp cache (idempotent)."""
+    p = os.path.join(ROOT, rel)
+    if os.path.exists(p):
+        return p
+    import tarfile
+    import tempfile
+    member = rel[len("assets/"):] if rel.startswith("assets/") else rel
+    cache = os.path.join(tempfile.gettempdir(), "drawio-skill-aws-assets")
+    out = os.path.join(cache, member)
+    if not os.path.exists(out):
+        with tarfile.open(ASSETS_TGZ) as t:
+            t.extract(member, cache)
+    return out
 
 
 def norm_aws(s):
@@ -45,7 +68,7 @@ def aws_lookup(query):
     key = norm_aws(query)
     if not key:
         return []
-    with open(AWS_INDEX, encoding="utf-8") as f:
+    with gzip.open(AWS_INDEX, "rt", encoding="utf-8") as f:
         entries = json.load(f)
     return [e for e in entries
             if any(norm_aws(n) == key for n in [e["name"]] + e.get("aliases", []))]
@@ -187,7 +210,7 @@ def main():
             else:
                 print("  no mxgraph.aws4 counterpart — embed the official SVG "
                       "(see references/aws-architecture.md):")
-                print(f"  svg: {e['svg']}")
+                print(f"  svg: {svg_path(e['svg'])}")
         return
 
     if not os.path.exists(INDEX):

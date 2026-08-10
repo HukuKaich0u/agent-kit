@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Build data/aws-icon-index.json from the official AWS icon assets.
+"""Build data/aws-icon-index.json.gz from the official AWS icon assets.
 
 Sources:
-  assets/aws/                — official AWS Architecture Icons (SVG only,
-                               Release 22-2025.07.31)
+  assets/aws.tar.gz          — official AWS Architecture Icons (SVG only,
+                               Release 22-2025.07.31), shipped compressed;
+                               auto-extracted to a temp dir for the build
+                               (an unpacked assets/aws/ tree, if present,
+                               is used directly instead)
   data/shape-index.json.gz   — draw.io shape index (mxgraph.aws4 styles)
 
 Output entry kinds:
@@ -15,17 +18,26 @@ Output entry kinds:
              mxgraph.aws4 palette; consumed by validate.py as the
              source of truth for frame-color checks)
 
-Usage: python3 build_aws_index.py        # writes data/aws-icon-index.json
+Usage: python3 build_aws_index.py        # writes data/aws-icon-index.json.gz
 """
 import gzip
 import json
 import os
 import re
+import tarfile
+import tempfile
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), ".."))
 ASSETS = os.path.join(ROOT, "assets", "aws")
+ASSETS_TGZ = os.path.join(ROOT, "assets", "aws.tar.gz")
 SHAPE_INDEX = os.path.join(ROOT, "data", "shape-index.json.gz")
-OUT = os.path.join(ROOT, "data", "aws-icon-index.json")
+OUT = os.path.join(ROOT, "data", "aws-icon-index.json.gz")
+
+if not os.path.isdir(ASSETS):
+    _tmp = tempfile.mkdtemp(prefix="drawio-aws-assets-")
+    with tarfile.open(ASSETS_TGZ) as _t:
+        _t.extractall(_tmp)
+    ASSETS = os.path.join(_tmp, "aws")
 
 
 def norm(s):
@@ -205,7 +217,10 @@ def main():
             "category": cat.replace(cat_prefix, "").replace("-", " "),
             "official_color": official,
             "aws4_style": style,
-            "svg": os.path.relpath(path, ROOT).replace(os.sep, "/"),
+            # svg paths are recorded relative to the skill root regardless of
+            # whether the build read an unpacked tree or a temp extraction —
+            # consumers resolve them via assets/aws.tar.gz (shapesearch.svg_path)
+            "svg": "assets/aws/" + os.path.relpath(path, ASSETS).replace(os.sep, "/"),
         })
 
     for cat, f, raw, path in walk_icons("service", r"Arch_(.+)_64\.svg$"):
@@ -247,7 +262,7 @@ def main():
             "dashed": dashed,
         })
 
-    with open(OUT, "w", encoding="utf-8") as f:
+    with gzip.open(OUT, "wt", encoding="utf-8") as f:
         json.dump(entries, f, ensure_ascii=False, indent=1)
 
     n_svc = sum(1 for e in entries if e["kind"] == "service" and not e.get("aws4_only"))

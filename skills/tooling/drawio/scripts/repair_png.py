@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Repair truncated IEND chunk in draw.io -e PNG exports (issue #8).
+"""Repair truncated IEND chunk in draw.io -e PNG exports.
 
 draw.io's CLI emits -e PNGs with the 4-byte IEND length field but missing
 the 8 bytes of "IEND" type + CRC. Strict PNG decoders and vision APIs

@@ -1,6 +1,6 @@
 # AWS Architecture Diagrams (mxgraph.aws4)
 
-Read this whenever the diagram uses AWS icons (`mxgraph.aws4.*`) — the same rules apply to Azure/GCP icon sets, which share the external-label style. Icon choice, category colors and group frames are machine-checked against `data/aws-icon-index.json` (built from the official Release 22 assets in `assets/aws/`).
+Read this whenever the diagram uses AWS icons (`mxgraph.aws4.*`) — the same rules apply to Azure/GCP icon sets, which share the external-label style. Icon choice, category colors and group frames are machine-checked against `data/aws-icon-index.json.gz` (built from the official Release 22 assets shipped compressed in `assets/aws.tar.gz`).
 
 ## The failure mode that causes most broken AWS diagrams
 
@@ -64,6 +64,7 @@ Arrows:
 
 Groups:
 - Nested groups need a visible buffer on all sides (the padding constants above already exceed the official minimum).
+- **Title bands stack when groups nest** (AZ → subnet → Auto Scaling group = 3 × 40px title zones). An edge descending into a nested group must clear the **sum** of all title bands it passes, not one 40px offset — plan the waypoint depth from the outermost container's top edge. Neither gate measures title strike-through; it's a vision-check item.
 - Do not invent group frames: copy a row from the table below verbatim (`validate.py` errors otherwise). If no preset fits, use a plain rectangle container in the service's **category color** — not a recolored official group.
 
 Numbered callouts (optional):
@@ -82,7 +83,7 @@ style="aspect=fixed;html=1;verticalLabelPosition=bottom;verticalAlign=top;align=
 
 All are used with `vertex="1"`, children set `parent="<container-id>"` with **relative** coordinates, first child at `y ≥ 40`. If a style below lacks `container=1`, append `container=1;pointerEvents=0;` before using it as a parent.
 
-Every row is used with `vertex="1"` + `container=1`. The `points=[[0,0],[0.25,0],…]` connection-point array from the skeleton below may be prepended to any row (it only adds edge anchor points). **This table is generated from and kept in sync with `data/aws-icon-index.json` — `validate.py` errors on any frame whose stroke/font/dashed deviates** (e.g. the pre-2021 gray Region `#879196` is an error; current official Region is teal `#00A4A6`).
+Every row is used with `vertex="1"` + `container=1`. The `points=[[0,0],[0.25,0],…]` connection-point array from the skeleton below may be prepended to any row (it only adds edge anchor points). **This table is generated from and kept in sync with `data/aws-icon-index.json.gz` — `validate.py` errors on any frame whose stroke/font/dashed deviates** (e.g. the pre-2021 gray Region `#879196` is an error; current official Region is teal `#00A4A6`).
 
 | Group | style |
 |---|---|

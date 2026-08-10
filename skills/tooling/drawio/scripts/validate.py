@@ -45,7 +45,7 @@ Notes (informational, not counted in the gate):
     renderlint.py (SVG-based post-render lint) after export
   - cramped labels: text that fits but nearly touches the border (fix with
     spacing=6..8 or a wider/taller shape).
-  - AWS official-style conformance (needs data/aws-icon-index.json):
+  - AWS official-style conformance (needs data/aws-icon-index.json.gz):
     resourceIcon fillColor must equal the official category color (error),
     group frames must match an official variant (error), unknown
     resIcon/grIcon names (warning)
@@ -61,6 +61,7 @@ skipped with a warning — this skill always writes uncompressed XML.
 Usage: python3 validate.py <file.drawio> [--strict]
 """
 import argparse
+import gzip
 import json
 import math
 import os
@@ -76,7 +77,7 @@ WIDE_W = 1.0       # fullwidth (CJK) glyph advance / fontSize
 LINE_H = 1.35      # line height / fontSize
 EPS = 1.0          # tolerance px for touch-vs-overlap
 
-AWS_INDEX = os.path.join(os.path.dirname(__file__), "..", "data", "aws-icon-index.json")
+AWS_INDEX = os.path.join(os.path.dirname(__file__), "..", "data", "aws-icon-index.json.gz")
 _AWS_CACHE = None
 
 
@@ -87,7 +88,7 @@ def aws_index():
         return _AWS_CACHE
     res, gr = {}, {}
     if os.path.exists(AWS_INDEX):
-        with open(AWS_INDEX, encoding="utf-8") as f:
+        with gzip.open(AWS_INDEX, "rt", encoding="utf-8") as f:
             for e in json.load(f):
                 if e["kind"] == "group":
                     gr.setdefault(e["grIcon"], []).append(e)
@@ -647,7 +648,7 @@ def check_page(diagram):
                              f"text becomes unreadable where it crosses lines/shapes; "
                              f"add labelBackgroundColor=#ffffff;")
 
-    # --- AWS official style conformance (data/aws-icon-index.json) ---
+    # --- AWS official style conformance (data/aws-icon-index.json.gz) ---
     res_fill, gr_combos = aws_index()
     if res_fill or gr_combos:
         for c in cells:

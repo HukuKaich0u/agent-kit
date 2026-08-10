@@ -62,7 +62,7 @@ It prints `wrote diagram.drawio (N nodes, M edges)` to stderr and writes a norma
 
 - Node positions come from `dot` (hierarchical layered layout, `ranksep`/`nodesep` widened to match the skill's spacing constants), converted to draw.io pixels and snapped to the grid (multiples of 10).
 - Edges use `splines=ortho`: dot's orthogonal route is replayed as draw.io waypoints (bends hugging an endpoint node are pruned so the arrowhead gets a clean straight run), and the edge style is `orthogonalEdgeStyle` so every segment stays at right angles.
-- **Ports are pinned automatically**: each edge's exit/entry side comes from dot's own spline endpoints, and multiple edges on the same side of a node are distributed evenly (SKILL.md's port-distribution rule) — sibling edges fan out instead of stacking on one stem.
+- **Ports are pinned automatically**: each edge's exit/entry side comes from dot's own spline endpoints, and multiple edges on the same side of a node are distributed evenly (references/xml-authoring.md "Distributing connections on a shape") — sibling edges fan out instead of stacking on one stem.
 - Apply the active style preset by setting each node's `style` to the preset's role/shape values before calling the script — the script does not know about presets.
 - Gate the output like any generated diagram: `validate.py`, then `renderlint.py` after export.
 
@@ -124,4 +124,4 @@ For any other language, produce the same graph JSON from any analyzer (e.g. `dep
 - **Placement is topological, not semantic** — dot minimises edge crossings, which may put a node in a different column than you'd choose by hand. Re-export with the other `direction`, or hand-tune the produced XML afterwards (it's a normal `.drawio`).
 - **Import edges are static** — `pyimports`/`jsimports`/`goimports` read static import statements (not dynamic `importlib`, runtime `require`, or reflection); `pyclasses` resolves inheritance only, not method-level calls.
 - **Parallel edges** between the same `(source, target)` pair share one route.
-- **Containers don't add edges** — `group`/nesting only boxes nodes for layout; edges remain node→node. For hand-built swimlane/architecture containers with their own connections, see SKILL.md "Containers and groups".
+- **Containers don't add edges** — `group`/nesting only boxes nodes for layout; edges remain node→node. For hand-built swimlane/architecture containers with their own connections, see references/xml-authoring.md "Containers and groups".

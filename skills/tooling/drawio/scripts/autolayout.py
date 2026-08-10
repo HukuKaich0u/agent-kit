@@ -339,7 +339,7 @@ def to_drawio(graph, height, pos, edge_pts, color=True):
     # The side each edge attaches to comes from dot's OWN spline endpoints
     # (they sit on the node boundary), so the pinned port always agrees with
     # the replayed route. Multiple edges on one side are spread evenly in
-    # dot's order — SKILL.md's port-distribution rule, applied automatically.
+    # dot's order — xml-authoring.md's port-distribution rule, applied automatically.
     def to_px(p):
         return (p[0] * 72, (height - p[1]) * 72)
 

@@ -1,6 +1,6 @@
 # Style Presets — Learn, Apply, Manage
 
-A **style preset** is a named JSON file capturing a user's visual preferences — palette, shape vocabulary, fonts, edge style. When a preset is active, it fully replaces the built-in conventions in SKILL.md's color/shape/edge tables.
+A **style preset** is a named JSON file capturing a user's visual preferences — palette, shape vocabulary, fonts, edge style. When a preset is active, it fully replaces the built-in conventions in references/xml-authoring.md's color/shape/edge tables.
 
 Read this file when:
 - The user asks to "learn", "save", "remember", or "extract" a style from a file
@@ -31,11 +31,11 @@ When SKILL.md's Step 0 identified a preset, it fully replaces the built-in palet
 
 **Decision and container shapes** are not in `preset.roles` — they have shape vocabulary (`preset.shapes.decision`, `preset.shapes.container`) but no role-to-slot mapping. Pick their colors as follows:
 - **Decision** (rhombus) → use `preset.palette.warning` (the canonical yellow slot in the built-in conventions). If `warning` is empty, apply the slot-fallback ladder above starting from `warning`.
-- **Container** (swimlane) → use the palette slot matching the tier/grouping the container represents (e.g. a "Services" tier container uses `primary`; a "Data" tier uses `success`). If no tier signal is available, default to `primary`. **Fill**: use the slot's `containerFill` (the light tint) as fillColor, keeping the slot's strokeColor for border and title — the tint ladder (SKILL.md "Containers and groups") requires containers one step lighter than their nodes. If the preset predates `containerFill` (older user presets), compute it: blend the slot's fillColor 60% toward white (`round(255*0.6 + c*0.4)` per channel).
+- **Container** (swimlane) → use the palette slot matching the tier/grouping the container represents (e.g. a "Services" tier container uses `primary`; a "Data" tier uses `success`). If no tier signal is available, default to `primary`. **Fill**: use the slot's `containerFill` (the light tint) as fillColor, keeping the slot's strokeColor for border and title — the tint ladder (references/xml-authoring.md "Containers and groups") requires containers one step lighter than their nodes. If the preset predates `containerFill` (older user presets), compute it: blend the slot's fillColor 60% toward white (`round(255*0.6 + c*0.4)` per channel).
 
 **Shape keywords.** Use `preset.shapes[role]` as the **prefix** of the vertex style string (before `whiteSpace=wrap;html=1;...`). Example: for a database role, if `preset.shapes.database = "shape=cylinder3"`, the vertex style starts `shape=cylinder3;whiteSpace=wrap;html=1;fillColor=...`. The six named shape keys are `service`, `database`, `queue`, `decision`, `external`, `container`. Roles `gateway`, `error`, and `security` reuse `preset.shapes.service` unless the preset explicitly populates a key with their name.
 
-**Edges.** Use `preset.edges.style` as the base edge style string. Append `preset.edges.arrow`. Per-edge routing keys (`exitX/exitY/entryX/entryY/...`) are still added by the usual routing rules in SKILL.md. If the flow between two shapes matches a token from `preset.edges.dashedFor` (either because the user's prompt used that word, or because one end of the edge plays a role whose typical relation is "optional"), append `;dashed=1` to the edge style.
+**Edges.** Use `preset.edges.style` as the base edge style string. Append `preset.edges.arrow`. Per-edge routing keys (`exitX/exitY/entryX/entryY/...`) are still added by the usual routing rules in references/xml-authoring.md. If the flow between two shapes matches a token from `preset.edges.dashedFor` (either because the user's prompt used that word, or because one end of the edge plays a role whose typical relation is "optional"), append `;dashed=1` to the edge style.
 
 **Fonts.** Append `fontFamily=<preset.font.fontFamily>;fontSize=<preset.font.fontSize>` to every vertex style. Container headers and swimlane titles additionally get `fontSize=<preset.font.titleFontSize>;fontStyle=1` when `preset.font.titleBold` is `true`.
 
