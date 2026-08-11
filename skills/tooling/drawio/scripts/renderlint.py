@@ -31,6 +31,9 @@ final summary line always carries the full counts.
 
 Usage:
   python3 renderlint.py diagram.drawio                 # auto-exports SVG via CLI
+  python3 renderlint.py diagram.drawio --fix           # + slide colliding edge
+                                                       #   labels to a measured
+                                                       #   clear slot (in place)
   python3 renderlint.py diagram.drawio --svg out.svg   # lint a pre-exported SVG
 
 The auto-export resolves the binary like SKILL.md step 1 (drawio, draw.io,
@@ -413,7 +416,10 @@ def near_any_endpoint(pt, polyline, dist=ENDPOINT_SKIP):
     return (seg_len(pt, polyline[0]) < dist or seg_len(pt, polyline[-1]) < dist)
 
 
-def run_checks(cells, svgcells):
+def run_checks(cells, svgcells, collector=None):
+    """When `collector` is a list, fixable findings also append structured
+    records — consumed by apply_render_fixes() for the --fix mode."""
+    rec = collector.append if collector is not None else (lambda *_: None)
     warns, notes, infos = [], [], []
 
     # classify
@@ -479,6 +485,7 @@ def run_checks(cells, svgcells):
             warns.append(f"edge {cid!r} passes through the {what} of {owner!r} — "
                          f"reroute the edge or move/wrap the label "
                          f"(line-through-text)")
+            rec(("label_hit", owner))
 
     # 3. stacked collinear edges
     eids = sorted(edges)
@@ -544,6 +551,7 @@ def run_checks(cells, svgcells):
                 notes.append(f"labels of {oa!r} and {ob!r} overlap (rendered "
                              f"boxes) — widen spacing, wrap with &#xa;, or "
                              f"shift an edge label along its edge")
+                rec(("label_overlap", oa, ob))
 
     # 6. label overlapping an unrelated node
     for owner, box, _ in tight:
@@ -554,6 +562,7 @@ def run_checks(cells, svgcells):
             if boxes_overlap(box, nsc.bbox):
                 notes.append(f"label of {owner!r} overlaps node {nid!r} "
                              f"(rendered box) — increase pitch or wrap the label")
+                rec(("label_node", owner))
 
     # 7. arrowhead landing room: last bend → target node ≥ ARROW_MIN (the
     # official 20px rule). Trailing straight run (accumulated backwards while
@@ -601,6 +610,133 @@ def run_checks(cells, svgcells):
     return warns, notes, infos
 
 
+# ---------- --fix: slide colliding edge labels to a measured clear slot ----------
+#
+# The one renderlint finding with a fully mechanical repair: an EDGE label
+# that collides with something (struck by another line, overlapping a label
+# or node). The rendered SVG gives every obstacle's real box and every
+# route's real polyline, so a clear slot along the label's own edge can be
+# searched deterministically. Node labels and route problems stay with the
+# model (they need layout/routing decisions).
+
+def _label_owner_edge(owner, cells):
+    """owner cid -> (edge_cid, label_cell_cid_or_None) if the label is an edge's."""
+    m = cells.get(owner, {})
+    if m.get("edge"):
+        return owner, None                       # the edge's own value label
+    par = m.get("parent")
+    if par and cells.get(par, {}).get("edge"):
+        return par, owner                        # child edgeLabel cell
+    return None, None
+
+
+def _point_at(poly, t):
+    """Point at arclength fraction t (0..1) along a polyline."""
+    total = sum(seg_len(poly[k], poly[k + 1]) for k in range(len(poly) - 1))
+    if total <= 0:
+        return poly[0]
+    want = max(0.0, min(1.0, t)) * total
+    acc = 0.0
+    for k in range(len(poly) - 1):
+        ln = seg_len(poly[k], poly[k + 1])
+        if ln > 0 and acc + ln >= want:
+            r = (want - acc) / ln
+            return (poly[k][0] + (poly[k + 1][0] - poly[k][0]) * r,
+                    poly[k][1] + (poly[k + 1][1] - poly[k][1]) * r)
+        acc += ln
+    return poly[-1]
+
+
+def apply_render_fixes(path, cells, svgcells, recs):
+    """Slide flagged edge labels to a clear slot; edit the .drawio in place.
+
+    Returns (fixed_msgs, advice_msgs)."""
+    slide = []
+    for r_ in recs:
+        if r_[0] in ("label_hit", "label_node"):
+            slide.append(r_[1])
+        elif r_[0] == "label_overlap":
+            for cand in (r_[2], r_[1]):          # prefer sliding an edge label
+                if _label_owner_edge(cand, cells)[0]:
+                    slide.append(cand)
+                    break
+    if not slide:
+        return [], []
+
+    parser = ET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
+    mtree = ET.parse(path, parser=parser)
+    mcells = {c.get("id"): c for c in mtree.getroot().iter("mxCell")}
+    nodes = {cid: sc for cid, sc in svgcells.items()
+             if cells.get(cid, {}).get("vertex") and sc.bbox and sc.is_leaf}
+    tight = [(cid, box) for cid, sc in svgcells.items()
+             for box, nowrap, _bg in sc.labels if nowrap]
+    edge_lines = {cid: sc.polylines for cid, sc in svgcells.items()
+                  if cells.get(cid, {}).get("edge") and sc.polylines}
+
+    def plen(line):
+        return sum(seg_len(line[k], line[k + 1]) for k in range(len(line) - 1))
+
+    fixed, advice, done = [], [], set()
+    for owner in slide:
+        if owner in done:
+            continue
+        done.add(owner)
+        eid, child = _label_owner_edge(owner, cells)
+        if eid is None or eid not in edge_lines:
+            continue                              # a node label: model's problem
+        target_cell = mcells.get(child or eid)
+        g = target_cell.find("mxGeometry") if target_cell is not None else None
+        boxes = svgcells[owner].labels if owner in svgcells else []
+        if g is None or not boxes:
+            continue
+        poly = max(edge_lines[eid], key=plen)
+        box = boxes[0][0]
+        w, h = box[2] - box[0], box[3] - box[1]
+        cx, cy = (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
+        cur_t = min((k / 50 for k in range(51)),
+                    key=lambda t: seg_len(_point_at(poly, t), (cx, cy)))
+
+        def clear(nb):
+            for _nid, nsc in nodes.items():
+                if boxes_overlap(nb, nsc.bbox, eps=0):
+                    return False
+            for ocid, obox in tight:
+                if ocid != owner and boxes_overlap(nb, obox, eps=0):
+                    return False
+            for ocid, lines in edge_lines.items():
+                if ocid == eid:
+                    continue
+                for ln in lines:
+                    for k in range(len(ln) - 1):
+                        if seg_hits_box(ln[k], ln[k + 1], nb, 0.0):
+                            return False
+            return True
+
+        placed = False
+        for fx in sorted((round(-0.9 + 0.1 * i, 2) for i in range(19)),
+                         key=lambda v: abs((v + 1) / 2 - cur_t)):
+            t = (fx + 1) / 2
+            if abs(t - cur_t) < 0.03:
+                continue
+            px, py = _point_at(poly, t)
+            if clear((px - w / 2 - 6, py - h / 2 - 6, px + w / 2 + 6, py + h / 2 + 6)):
+                g.set("x", f"{fx:g}")
+                off = g.find("mxPoint[@as='offset']")
+                if off is not None:
+                    g.remove(off)
+                fixed.append(f"slid the label of edge {eid!r} to x={fx:g} — "
+                             f"measured clear slot on its rendered route")
+                placed = True
+                break
+        if not placed:
+            advice.append(f"no clear slot on edge {eid!r} for its label — drop "
+                          f"the inline label and let the legend carry the "
+                          f"semantic, or open a corridor")
+    if fixed:
+        mtree.write(path, encoding="UTF-8", xml_declaration=True)
+    return fixed, advice
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="Lint the rendered (SVG) geometry of a .drawio diagram.")
@@ -610,22 +746,40 @@ def main():
                     help="exit non-zero on warnings too")
     ap.add_argument("--all", action="store_true",
                     help="list every finding (default: 15 detail lines per severity)")
+    ap.add_argument("--fix", action="store_true",
+                    help="slide colliding edge labels to a measured clear slot on "
+                         "their rendered route (edits the .drawio in place; "
+                         "re-exports and re-checks, up to 3 rounds; ignores --svg)")
     args = ap.parse_args()
 
     try:
         cells = parse_model(args.file)
     except (ET.ParseError, OSError) as exc:
         sys.exit(f"error: cannot parse {args.file}: {exc}")
-    svg_path = args.svg or export_svg(args.file)
-    try:
-        svgcells = parse_svg(svg_path)
-    except (ET.ParseError, OSError) as exc:
-        sys.exit(f"error: cannot parse SVG {svg_path}: {exc}")
-    if not svgcells:
-        sys.exit("error: no data-cell-id markers in the SVG — export it with "
-                 "the draw.io CLI (browser saves may differ)")
 
-    warns, notes, infos = run_checks(cells, svgcells)
+    warns = notes = infos = None
+    for rnd in range(4):
+        svg_path = (args.svg if (args.svg and not args.fix) else
+                    export_svg(args.file))
+        try:
+            svgcells = parse_svg(svg_path)
+        except (ET.ParseError, OSError) as exc:
+            sys.exit(f"error: cannot parse SVG {svg_path}: {exc}")
+        if not svgcells:
+            sys.exit("error: no data-cell-id markers in the SVG — export it with "
+                     "the draw.io CLI (browser saves may differ)")
+        recs = [] if args.fix else None
+        warns, notes, infos = run_checks(cells, svgcells, collector=recs)
+        if not args.fix or rnd == 3 or not recs:
+            break
+        fixed, advice = apply_render_fixes(args.file, cells, svgcells, recs)
+        for msg in fixed:
+            print(f"fixed: {msg}")
+        for msg in advice:
+            print(f"advice: {msg}")
+        if not fixed:
+            break
+        cells = parse_model(args.file)
     limit = None if args.all else 15
     for label, items in (("warning", warns), ("note", notes), ("info", infos)):
         for line in items[:limit]:

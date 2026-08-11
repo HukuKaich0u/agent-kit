@@ -52,13 +52,23 @@ Notes (informational, not counted in the gate):
 
 Runs without launching draw.io, so it is a fast pre-export gate.
 
-  python3 validate.py diagram.drawio
+  python3 validate.py diagram.drawio --fix
+
+--fix applies the deterministic subset of repairs IN PLACE before reporting:
+missing labelBackgroundColor, shapes too small for their label, container
+growth for overflowing children, children out of title zones, bottom ports
+inside a bottom label span (moved to a side port), stacked parallel edges
+(ports distributed), arrowhead landing room (last waypoint pulled back), and
+negative coordinates (page translated). Anything needing a routing or layout
+decision (node overlaps, edges through nodes, corridor hits, AWS conformance)
+is reported but left for the caller. Fixes run up to 3 internal rounds so
+cascades settle (a moved child can require container growth).
 
 Exit status is non-zero when any error (or, with --strict, any warning) is
 found, so it can gate a workflow. Compressed (non-XML) diagram pages are
 skipped with a warning — this skill always writes uncompressed XML.
 
-Usage: python3 validate.py <file.drawio> [--strict]
+Usage: python3 validate.py <file.drawio> [--strict] [--fix]
 """
 import argparse
 import gzip
@@ -316,8 +326,15 @@ def edge_polyline(cell, ids, st):
 
 # ---------- per-page checks ----------
 
-def check_page(diagram):
-    """Return (errors, warnings, notes) for one <diagram> page."""
+def check_page(diagram, collector=None):
+    """Return (errors, warnings, notes) for one <diagram> page.
+
+    When `collector` is a list, fixable findings also append a structured
+    record to it — consumed by apply_fixes() for the --fix mode. Detection
+    stays single-source: the records are emitted at the same site as the
+    human-readable warning.
+    """
+    rec = collector.append if collector is not None else (lambda *_: None)
     name = diagram.get("name", "?")
     model = diagram.find("mxGraphModel")
     if model is None:
@@ -368,6 +385,7 @@ def check_page(diagram):
                 ar = abs_rect(c, ids)
                 if ar and (ar[0] < 0 or ar[1] < 0):
                     warns.append(f"vertex {cid!r} at negative absolute position ({ar[0]:g},{ar[1]:g})")
+                    rec(("negative",))
 
     # --- collect leaf vertices with absolute rects ---
     leaves = []                                            # (id, cell, abs_rect, style)
@@ -404,6 +422,7 @@ def check_page(diagram):
         if (cr[0] < -EPS or cr[1] < -EPS or
                 cr[0] + cr[2] > pr[2] + EPS or cr[1] + cr[3] > pr[3] + EPS):
             warns.append(f"child {cid!r} overflows container {pid!r} bounds")
+            rec(("grow", pid))
         pst = style_of(p)
         title_h = 0.0
         if "swimlane" in pst:
@@ -415,6 +434,7 @@ def check_page(diagram):
             title_h = 40.0                                 # AWS-style group label zone
         if title_h and cr[1] < title_h - EPS:
             warns.append(f"child {cid!r} sits in container {pid!r} title zone (y={cr[1]:g} < {title_h:g})")
+            rec(("title", pid, cid, title_h))
 
     # --- external bottom labels (AWS icon style) ---
     ext = []                                               # (id, label_rect)
@@ -456,6 +476,7 @@ def check_page(diagram):
                 warns.append(f"label of {cid!r} likely clipped: needs ~{need} wrapped line(s) "
                              f"({need_h:.0f}px) in {inner_h:g}px inner height — enlarge shape, "
                              f"shorten text, or reduce spacing")
+                rec(("resize", cid, None, need_h + pad_t + pad_b + 6))
             elif need_h > inner_h - 6:
                 notes.append(f"label of {cid!r} nearly fills the shape vertically "
                              f"({need_h:.0f}px of {inner_h:g}px) — cramped; consider a taller "
@@ -467,6 +488,7 @@ def check_page(diagram):
         elif widest > inner_w + EPS:
             warns.append(f"label of {cid!r} wider than the inner width ({widest:.0f}px > "
                          f"{inner_w:g}px) and whiteSpace=wrap is not set")
+            rec(("resize", cid, widest + pad_l + pad_r + 8, None))
         elif widest > inner_w - 8:
             notes.append(f"label of {cid!r} nearly touches the border ({widest:.0f}px of "
                          f"{inner_w:g}px inner width) — cramped; widen the shape or add "
@@ -558,6 +580,11 @@ def check_page(diagram):
                              f"{lr[2]:.0f}px-wide label span — the line strikes "
                              f"the text; use a side port (X=0 or 1, Y=0.5) or "
                              f"shorten/wrap the label with &#xa;")
+                oc = ids.get(e.get(other))
+                ro2 = abs_rect(oc, ids) if oc is not None else None
+                side = ("left" if ro2 is not None and
+                        (ro2[0] + ro2[2] / 2) < (r[0] + r[2] / 2) - 1 else "right")
+                rec(("side_port", e.get("id"), end, side))
 
     # --- edge corridors through external label zones (UNRELATED cells only).
     # The edge's own endpoint labels are excluded on principle: an orthogonal
@@ -599,6 +626,7 @@ def check_page(diagram):
             warns.append(f"edge {e.get('id')!r} final segment is {d:.0f}px "
                          f"(<20px) — the arrowhead lands on the bend; move the "
                          f"last waypoint or increase node spacing")
+            rec(("arrowhead", e.get("id")))
 
     # --- proxy edge-edge crossings (note only; real routes: renderlint.py) ---
     polys = []
@@ -637,6 +665,7 @@ def check_page(diagram):
             warns.append(f"edges {seen_pairs[key][sig]!r} and {e.get('id')!r} both connect "
                          f"{s!r}↔{t!r} with identical routing — they render stacked; "
                          f"pin different exit/entry points")
+            rec(("stacked", s, t))
         seen_pairs.setdefault(key, {})[sig] = e.get("id")
 
     # --- labeled edges without a label background ---
@@ -647,6 +676,7 @@ def check_page(diagram):
                 warns.append(f"edge {e.get('id')!r} has a label but no labelBackgroundColor — "
                              f"text becomes unreadable where it crosses lines/shapes; "
                              f"add labelBackgroundColor=#ffffff;")
+                rec(("labelbg", e.get("id")))
 
     # --- AWS official style conformance (data/aws-icon-index.json.gz) ---
     res_fill, gr_combos = aws_index()
@@ -669,6 +699,8 @@ def check_page(diagram):
                         errors.append(f"cell {cid!r} fillColor {fill or '(none)'} != official "
                                       f"category color {want} for {ri} — do not "
                                       f"recolor AWS icons")
+                        if len(res_fill[ri]) == 1:
+                            rec(("awsfill", cid, next(iter(res_fill[ri]))))
             gi = st.get("grIcon")
             if gi and gi.startswith("mxgraph.aws4.group"):
                 allowed = gr_combos.get(gi)
@@ -691,16 +723,256 @@ def check_page(diagram):
     return errors, warns, notes
 
 
+# ---------- --fix: deterministic repairs ----------
+#
+# apply_fixes() consumes the structured records check_page() collects and
+# mutates the XML tree in place. Only findings with a single sanctioned
+# repair are handled — everything that needs a routing or layout decision
+# (node overlaps, edges through nodes, corridor hits, AWS conformance,
+# structural errors) is left for the model.
+
+def _snap10_up(v):
+    return int(math.ceil(v / 10.0 - 1e-9)) * 10
+
+
+def _set_style_key(cell, key, val):
+    parts = [p for p in (cell.get("style") or "").split(";") if p]
+    out, done = [], False
+    for p in parts:
+        if "=" in p and p.split("=", 1)[0] == key:
+            out.append(f"{key}={val}")
+            done = True
+        else:
+            out.append(p)
+    if not done:
+        out.append(f"{key}={val}")
+    cell.set("style", ";".join(out) + ";")
+
+
+def _pin_port(edge, end, fx, fy):
+    pre = "exit" if end == "source" else "entry"
+    _set_style_key(edge, pre + "X", f"{fx:g}")
+    _set_style_key(edge, pre + "Y", f"{fy:g}")
+    _set_style_key(edge, pre + "Dx", "0")
+    _set_style_key(edge, pre + "Dy", "0")
+
+
+def apply_fixes(diagram, recs):
+    """Mutate one <diagram> page to repair fixable findings; return descriptions."""
+    model = diagram.find("mxGraphModel")
+    root = model.find("root") if model is not None else None
+    if root is None or not recs:
+        return []
+    cells = root.findall(".//mxCell")
+    ids = {c.get("id"): c for c in cells}
+    edges = [c for c in cells if c.get("edge") == "1"]
+    fixed = []
+
+    # -- shape resize for clipped labels (merge per cell, largest need wins) --
+    resize = {}
+    for r_ in recs:
+        if r_[0] == "resize":
+            w0, h0 = resize.get(r_[1], (None, None))
+            resize[r_[1]] = (max(w0 or 0, r_[2] or 0) or None,
+                             max(h0 or 0, r_[3] or 0) or None)
+    for cid, (nw, nh) in resize.items():
+        c = ids.get(cid)
+        g = c.find("mxGeometry") if c is not None else None
+        if g is None:
+            continue
+        try:
+            w, h = float(g.get("width", "0")), float(g.get("height", "0"))
+            x = float(g.get("x", "0"))
+        except ValueError:
+            continue
+        if nw and nw > w:
+            w2 = _snap10_up(nw)
+            g.set("width", str(w2))
+            g.set("x", str(int(round((x - (w2 - w) / 2) / 10.0)) * 10))
+            fixed.append(f"widened {cid!r} to {w2}px to fit its label (kept centered)")
+        if nh and nh > h:
+            h2 = _snap10_up(nh)
+            g.set("height", str(h2))
+            fixed.append(f"raised {cid!r} to {h2}px to fit its wrapped label")
+
+    # -- one-shot per-record fixes --
+    for r_ in recs:
+        kind = r_[0]
+        if kind == "labelbg":
+            c = ids.get(r_[1])
+            if c is not None:
+                _set_style_key(c, "labelBackgroundColor", "#ffffff")
+                fixed.append(f"added labelBackgroundColor=#ffffff to edge {r_[1]!r}")
+        elif kind == "awsfill":
+            _, cid, want = r_
+            c = ids.get(cid)
+            if c is not None:
+                _set_style_key(c, "fillColor", want)
+                _set_style_key(c, "strokeColor", "#ffffff")
+                fixed.append(f"recolored AWS icon {cid!r} to its official category color {want}")
+        elif kind == "title":
+            _, pid, cid, title_h = r_
+            c = ids.get(cid)
+            g = c.find("mxGeometry") if c is not None else None
+            if g is not None:
+                g.set("y", str(_snap10_up(title_h + 1)))
+                fixed.append(f"moved {cid!r} below the title zone of {pid!r}")
+        elif kind == "side_port":
+            _, eid, end, side = r_
+            e = ids.get(eid)
+            if e is not None:
+                _pin_port(e, end, 0.0 if side == "left" else 1.0, 0.5)
+                which = "exit" if end == "source" else "entry"
+                fixed.append(f"moved {eid!r} {which} off the bottom label span to the {side} side port")
+        elif kind == "arrowhead":
+            e = ids.get(r_[1])
+            if e is None:
+                continue
+            pts = edge_polyline(e, ids, style_of(e))
+            g = e.find("mxGeometry")
+            arr = g.find("Array[@as='points']") if g is not None else None
+            mps = arr.findall("mxPoint") if arr is not None else []
+            if not pts or len(pts) < 3 or not mps:
+                continue
+            (ex, ey), (wx, wy) = pts[-1], pts[-2]
+            d = math.hypot(wx - ex, wy - ey)
+            if d < 1:
+                arr.remove(mps[-1])
+                fixed.append(f"removed the zero-length final waypoint of {r_[1]!r}")
+            else:
+                s = 24.0 / d
+                mps[-1].set("x", str(int(round(ex + (wx - ex) * s))))
+                mps[-1].set("y", str(int(round(ey + (wy - ey) * s))))
+                fixed.append(f"pulled the last waypoint of {r_[1]!r} to 24px before the target (arrowhead room)")
+
+    # -- container growth: recompute from current children --
+    for pid in {r_[1] for r_ in recs if r_[0] == "grow"}:
+        p = ids.get(pid)
+        pg = p.find("mxGeometry") if p is not None else None
+        if pg is None:
+            continue
+        req_w = req_h = 0.0
+        for c in cells:
+            if c.get("parent") != pid or c.get("vertex") != "1" or is_edge_label(c, ids):
+                continue
+            cr = rect(c)
+            if cr is None or any(v != v for v in cr):
+                continue
+            cg = c.find("mxGeometry")
+            if cr[0] < 0:
+                cg.set("x", "20")
+                cr = (20, cr[1], cr[2], cr[3])
+            if cr[1] < 0:
+                cg.set("y", "40")
+                cr = (cr[0], 40, cr[2], cr[3])
+            req_w = max(req_w, cr[0] + cr[2] + 20)
+            req_h = max(req_h, cr[1] + cr[3] + 20)
+        try:
+            pw, ph = float(pg.get("width", "0")), float(pg.get("height", "0"))
+        except ValueError:
+            continue
+        if req_w > pw or req_h > ph:
+            if req_w > pw:
+                pg.set("width", str(_snap10_up(req_w)))
+            if req_h > ph:
+                pg.set("height", str(_snap10_up(req_h)))
+            fixed.append(f"grew container {pid!r} to fit its children + 20px padding")
+
+    # -- stacked parallel edges: distribute ports across the perimeter --
+    for s, t in {(r_[1], r_[2]) for r_ in recs if r_[0] == "stacked"}:
+        pair = sorted((e for e in edges
+                       if {e.get("source"), e.get("target")} == {s, t}),
+                      key=lambda e: e.get("id") or "")
+        rs, rt = abs_rect(ids.get(s), ids), abs_rect(ids.get(t), ids)
+        if len(pair) < 2 or rs is None or rt is None:
+            continue
+        vertical = abs((rt[1] + rt[3] / 2) - (rs[1] + rs[3] / 2)) >= \
+            abs((rt[0] + rt[2] / 2) - (rs[0] + rs[2] / 2))
+        k = len(pair)
+        for i, e in enumerate(pair):
+            f = 0.25 + 0.5 * i / (k - 1)
+            for end, node_id, other_id in (("source", e.get("source"), e.get("target")),
+                                           ("target", e.get("target"), e.get("source"))):
+                nr, orr = abs_rect(ids.get(node_id), ids), abs_rect(ids.get(other_id), ids)
+                if nr is None or orr is None:
+                    continue
+                if vertical:
+                    below = (orr[1] + orr[3] / 2) > (nr[1] + nr[3] / 2)
+                    if below and has_external_bottom_label(style_of(ids.get(node_id))):
+                        # a bottom port would strike the external label — alternate sides
+                        _pin_port(e, end, 0.0 if i % 2 == 0 else 1.0, 0.5)
+                    else:
+                        _pin_port(e, end, f, 1.0 if below else 0.0)
+                else:
+                    right = (orr[0] + orr[2] / 2) > (nr[0] + nr[2] / 2)
+                    _pin_port(e, end, 1.0 if right else 0.0, f)
+        fixed.append(f"distributed {k} stacked edges {s!r}↔{t!r} across the shape perimeter")
+
+    # -- negative absolute coordinates: translate the whole page --
+    if any(r_[0] == "negative" for r_ in recs):
+        layers = {c.get("id") for c in cells if c.get("parent") == "0"}
+        minx = miny = 0.0
+        for c in cells:
+            if c.get("vertex") == "1" and not is_edge_label(c, ids):
+                ar = abs_rect(c, ids)
+                if ar:
+                    minx, miny = min(minx, ar[0]), min(miny, ar[1])
+        ox = _snap10_up(-minx + 20) if minx < 0 else 0
+        oy = _snap10_up(-miny + 20) if miny < 0 else 0
+        if ox or oy:
+            for c in cells:
+                if c.get("parent") not in layers:
+                    continue
+                g = c.find("mxGeometry")
+                if g is None:
+                    continue
+                if c.get("vertex") == "1":
+                    try:
+                        g.set("x", f"{float(g.get('x', '0')) + ox:g}")
+                        g.set("y", f"{float(g.get('y', '0')) + oy:g}")
+                    except ValueError:
+                        pass
+                for p in g.iter("mxPoint"):
+                    try:
+                        p.set("x", f"{float(p.get('x', '0')) + ox:g}")
+                        p.set("y", f"{float(p.get('y', '0')) + oy:g}")
+                    except ValueError:
+                        pass
+            fixed.append(f"translated the page by (+{ox},+{oy}) to clear negative coordinates")
+    return fixed
+
+
 def main():
     ap = argparse.ArgumentParser(description="Lint a .drawio file for structural and layout errors.")
     ap.add_argument("file")
     ap.add_argument("--strict", action="store_true", help="treat warnings as failure too")
+    ap.add_argument("--fix", action="store_true",
+                    help="apply deterministic repairs in place (label backgrounds, shape/container "
+                         "sizing, side-port moves, port distribution, waypoint pullback, page "
+                         "translation) before reporting what remains")
     args = ap.parse_args()
     try:
-        tree = ET.parse(args.file)
+        parser = (ET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
+                  if args.fix else None)
+        tree = ET.parse(args.file, parser=parser)
     except (ET.ParseError, OSError) as exc:
         sys.exit(f"error: cannot parse {args.file}: {exc}")
     pages = tree.getroot().findall("diagram") or [tree.getroot()]
+    if args.fix:
+        applied = []
+        for _ in range(3):                       # fixes can cascade (move → overflow → grow)
+            round_fixes = []
+            for page in pages:
+                recs = []
+                check_page(page, collector=recs)
+                round_fixes += apply_fixes(page, recs)
+            applied += round_fixes
+            if not round_fixes:
+                break
+        if applied:
+            tree.write(args.file, encoding="UTF-8", xml_declaration=True)
+        for msg in applied:
+            print(f"fixed: {msg}")
     errors, warns, notes = [], [], []
     for page in pages:
         e, w, n = check_page(page)
