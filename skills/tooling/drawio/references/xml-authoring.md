@@ -142,6 +142,7 @@ Nested containers alternate: tint → white → tint, so every nesting level sta
 - **Bottom-labeled shapes (all AWS/Azure/GCP icons): a bottom exit is only safe OUTSIDE the label span — which usually means don't use one.** The label is centered *under* the icon and often wider than it (`API Gateway` ≈ 77px under a 78px icon), so `exitX=0.25/0.75` strikes the text just like `0.5` does. Estimate the span first (ASCII ≈ 0.6×fontSize, CJK ≈ fontSize px/char): if the label exceeds ~half the icon width — true for most real service names — **use a side port** (`exitX=0/1;exitY=0.5`) and route down beside the icon. Bottom exits are for short labels (≤5 ASCII / ≤3 CJK chars) only. Entering the top (`entryY=0`) is always safe. **Leaving the edge unpinned does not avoid this** — when the two icons sit in a column, draw.io's router picks bottom-center on its own and strikes the label anyway; pin a side port explicitly. `validate.py` checks bottom ports against the estimated span (pinned ones, plus the bottom-center port it infers for an unpinned edge to a node directly below); `renderlint.py` verifies the rendered route. See `references/aws-architecture.md`.
 - Add `<Array as="points">` waypoints when an edge must detour around an intermediate shape
 - **Leave room for arrowheads:** the last bend must sit ≥20px from the target shape. If closer, the arrowhead overlaps the bend and looks broken. Fix by increasing node spacing or adding explicit waypoints. (Both gates enforce the same 20px rule: `validate.py` on the model-space waypoint→entry distance, `renderlint.py` on the rendered path — trailing straight run + arrowhead gap to the node border)
+- **Don't pin a final waypoint collinear with the entry point** (same y as a horizontal approach, same x as a vertical one): the router renders it as a 0px final segment and the arrowhead lands on a phantom bend — the gates flag it and coordinate nudging won't clear it. Delete that waypoint and let `jettySize=auto` shape the approach; keep any explicit waypoint ≥24px from the entry.
 
 ## Distributing connections on a shape
 
@@ -269,7 +270,15 @@ Size the legend box to its rows (~30px per row + 30px title zone); it goes throu
 - Shapes with `verticalLabelPosition=bottom` (every AWS/Azure/GCP icon) paint the label **below and outside** the geometry box, and the label can be **wider than the shape**. Reserve ~20px per label line below the icon in ALL spacing decisions: row pitch, container bottom padding, and edge routes. `validate.py` models these zones — trust its warnings.
 - Row pitch for icon grids: ≥160px top-to-top; column pitch ≥200px center-to-center (more for long CJK labels, or wrap with `&#xa;`). Full constants: `references/aws-architecture.md`.
 
-**Routing corridors:** between shape rows/columns, leave an extra ~80px empty corridor where edges can route without crossing shapes. Never place a shape in a gap that edges need to traverse. Cross-cutting hub edges (all services → CloudWatch/monitoring) get **one** reserved corridor outside the main flow, dashed gray, labeled once — N separately-routed labeled lines to the same hub read as noise.
+**Routing corridors:** between shape rows/columns, leave an extra ~80px empty corridor where edges can route without crossing shapes. Never place a shape in a gap that edges need to traverse.
+
+**Hub corridors (monitoring / logging / any sink shared by ≥3 edges) — planned in step 2 with coordinates, before any XML.** The pattern that survives both gates on the first export:
+
+1. **Place the sink on a margin**, outside the main flow, nearest the majority of its sources. An event bus is the exception — it sits at the center of the row it serves (see Event bus pattern below).
+2. **Reserve ONE trunk corridor** — a named coordinate band (e.g. y=560–590 under the bottom row, or x=1440–1480 on the right margin) that crosses no node box and no icon label zone (~20px per label line below icons).
+3. **Every source edge drops into the trunk** via its nearest port and travels the trunk — dashed gray, **labeled once on the trunk**, not per edge; N separately-routed labeled lines to the same hub read as noise.
+4. **Stagger the hub entries**: each edge gets its own entry port on the sink (spread entryX or entryY, ≥16px apart), and edges sharing the trunk band get lanes offset a few px so renderlint doesn't measure them as one collinear line. A single-box sink cleanly absorbs ~4 convergent edges per side (its entry span is finite); beyond that, split entries across two sides of the sink, or accept the residual collinear `note:`s and state them — chasing them past that bound trades crossings elsewhere.
+5. **Trace every hub edge on the plan** (exit port → trunk → entry). A trace that must cross a node band means the node or the trunk moves now — retro-fitting a corridor after the first export is the most expensive class of fix cycle, because a corridor added late collides with everything that was placed without it.
 
 **Grid alignment:** snap all `x`, `y`, `width`, `height` values to **multiples of 10** — this ensures shapes align cleanly on draw.io's default grid and makes manual editing easier.
 
@@ -281,7 +290,7 @@ Size the legend box to its rows (~30px per row + 30px title zone); it goes throu
 - To force straight vertical connections, pin entry/exit points explicitly on edges:
   `exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0`
 - Always center-align a child node under its parent (same center x) to avoid diagonal routing
-- **Event bus pattern**: place Kafka/bus nodes in the **center of the service row**, not below — services on either side can reach it with short horizontal arrows (`exitX=1` left side, `exitX=0` right side), eliminating all line crossings
+- **Event bus pattern** — the shape depends on how many services the bus serves. With exactly **2 peers**, embed the bus **between them in the same row**: short horizontal arrows (`exitX=1` from the left peer, `exitX=0` from the right), zero crossings. With **3+ services, do NOT embed it in the row** — the outer services get guaranteed diagonal crossings that survive rerouting. Give the bus **its own row directly below the service row**, centered on the row's span, and drop each service into it vertically with staggered `entryX` on the bus (≥16px apart)
 - Horizontal connections (`exitX=1` or `exitX=0`) never cross vertical nodes in the same row; use them for peer-to-peer and publish connections
 
 **Avoiding edge-shape overlap:**
