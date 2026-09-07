@@ -145,6 +145,23 @@ Body rules:
   the subject. Mention who or what produced the change only when it bears on how
   thoroughly it was verified.
 
+## Agent co-author attribution
+
+When committing changes you helped create or modify, include a co-author
+trailer for the agent you are running as:
+
+| Agent | Trailer |
+| --- | --- |
+| Claude Code | `Co-authored-by: Claude <noreply@anthropic.com>` |
+| Codex | `Co-authored-by: Codex <noreply@openai.com>` |
+
+Use your own row; using these shared instructions does not mean both agents
+contributed. Keep one blank line between the body and the trailer block, and
+preserve existing trailers. If a co-author trailer with your agent's email
+already exists, keep it instead of adding another, including when the runtime
+uses a model name as the author name. Otherwise, append the trailer above.
+Commit approval is still required under the rules above.
+
 ## Staging
 
 - Stage explicitly by path: `git add <paths>`. Never `git add -A`, `git add .`,
